@@ -7,3 +7,10 @@
 
 Промежуточный результат может быть такой:
 ![image](https://github.com/Severnbli/CourseWork_CarDealership/assets/117062378/dff371d2-b359-4856-b897-6a934d985792)
+
+# Инструкция по обновлению
+1. Открыть в верхней панели инструментов вкладку "Git".
+2. Нажать кнопку "Pull".
+
+Выбранный параметр:
+![image](https://github.com/Severnbli/CourseWork_CarDealership/assets/117062378/78ca0a60-0067-4fb3-8ce4-7f4897fc9570)
