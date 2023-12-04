@@ -27,140 +27,169 @@ Database::Database(const Database& other)
 	this->cars_ = other.cars_;
 }
 
-
-void Database::loadInfoFromUsersFile()
-{
-	std::ifstream fileOfClients(CLIENTS_FILE, std::ios::in);
-	if (fileOfClients.is_open())
-	{
-		if (fileOfClients.peek() != EOF)
-		{
-			std::string username;
-			std::string password;
-			std::string fio;
-			std::string mobileNumber;
-			bool isDriverLicense;
-			while (std::getline(fileOfClients, username))
-			{
-				std::getline(fileOfClients, password);
-				std::getline(fileOfClients, fio);
-				std::getline(fileOfClients, mobileNumber);
-				std::string bufferForIsDriverLicense;
-				std::getline(fileOfClients, bufferForIsDriverLicense);
-				isDriverLicense = std::stoi(bufferForIsDriverLicense);
-				this->users_.push_back(std::make_shared<Client>(mobileNumber, isDriverLicense));
-				this->fullUpLastUserInfo(username, password, fio);
-			}
-		}
-		fileOfClients.close();
+std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName) { // получение вектора строк (информация из файла)
+	std::ifstream file(fileName, std::ios::in);
+	if (!file.is_open()) {
+		throw std::runtime_error(fileName);
 	}
-	else
-	{
-		throw std::runtime_error(std::string(CLIENTS_FILE));
+	if (fileName == EMPLOYEES_FILE && file.peek() == EOF) {
+		file.close();
+		makeFirstAdminAccount();
 	}
-	std::ifstream fileOfEmployees(EMPLOYEES_FILE, std::ios::in);
-	if (fileOfEmployees.is_open())
-	{
-		if (fileOfEmployees.peek() == EOF)
-		{
-			fileOfEmployees.close();
-			makeFirstAdminAccount();
-			return;
-		}
-		std::string username;
-		std::string password;
-		std::string fio;
-		std::string position;
-		double award;
-		while (std::getline(fileOfEmployees, username))
-		{
-			std::getline(fileOfEmployees, password);
-			std::getline(fileOfEmployees, fio);
-			std::getline(fileOfEmployees, position);
-			std::string bufferForAward;
-			std::getline(fileOfEmployees, bufferForAward);
-			award = std::stod(bufferForAward);
-			this->users_.push_back(std::make_shared<Employee>(position, award));
-			this->fullUpLastUserInfo(username, password, fio);
-		}
+	std::vector<std::string> linesInFile;
+	std::string buffer;
+	while (std::getline(file, buffer)) {
+		linesInFile.push_back(buffer);
 	}
-	else
-	{
-		throw std::runtime_error(std::string(EMPLOYEES_FILE));
-	}
+	file.close();
+	return linesInFile;
 }
 
-void Database::makeFirstAdminAccount()
-{
-	std::ofstream file(EMPLOYEES_FILE, std::ios::in);
-	if (file.is_open())
-	{
-		const std::string username = "admin";
-		const std::string password = "admin";
-		const std::string fio = "";
-		const std::string position = "";
-		const double award = 0.0;
-		file << username << '\n' << password << '\n' << fio << '\n' << position << '\n' << award << '\n';
-		this->users_.push_back(std::make_shared<Employee>(position, award));
-		this->fullUpLastUserInfo(username, password, fio);
-		file.close();
+template <typename T>
+void Database::fillUpVector(std::vector<std::shared_ptr<T>>& recipient, const std::string& fileName) {
+	std::vector<std::string> donor = this->loadInfoFromFile(fileName);
+	if (donor.empty()) {
 		return;
 	}
-	throw std::runtime_error(std::string(EMPLOYEES_FILE));
+	int dimensionality = T::dimensionality;
+	for (int counter = 0; counter < donor.size() / dimensionality; counter++) {
+		recipient.push_back(std::make_shared<T>(donor.begin() + counter * dimensionality, donor.end() + counter * dimensionality + dimensionality));
+	}
 }
+
+//void Database::loadInfoFromUsersFile()
+//{
+//	std::ifstream fileOfClients(CLIENTS_FILE, std::ios::in);
+//	if (fileOfClients.is_open())
+//	{
+//		if (fileOfClients.peek() != EOF)
+//		{
+//			std::string username;
+//			std::string password;
+//			std::string fio;
+//			std::string mobileNumber;
+//			bool isDriverLicense;
+//			while (std::getline(fileOfClients, username))
+//			{
+//				std::getline(fileOfClients, password);
+//				std::getline(fileOfClients, fio);
+//				std::getline(fileOfClients, mobileNumber);
+//				std::string bufferForIsDriverLicense;
+//				std::getline(fileOfClients, bufferForIsDriverLicense);
+//				isDriverLicense = std::stoi(bufferForIsDriverLicense);
+//				this->users_.push_back(std::make_shared<Client>(mobileNumber, isDriverLicense));
+//				this->fullUpLastUserInfo(username, password, fio);
+//			}
+//		}
+//		fileOfClients.close();
+//	}
+//	else
+//	{
+//		throw std::runtime_error(std::string(CLIENTS_FILE));
+//	}
+//	std::ifstream fileOfEmployees(EMPLOYEES_FILE, std::ios::in);
+//	if (fileOfEmployees.is_open())
+//	{
+//		if (fileOfEmployees.peek() == EOF)
+//		{
+//			fileOfEmployees.close();
+//			makeFirstAdminAccount();
+//			return;
+//		}
+//		std::string username;
+//		std::string password;
+//		std::string fio;
+//		std::string position;
+//		double award;
+//		while (std::getline(fileOfEmployees, username))
+//		{
+//			std::getline(fileOfEmployees, password);
+//			std::getline(fileOfEmployees, fio);
+//			std::getline(fileOfEmployees, position);
+//			std::string bufferForAward;
+//			std::getline(fileOfEmployees, bufferForAward);
+//			award = std::stod(bufferForAward);
+//			this->users_.push_back(std::make_shared<Employee>(position, award));
+//			this->fullUpLastUserInfo(username, password, fio);
+//		}
+//	}
+//	else
+//	{
+//		throw std::runtime_error(std::string(EMPLOYEES_FILE));
+//	}
+//}
+
+//void Database::makeFirstAdminAccount()
+//{
+//	std::ofstream file(EMPLOYEES_FILE, std::ios::in);
+//	if (file.is_open())
+//	{
+//		const std::string username = "admin";
+//		const std::string password = "admin";
+//		const std::string fio = "";
+//		const std::string position = "";
+//		const double award = 0.0;
+//		file << username << '\n' << password << '\n' << fio << '\n' << position << '\n' << award << '\n';
+//		this->users_.push_back(std::make_shared<Employee>(position, award));
+//		this->fullUpLastUserInfo(username, password, fio);
+//		file.close();
+//		return;
+//	}
+//	throw std::runtime_error(std::string(EMPLOYEES_FILE));
+//}
 
 std::vector<std::shared_ptr<User>> Database::getUsersList() const
 {
 	return this->users_;
 }
 
-void Database::makeNewUser(const std::string& username, const std::string& password, const std::string& fio)
-{
-	std::string mobileNumber = "";
-	bool isDriverLicense = false;
-	this->users_.push_back(std::make_shared<Client>(mobileNumber, isDriverLicense));
-	this->fullUpLastUserInfo(username, password, fio);
-	std::ofstream file(CLIENTS_FILE, std::ios::app);
-	if (file.is_open())
-	{
-		file << username << '\n' << password << '\n' << fio << '\n' << mobileNumber << '\n' << isDriverLicense << '\n';
-		file.close();
-		return;
-	}
-	throw std::runtime_error(std::string(CLIENTS_FILE));
-}
+//void Database::makeNewUser(const std::string& username, const std::string& password, const std::string& fio)
+//{
+//	std::string mobileNumber = "";
+//	bool isDriverLicense = false;
+//	this->users_.push_back(std::make_shared<Client>(mobileNumber, isDriverLicense));
+//	this->fullUpLastUserInfo(username, password, fio);
+//	std::ofstream file(CLIENTS_FILE, std::ios::app);
+//	if (file.is_open())
+//	{
+//		file << username << '\n' << password << '\n' << fio << '\n' << mobileNumber << '\n' << isDriverLicense << '\n';
+//		file.close();
+//		return;
+//	}
+//	throw std::runtime_error(std::string(CLIENTS_FILE));
+//}
 
 
 
-void Database::loadInfoFromCarsFile()
-{
-	std::ifstream file(CARS_FILE, std::ios::in);
-	if (file.is_open())
-	{
-		if (file.peek() != EOF)
-		{
-			std::string brand;
-			while (std::getline(file, brand))
-			{
-				std::string model;
-				std::getline(file, model);
-				std::string bufferForYearOfManufacture;
-				std::getline(file, bufferForYearOfManufacture);
-				int yearOfManufacture = std::stoi(bufferForYearOfManufacture);
-				std::string bufferForAmount;
-				std::getline(file, bufferForAmount);
-				int amount = std::stoi(bufferForAmount);
-				std::string bufferForPrice;
-				std::getline(file, bufferForPrice);
-				double price = std::stod(bufferForPrice);
-				this->cars_.push_back(std::make_shared<Car>(brand, model, yearOfManufacture, amount, price));
-			}
-		}
-		file.close();
-		return;
-	}
-	throw std::runtime_error(std::string(CARS_FILE));
-}
+//void Database::loadInfoFromCarsFile()
+//{
+//	std::ifstream file(CARS_FILE, std::ios::in);
+//	if (file.is_open())
+//	{
+//		if (file.peek() != EOF)
+//		{
+//			std::string brand;
+//			while (std::getline(file, brand))
+//			{
+//				std::string model;
+//				std::getline(file, model);
+//				std::string bufferForYearOfManufacture;
+//				std::getline(file, bufferForYearOfManufacture);
+//				int yearOfManufacture = std::stoi(bufferForYearOfManufacture);
+//				std::string bufferForAmount;
+//				std::getline(file, bufferForAmount);
+//				int amount = std::stoi(bufferForAmount);
+//				std::string bufferForPrice;
+//				std::getline(file, bufferForPrice);
+//				double price = std::stod(bufferForPrice);
+//				this->cars_.push_back(std::make_shared<Car>(brand, model, yearOfManufacture, amount, price));
+//			}
+//		}
+//		file.close();
+//		return;
+//	}
+//	throw std::runtime_error(std::string(CARS_FILE));
+//}
 
 void customTerminate()
 {

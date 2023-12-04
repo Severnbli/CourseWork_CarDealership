@@ -14,20 +14,38 @@ class Database
 {
 public:
 	Database();
+
 	Database(const Database&);
+	
 	~Database() = default;
-	void loadInfoFromUsersFile();
-	void makeFirstAdminAccount();
+	
+	std::vector<std::string> loadInfoFromFile(const std::string&);
+	
+	template <typename T>
+	void fillUpVector(std::vector<std::shared_ptr<T>>&, const std::string&);
+	
+	//void loadInfoFromUsersFile();
+	//void makeFirstAdminAccount();
+	
 	std::vector<std::shared_ptr<User>> getUsersList() const;
-	void makeNewUser(const std::string&, const std::string&, const std::string&);
-	void loadInfoFromCarsFile();
+	
+	//void makeNewUser(const std::string&, const std::string&, const std::string&);
+	//void loadInfoFromCarsFile();
+	
 	void makeRebuildFile(const std::string&);
+	
 	void cleanAllVectors();
+	
 	void fullUpLastUserInfo(const std::string&, const std::string&, const std::string&);
+	
 	bool isValidUsername(const std::string&) const;
+	
 	int showUsersInfo(const std::shared_ptr<User>& = nullptr) const;
+	
 	int showCarsInfo(const std::shared_ptr<Car> & = nullptr) const;
+
 private:
 	std::vector<std::shared_ptr<User>> users_;
+
 	std::vector<std::shared_ptr<Car>> cars_;
 };
