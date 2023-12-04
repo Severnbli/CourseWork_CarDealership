@@ -1,4 +1,5 @@
 ﻿#include "Database.h"
+#include "utils.h"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -46,15 +47,30 @@ std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName)
 }
 
 template <typename T>
-void Database::fillUpVector(std::vector<std::shared_ptr<T>>& recipient, const std::string& fileName) {
-	std::vector<std::string> donor = this->loadInfoFromFile(fileName);
+void Database::loadVector(std::vector<std::shared_ptr<T>>& recipient, const std::string& fileName) { // в объекте записываемого класса д.б. статическое поле dimensionality_
+	auto donor = this->loadInfoFromFile(fileName);
 	if (donor.empty()) {
 		return;
 	}
-	int dimensionality = T::dimensionality;
-	for (int counter = 0; counter < donor.size() / dimensionality; counter++) {
-		recipient.push_back(std::make_shared<T>(donor.begin() + counter * dimensionality, donor.end() + counter * dimensionality + dimensionality));
+	auto parsedVectors = utils::parseVector(donor, T::dimensionality_); // разбиваем вектор с данными на кусочки
+	for (const auto& parsedVector : parsedVectors) {
+		recipient.push_back(std::make_shared<T>(parsedVector);
 	}
+}
+
+template <typename T>
+void Database::unloadInfoToFile(const std::vector<std::shared_ptr<T>>& donor, const std::string& fileName) { // выгрузка данных в файл
+	std::ofstream file(fileName, std::ios::out);
+	if (!file.is_open()) {
+		throw std::runtime_error(fileName);
+	}
+	for (const auto& element : donor) {
+		const auto& vectorOfData = element->getInfoInVectorStringForm();
+		for (const auto& data : vectorOfData) {
+			file << data << '\n';
+		}
+	}
+	file.close();
 }
 
 //void Database::loadInfoFromUsersFile()
@@ -191,22 +207,14 @@ std::vector<std::shared_ptr<User>> Database::getUsersList() const
 //	throw std::runtime_error(std::string(CARS_FILE));
 //}
 
-void customTerminate()
-{
-	std::cerr << "Ошибка с созданием файла!";
-	abort();
-}
-
 void Database::makeRebuildFile(const std::string& nameOfFile) //пересоздание/создание файла
 {
-	std::set_terminate(customTerminate);
 	std::ofstream file(nameOfFile, std::ios::out);
 	if (!file.is_open())
 	{
-		std::terminate();
+		utils::customTerminate("пересозданием файла");
 	}
 	file.close();
-	std::set_terminate(nullptr);
 }
 
 void Database::cleanAllVectors()

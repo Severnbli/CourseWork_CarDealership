@@ -1,5 +1,9 @@
 ﻿#include "Car.h"
 
+#include "utils.h"
+
+int Car::dimensionality_ = 5;
+
 Car::Car(const std::string& brand, const std::string& model, int yearOfManufacture, int amount, double price) 
 {
 	this->setBrand(brand);
@@ -9,6 +13,12 @@ Car::Car(const std::string& brand, const std::string& model, int yearOfManufactu
 	this->setPrice(price);
 }
 
+Car::Car(const std::vector<std::string>& data)
+{
+	this->setInfoInVectorStringForm(data);
+}
+
+
 Car::Car(const Car& other)
 {
 	this->brand_ = other.brand_;
@@ -16,6 +26,21 @@ Car::Car(const Car& other)
 	this->yearOfManufacture_ = other.yearOfManufacture_;
 	this->amount_ = other.amount_;
 	this->price_ = other.price_;
+}
+
+void Car::setInfoInVectorStringForm(const std::vector<std::string>& donor) {
+	if (donor.size() != dimensionality_) {
+		utils::customTerminate("созданием объекта типа Client");
+	}
+	this->brand_ = donor[0];
+	this->model_ = donor[1];
+	this->yearOfManufacture_ = std::stoi(donor[2]);
+	this->amount_ = std::stoi(donor[3]);
+	this->price_ = std::stod(donor[4]);
+}
+
+std::vector<std::string> Car::getInfoInVectorStringForm() {
+	return { this->brand_, this->model_, std::to_string(this->yearOfManufacture_), std::to_string(this->amount_), std::to_string(price_) };
 }
 
 void Car::setBrand(const std::string& brand)

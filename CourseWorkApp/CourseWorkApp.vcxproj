@@ -136,6 +136,7 @@
     <ClCompile Include="Employee.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="menus.cpp" />
+    <ClCompile Include="utils.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +149,7 @@
     <ClInclude Include="Manager.h" />
     <ClInclude Include="menus.h" />
     <ClInclude Include="User.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

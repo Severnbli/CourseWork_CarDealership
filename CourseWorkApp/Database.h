@@ -22,10 +22,13 @@ public:
 	std::vector<std::string> loadInfoFromFile(const std::string&);
 	
 	template <typename T>
-	void fillUpVector(std::vector<std::shared_ptr<T>>&, const std::string&);
+	void loadVector(std::vector<std::shared_ptr<T>>&, const std::string&);
 	
 	//void loadInfoFromUsersFile();
 	//void makeFirstAdminAccount();
+
+	template <typename T>
+	void unloadInfoToFile(const std::vector<std::shared_ptr<T>>&, const std::string&);
 	
 	std::vector<std::shared_ptr<User>> getUsersList() const;
 	
