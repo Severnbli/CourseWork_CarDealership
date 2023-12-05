@@ -9,6 +9,16 @@ Employee::Employee(const std::string& position, double award)
 	this->award_ = award;
 }
 
+Employee::Employee(const std::string& username, const std::string& password, const std::string& fio, const std::string& position, double award)
+{
+	this->setUsername(username);
+	this->setPassword(password);
+	this->setFio(fio);
+	this->position_ = position;
+	this->award_ = award;
+}
+
+
 Employee::Employee(const std::vector<std::string>& data)
 {
 	this->setInfoInVectorStringForm(data);

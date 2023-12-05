@@ -10,14 +10,15 @@ Database::Database()
 	while (true)
 	{
 		try {
-			this->loadInfoFromUsersFile();
-			this->loadInfoFromCarsFile();
+			this->loadVector(this->users_, CLIENTS_FILE);
+			this->loadVector(this->users_, EMPLOYEES_FILE);
+			this->loadVector(this->cars_, CARS_FILE);
 			break;
 		}
 		catch (const std::runtime_error& error)
 		{
 			this->cleanAllVectors();
-			makeRebuildFile(error.what());
+			utils::rebuildFile(error.what());
 		}
 	}
 }
@@ -28,14 +29,24 @@ Database::Database(const Database& other)
 	this->cars_ = other.cars_;
 }
 
+Database::~Database()
+{
+	this->unloadInfoToFile(this->users_, CLIENTS_FILE);
+	this->unloadInfoToFile(this->users_, EMPLOYEES_FILE);
+	this->unloadInfoToFile(this->cars_, CARS_FILE);
+}
+
 std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName) { // получение вектора строк (информация из файла)
 	std::ifstream file(fileName, std::ios::in);
 	if (!file.is_open()) {
 		throw std::runtime_error(fileName);
 	}
-	if (fileName == EMPLOYEES_FILE && file.peek() == EOF) {
+	if (fileName == EMPLOYEES_FILE && file.peek() == EOF) { // создаём первый аккаунт админа
 		file.close();
-		makeFirstAdminAccount();
+		const std::string usernameOfSuperAdmin = "admin";
+		const std::string passwordOfSuperAdmin = "admin";
+		Employee employee (usernameOfSuperAdmin, passwordOfSuperAdmin);
+		this->fullUpUsersVector(employee);
 	}
 	std::vector<std::string> linesInFile;
 	std::string buffer;
@@ -54,7 +65,7 @@ void Database::loadVector(std::vector<std::shared_ptr<T>>& recipient, const std:
 	}
 	auto parsedVectors = utils::parseVector(donor, T::dimensionality_); // разбиваем вектор с данными на кусочки
 	for (const auto& parsedVector : parsedVectors) {
-		recipient.push_back(std::make_shared<T>(parsedVector);
+		recipient.push_back(std::make_shared<T>(parsedVector));
 	}
 }
 
@@ -62,7 +73,7 @@ template <typename T>
 void Database::unloadInfoToFile(const std::vector<std::shared_ptr<T>>& donor, const std::string& fileName) { // выгрузка данных в файл
 	std::ofstream file(fileName, std::ios::out);
 	if (!file.is_open()) {
-		throw std::runtime_error(fileName);
+		utils::customTerminate("выгрузкой информации в файл");
 	}
 	for (const auto& element : donor) {
 		const auto& vectorOfData = element->getInfoInVectorStringForm();
@@ -73,86 +84,24 @@ void Database::unloadInfoToFile(const std::vector<std::shared_ptr<T>>& donor, co
 	file.close();
 }
 
-//void Database::loadInfoFromUsersFile()
-//{
-//	std::ifstream fileOfClients(CLIENTS_FILE, std::ios::in);
-//	if (fileOfClients.is_open())
-//	{
-//		if (fileOfClients.peek() != EOF)
-//		{
-//			std::string username;
-//			std::string password;
-//			std::string fio;
-//			std::string mobileNumber;
-//			bool isDriverLicense;
-//			while (std::getline(fileOfClients, username))
-//			{
-//				std::getline(fileOfClients, password);
-//				std::getline(fileOfClients, fio);
-//				std::getline(fileOfClients, mobileNumber);
-//				std::string bufferForIsDriverLicense;
-//				std::getline(fileOfClients, bufferForIsDriverLicense);
-//				isDriverLicense = std::stoi(bufferForIsDriverLicense);
-//				this->users_.push_back(std::make_shared<Client>(mobileNumber, isDriverLicense));
-//				this->fullUpLastUserInfo(username, password, fio);
-//			}
-//		}
-//		fileOfClients.close();
-//	}
-//	else
-//	{
-//		throw std::runtime_error(std::string(CLIENTS_FILE));
-//	}
-//	std::ifstream fileOfEmployees(EMPLOYEES_FILE, std::ios::in);
-//	if (fileOfEmployees.is_open())
-//	{
-//		if (fileOfEmployees.peek() == EOF)
-//		{
-//			fileOfEmployees.close();
-//			makeFirstAdminAccount();
-//			return;
-//		}
-//		std::string username;
-//		std::string password;
-//		std::string fio;
-//		std::string position;
-//		double award;
-//		while (std::getline(fileOfEmployees, username))
-//		{
-//			std::getline(fileOfEmployees, password);
-//			std::getline(fileOfEmployees, fio);
-//			std::getline(fileOfEmployees, position);
-//			std::string bufferForAward;
-//			std::getline(fileOfEmployees, bufferForAward);
-//			award = std::stod(bufferForAward);
-//			this->users_.push_back(std::make_shared<Employee>(position, award));
-//			this->fullUpLastUserInfo(username, password, fio);
-//		}
-//	}
-//	else
-//	{
-//		throw std::runtime_error(std::string(EMPLOYEES_FILE));
-//	}
-//}
+template <typename T, typename Y>
+void Database::fullUpVector(const std::vector<std::shared_ptr<T>>& recipient, const Y& object)
+{
+	recipient.push_back(std::make_shared<Y>(object));
+}
 
-//void Database::makeFirstAdminAccount()
-//{
-//	std::ofstream file(EMPLOYEES_FILE, std::ios::in);
-//	if (file.is_open())
-//	{
-//		const std::string username = "admin";
-//		const std::string password = "admin";
-//		const std::string fio = "";
-//		const std::string position = "";
-//		const double award = 0.0;
-//		file << username << '\n' << password << '\n' << fio << '\n' << position << '\n' << award << '\n';
-//		this->users_.push_back(std::make_shared<Employee>(position, award));
-//		this->fullUpLastUserInfo(username, password, fio);
-//		file.close();
-//		return;
-//	}
-//	throw std::runtime_error(std::string(EMPLOYEES_FILE));
-//}
+template <typename T>
+void Database::fullUpUsersVector(const T& object)
+{
+	this->fullUpVector(this->users_, object);
+}
+
+void Database::fullUpCarsVector(const Car& object)
+{
+	this->fullUpVector(this->cars_, object);
+}
+
+
 
 std::vector<std::shared_ptr<User>> Database::getUsersList() const
 {
@@ -207,27 +156,10 @@ std::vector<std::shared_ptr<User>> Database::getUsersList() const
 //	throw std::runtime_error(std::string(CARS_FILE));
 //}
 
-void Database::makeRebuildFile(const std::string& nameOfFile) //пересоздание/создание файла
-{
-	std::ofstream file(nameOfFile, std::ios::out);
-	if (!file.is_open())
-	{
-		utils::customTerminate("пересозданием файла");
-	}
-	file.close();
-}
-
 void Database::cleanAllVectors()
 {
 	this->cars_.clear();
 	this->users_.clear();
-}
-
-void Database::fullUpLastUserInfo(const std::string& username, const std::string& password, const std::string& fio) //заполнение последнего элемента вектора
-{						
-	this->users_[this->users_.size() - 1]->setUsername(username);
-	this->users_[this->users_.size() - 1]->setPassword(password);
-	this->users_[this->users_.size() - 1]->setFio(fio);
 }
 
 bool Database::isValidUsername(const std::string& username) const

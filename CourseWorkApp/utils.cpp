@@ -1,5 +1,6 @@
 #include "utils.h"
 #include <iostream>
+#include <fstream>
 
 namespace utils {
 
@@ -23,6 +24,16 @@ namespace utils {
     {
         std::cerr << "Ошибка с " << info << '!';
         abort();
+    }
+
+    void rebuildFile(const std::string& nameOfFile) //пересоздание/создание файла
+    {
+        std::ofstream file(nameOfFile, std::ios::out);
+        if (!file.is_open())
+        {
+            customTerminate("пересозданием файла");
+        }
+        file.close();
     }
 
 }

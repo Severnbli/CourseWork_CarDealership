@@ -24,8 +24,8 @@ public:
 	double getPrice() const;
 private:
 	static int dimensionality_;
-	std::string brand_ = "";
-	std::string model_ = "";
+	std::string brand_;
+	std::string model_;
 	int yearOfManufacture_ = 0;
 	int amount_ = 0;
 	double price_ = 0.0;

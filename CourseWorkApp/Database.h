@@ -17,29 +17,31 @@ public:
 
 	Database(const Database&);
 	
-	~Database() = default;
+	~Database();
 	
 	std::vector<std::string> loadInfoFromFile(const std::string&);
 	
 	template <typename T>
 	void loadVector(std::vector<std::shared_ptr<T>>&, const std::string&);
-	
-	//void loadInfoFromUsersFile();
-	//void makeFirstAdminAccount();
 
 	template <typename T>
 	void unloadInfoToFile(const std::vector<std::shared_ptr<T>>&, const std::string&);
-	
+
+	template <typename T, typename Y>
+	void fullUpVector(const std::vector<std::shared_ptr<T>>&, const Y&);
+
+	template <typename T>
+	void fullUpUsersVector(const T&);
+
+	void fullUpCarsVector(const Car&);
+
 	std::vector<std::shared_ptr<User>> getUsersList() const;
-	
+
+	//void makeFirstAdminAccount();
+
 	//void makeNewUser(const std::string&, const std::string&, const std::string&);
-	//void loadInfoFromCarsFile();
-	
-	void makeRebuildFile(const std::string&);
 	
 	void cleanAllVectors();
-	
-	void fullUpLastUserInfo(const std::string&, const std::string&, const std::string&);
 	
 	bool isValidUsername(const std::string&) const;
 	
