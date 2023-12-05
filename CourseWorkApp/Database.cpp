@@ -10,9 +10,9 @@ Database::Database()
 	while (true)
 	{
 		try {
-			this->loadVector(this->users_, CLIENTS_FILE);
-			this->loadVector(this->users_, EMPLOYEES_FILE);
-			this->loadVector(this->cars_, CARS_FILE);
+			this->loadUsersVector(CLIENTS_FILE);
+			this->loadUsersVector(EMPLOYEES_FILE);
+			this->loadCarsVector(CARS_FILE);
 			break;
 		}
 		catch (const std::runtime_error& error)
@@ -31,7 +31,7 @@ Database::Database(const Database& other)
 
 Database::~Database()
 {
-	std::vector<std::shared_ptr<Employee>> employees;
+	/*std::vector<std::shared_ptr<Employee>> employees;
 
 	auto beginEmployees = this->users_.begin();
 
@@ -61,7 +61,7 @@ Database::~Database()
 
 	this->unloadInfoToFile(clients, CLIENTS_FILE);
 	this->unloadInfoToFile(employees, EMPLOYEES_FILE);
-	this->unloadInfoToFile(this->cars_, CARS_FILE);
+	this->unloadInfoToFile(this->cars_, CARS_FILE);*/
 }
 
 std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName) { // получение вектора строк (информация из файла)
@@ -69,11 +69,15 @@ std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName)
 	if (!file.is_open()) {
 		throw std::runtime_error(fileName);
 	}
-	if (fileName == EMPLOYEES_FILE && file.peek() == EOF) { // создаём первый аккаунт админа
-		file.close();
-		const std::string usernameOfSuperAdmin = "admin";
-		const std::string passwordOfSuperAdmin = "admin";
-		this->fullUpUsersVector(Employee(usernameOfSuperAdmin, passwordOfSuperAdmin));
+	if (file.peek() == EOF) {
+		if (fileName == EMPLOYEES_FILE) // создаём первый аккаунт админа
+		{
+			file.close();
+			const std::string usernameOfSuperAdmin = "admin";
+			const std::string passwordOfSuperAdmin = "admin";
+			this->fullUpUsersVector(Employee(usernameOfSuperAdmin, passwordOfSuperAdmin));
+		}
+		throw std::runtime_error(NO_INFO_IN_FILE);
 	}
 	std::vector<std::string> linesInFile;
 	std::string buffer;
@@ -84,31 +88,60 @@ std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName)
 	return linesInFile;
 }
 
-template <typename T>
-void Database::loadVector(std::vector<std::shared_ptr<T>>& recipient, const std::string& fileName) { // в объекте записываемого класса д.б. статическое поле dimensionality_
-	auto donor = this->loadInfoFromFile(fileName);
-	if (donor.empty()) {
-		return;
+#include <iostream>
+
+void Database::loadUsersVector(const std::string& fileName)
+{
+	std::vector<std::string> donor;
+	try
+	{
+		donor = this->loadInfoFromFile(fileName);
 	}
-	size_t dimensionality = 0;
+	catch (const std::runtime_error &error)
+	{
+		if (!std::strcmp(error.what(), NO_INFO_IN_FILE))
+		{
+			return;
+		}
+	}
 	if (fileName == CLIENTS_FILE)
 	{
 		Client client;
-		dimensionality = client.getDimensionality();
+		auto parsedVectors = utils::parseVectorBySize(donor, client.getDimensionality()); // разбиваем вектор с данными на кусочки
+		for (const auto& parsedVector : parsedVectors) {
+			this->users_.push_back(std::make_shared<Client>(parsedVector));
+		}
 	}
 	else if (fileName == EMPLOYEES_FILE)
 	{
 		Employee employee;
-		dimensionality = employee.getDimensionality();
+		auto parsedVectors = utils::parseVectorBySize(donor, employee.getDimensionality());
+		for (const auto& parsedVector : parsedVectors) {
+			this->users_.push_back(std::make_shared<Employee>(parsedVector));
+		}
 	}
-	else if (fileName == CARS_FILE)
+}
+
+void Database::loadCarsVector(const std::string& fileName)
+{
+	std::vector<std::string> donor;
+	try
 	{
-		Car car;
-		dimensionality = car.getDimensionality();
+		donor = this->loadInfoFromFile(fileName);
 	}
-	auto parsedVectors = utils::parseVectorBySize(donor, dimensionality); // разбиваем вектор с данными на кусочки
-	for (const auto& parsedVector : parsedVectors) {
-		recipient.push_back(std::make_shared<T>(parsedVector));
+	catch (const std::runtime_error& error)
+	{
+		if (!std::strcmp(error.what(), NO_INFO_IN_FILE))
+		{
+			return;
+		}
+	}
+	if (fileName == CARS_FILE)
+	{
+		auto parsedVectors = utils::parseVectorBySize(donor, Car::getDimensionality()); // разбиваем вектор с данными на кусочки
+		for (const auto& parsedVector : parsedVectors) {
+			this->cars_.push_back(std::make_shared<Car>(parsedVector));
+		}
 	}
 }
 
@@ -117,6 +150,10 @@ void Database::unloadInfoToFile(const std::vector<std::shared_ptr<T>>& donor, co
 	std::ofstream file(fileName, std::ios::out);
 	if (!file.is_open()) {
 		utils::customTerminate("выгрузкой информации в файл");
+	}
+	if (donor.empty())
+	{
+		return;
 	}
 	for (const auto& element : donor) {
 		const auto& vectorOfData = element->getInfoInVectorStringForm();
@@ -127,30 +164,20 @@ void Database::unloadInfoToFile(const std::vector<std::shared_ptr<T>>& donor, co
 	file.close();
 }
 
-template <typename T, typename Y>
-void Database::fullUpVector(const std::vector<std::shared_ptr<T>>& recipient, const Y& object)
-{
-	recipient.push_back(std::make_shared<Y>(object));
-}
-
-template <typename T>
-void Database::fullUpVector(std::vector<std::shared_ptr<T>>& recipient, const T& object) {
-	recipient.push_back(std::make_shared<T>(object));
-}
-
 void Database::fullUpUsersVector(const Client& object)
 {
-	this->fullUpVector(this->users_, object);
+	this->users_.push_back(std::make_shared<Client>(object));
 }
 
 void Database::fullUpUsersVector(const Employee& object)
 {
-	this->fullUpVector(this->users_, object);
+	this->users_.push_back(std::make_shared<Employee>(object));
 }
 
-void Database::fullUpCarsVector(const Car& object)
+template <typename T>
+void Database::fullUpCarsVector(const T& object)
 {
-	this->fullUpVector(this->cars_, object);
+	this->cars_.push_back(std::make_shared<T>(object));
 }
 
 std::vector<std::shared_ptr<User>> Database::getUsersList() const

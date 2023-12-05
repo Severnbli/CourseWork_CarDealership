@@ -13,6 +13,16 @@ Client::Client(const std::vector<std::string>& data) {
 	this->setInfoInVectorStringForm(data);
 }
 
+Client::Client(const std::string& username, const std::string& password, const std::string fio, const std::string mobileNumber, bool isDriverLicense)
+{
+	this->setUsername(username);
+	this->setPassword(password);
+	this->setFio(fio);
+	this->mobileNumber_ = mobileNumber;
+	this->isDriverLicense_ = isDriverLicense;
+}
+
+
 Client::Client(const Client& other)
 {
 	this->mobileNumber_ = other.mobileNumber_;

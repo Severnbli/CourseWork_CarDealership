@@ -30,7 +30,7 @@ Car::Car(const Car& other)
 
 void Car::setInfoInVectorStringForm(const std::vector<std::string>& donor) {
 	if (donor.size() != dimensionality_) {
-		utils::customTerminate("созданием объекта типа Client");
+		utils::customTerminate("созданием объекта типа Car");
 	}
 	this->brand_ = donor[0];
 	this->model_ = donor[1];
