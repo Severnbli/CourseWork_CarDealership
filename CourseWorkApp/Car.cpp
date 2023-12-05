@@ -93,4 +93,7 @@ double Car::getPrice() const
 	return this->price_;
 }
 
-
+int Car::getDimensionality()
+{
+	return dimensionality_;
+}

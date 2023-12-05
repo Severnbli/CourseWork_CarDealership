@@ -70,3 +70,7 @@ bool Employee::isAdmin() const
 	return true;
 }
 
+int Employee::getDimensionality()
+{
+	return dimensionality_;
+}

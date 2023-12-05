@@ -65,3 +65,8 @@ bool Client::isAdmin() const
 	return false;
 }
 
+int Client::getDimensionality()
+{
+	return dimensionality_;
+}
+

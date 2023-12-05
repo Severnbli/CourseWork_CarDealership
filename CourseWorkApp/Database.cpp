@@ -31,8 +31,36 @@ Database::Database(const Database& other)
 
 Database::~Database()
 {
-	this->unloadInfoToFile(this->users_, CLIENTS_FILE);
-	this->unloadInfoToFile(this->users_, EMPLOYEES_FILE);
+	std::vector<std::shared_ptr<Employee>> employees;
+
+	auto beginEmployees = this->users_.begin();
+
+	while (beginEmployees != this->users_.end())
+	{
+		if ((*beginEmployees)->isAdmin())
+		{
+			employees.emplace_back(std::dynamic_pointer_cast<Employee>(*beginEmployees));
+			this->users_.erase(beginEmployees);
+		}
+		else
+		{
+			beginEmployees++;
+		}
+	}
+
+	std::vector<std::shared_ptr<Client>> clients;
+
+	auto beginClients = this->users_.begin();
+
+	while (beginClients != this->users_.end())
+	{
+		clients.emplace_back(std::dynamic_pointer_cast<Client>(*beginClients));
+		this->users_.erase(beginClients);
+		beginClients++;
+	}
+
+	this->unloadInfoToFile(clients, CLIENTS_FILE);
+	this->unloadInfoToFile(employees, EMPLOYEES_FILE);
 	this->unloadInfoToFile(this->cars_, CARS_FILE);
 }
 
@@ -45,8 +73,7 @@ std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName)
 		file.close();
 		const std::string usernameOfSuperAdmin = "admin";
 		const std::string passwordOfSuperAdmin = "admin";
-		Employee employee (usernameOfSuperAdmin, passwordOfSuperAdmin);
-		this->fullUpUsersVector(employee);
+		this->fullUpUsersVector(Employee(usernameOfSuperAdmin, passwordOfSuperAdmin));
 	}
 	std::vector<std::string> linesInFile;
 	std::string buffer;
@@ -63,7 +90,23 @@ void Database::loadVector(std::vector<std::shared_ptr<T>>& recipient, const std:
 	if (donor.empty()) {
 		return;
 	}
-	auto parsedVectors = utils::parseVector(donor, T::dimensionality_); // разбиваем вектор с данными на кусочки
+	size_t dimensionality = 0;
+	if (fileName == CLIENTS_FILE)
+	{
+		Client client;
+		dimensionality = client.getDimensionality();
+	}
+	else if (fileName == EMPLOYEES_FILE)
+	{
+		Employee employee;
+		dimensionality = employee.getDimensionality();
+	}
+	else if (fileName == CARS_FILE)
+	{
+		Car car;
+		dimensionality = car.getDimensionality();
+	}
+	auto parsedVectors = utils::parseVectorBySize(donor, dimensionality); // разбиваем вектор с данными на кусочки
 	for (const auto& parsedVector : parsedVectors) {
 		recipient.push_back(std::make_shared<T>(parsedVector));
 	}
@@ -91,7 +134,16 @@ void Database::fullUpVector(const std::vector<std::shared_ptr<T>>& recipient, co
 }
 
 template <typename T>
-void Database::fullUpUsersVector(const T& object)
+void Database::fullUpVector(std::vector<std::shared_ptr<T>>& recipient, const T& object) {
+	recipient.push_back(std::make_shared<T>(object));
+}
+
+void Database::fullUpUsersVector(const Client& object)
+{
+	this->fullUpVector(this->users_, object);
+}
+
+void Database::fullUpUsersVector(const Employee& object)
 {
 	this->fullUpVector(this->users_, object);
 }
@@ -101,60 +153,10 @@ void Database::fullUpCarsVector(const Car& object)
 	this->fullUpVector(this->cars_, object);
 }
 
-
-
 std::vector<std::shared_ptr<User>> Database::getUsersList() const
 {
 	return this->users_;
 }
-
-//void Database::makeNewUser(const std::string& username, const std::string& password, const std::string& fio)
-//{
-//	std::string mobileNumber = "";
-//	bool isDriverLicense = false;
-//	this->users_.push_back(std::make_shared<Client>(mobileNumber, isDriverLicense));
-//	this->fullUpLastUserInfo(username, password, fio);
-//	std::ofstream file(CLIENTS_FILE, std::ios::app);
-//	if (file.is_open())
-//	{
-//		file << username << '\n' << password << '\n' << fio << '\n' << mobileNumber << '\n' << isDriverLicense << '\n';
-//		file.close();
-//		return;
-//	}
-//	throw std::runtime_error(std::string(CLIENTS_FILE));
-//}
-
-
-
-//void Database::loadInfoFromCarsFile()
-//{
-//	std::ifstream file(CARS_FILE, std::ios::in);
-//	if (file.is_open())
-//	{
-//		if (file.peek() != EOF)
-//		{
-//			std::string brand;
-//			while (std::getline(file, brand))
-//			{
-//				std::string model;
-//				std::getline(file, model);
-//				std::string bufferForYearOfManufacture;
-//				std::getline(file, bufferForYearOfManufacture);
-//				int yearOfManufacture = std::stoi(bufferForYearOfManufacture);
-//				std::string bufferForAmount;
-//				std::getline(file, bufferForAmount);
-//				int amount = std::stoi(bufferForAmount);
-//				std::string bufferForPrice;
-//				std::getline(file, bufferForPrice);
-//				double price = std::stod(bufferForPrice);
-//				this->cars_.push_back(std::make_shared<Car>(brand, model, yearOfManufacture, amount, price));
-//			}
-//		}
-//		file.close();
-//		return;
-//	}
-//	throw std::runtime_error(std::string(CARS_FILE));
-//}
 
 void Database::cleanAllVectors()
 {

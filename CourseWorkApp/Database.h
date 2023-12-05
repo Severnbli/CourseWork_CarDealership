@@ -31,16 +31,16 @@ public:
 	void fullUpVector(const std::vector<std::shared_ptr<T>>&, const Y&);
 
 	template <typename T>
-	void fullUpUsersVector(const T&);
+	void fullUpVector(std::vector<std::shared_ptr<T>>&, const T&);
+
+	void fullUpUsersVector(const Client&);
+
+	void fullUpUsersVector(const Employee&);
 
 	void fullUpCarsVector(const Car&);
 
 	std::vector<std::shared_ptr<User>> getUsersList() const;
 
-	//void makeFirstAdminAccount();
-
-	//void makeNewUser(const std::string&, const std::string&, const std::string&);
-	
 	void cleanAllVectors();
 	
 	bool isValidUsername(const std::string&) const;

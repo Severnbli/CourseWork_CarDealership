@@ -32,6 +32,8 @@ public:
 
 	bool isAdmin() const override;
 
+	int getDimensionality() override;
+
 private:
 	static int dimensionality_;
 

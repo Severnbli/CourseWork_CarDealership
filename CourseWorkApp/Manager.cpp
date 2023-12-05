@@ -38,7 +38,7 @@ void Manager::beginRegistration()
 	std::cout << "Введите ФИО: ";
 	std::string fio;
 	std::cin >> fio;
-	database_.makeNewUser(username, password, fio);
+	database_.fullUpUsersVector(Client(username, password, fio));
 	std::cout << "\nРегистрация успешна!\n\n";
 	system("pause");
 }
