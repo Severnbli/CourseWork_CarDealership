@@ -24,9 +24,10 @@ Employee::Employee(const std::vector<std::string>& data)
 	this->setInfoInVectorStringForm(data);
 }
 
-Employee::Employee(const Employee& other)
+Employee::Employee(const Employee& other) : User(other)
 {
 	this->position_ = other.position_;
+	this->award_ = other.award_;
 }
 
 void Employee::setInfoInVectorStringForm(const std::vector<std::string>& donor) {

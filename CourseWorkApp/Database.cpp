@@ -88,8 +88,6 @@ std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName)
 	return linesInFile;
 }
 
-#include <iostream>
-
 void Database::loadUsersVector(const std::string& fileName)
 {
 	std::vector<std::string> donor;

@@ -23,7 +23,7 @@ Client::Client(const std::string& username, const std::string& password, const s
 }
 
 
-Client::Client(const Client& other)
+Client::Client(const Client& other) : User(other)
 {
 	this->mobileNumber_ = other.mobileNumber_;
 	this->isDriverLicense_ = other.isDriverLicense_;

@@ -57,7 +57,7 @@ namespace utils {
         abort();
     }
 
-    void rebuildFile(const std::string& nameOfFile) //пересоздание/создание файла
+    void rebuildFile(const std::string& nameOfFile) // пересоздание / создание файла
     {
         std::ofstream file(nameOfFile, std::ios::out);
         if (!file.is_open())
