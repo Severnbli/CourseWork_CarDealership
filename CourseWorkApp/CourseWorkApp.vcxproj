@@ -134,6 +134,7 @@
     <ClCompile Include="Database.cpp" />
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="Employee.cpp" />
+    <ClCompile Include="hash.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="menus.cpp" />
     <ClCompile Include="utils.cpp" />

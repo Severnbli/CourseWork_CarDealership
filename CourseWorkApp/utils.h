@@ -15,4 +15,6 @@ namespace utils {
 	void customTerminate(const char*);
 
 	void rebuildFile(const std::string& nameOfFile);
+
+	std::string MD5(std::string data);
 }
