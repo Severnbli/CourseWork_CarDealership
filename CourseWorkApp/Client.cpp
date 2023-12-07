@@ -1,7 +1,15 @@
 ﻿#include "Client.h"
 #include "utils.h"
+#include <iostream>
 
 int Client::dimensionality_ = 5;
+
+Client::Client() : User()
+{
+	this->functionalSetMobileNumber();
+	this->functionalSetStatusOfDriverLicense();
+}
+
 
 Client::Client(const std::string& mobileNumber, bool isDriverLicense)
 {
@@ -54,6 +62,31 @@ void Client::setMobileNumber(const std::string& mobileNumber)
 	this->mobileNumber_ = mobileNumber;
 }
 
+void Client::functionalSetMobileNumber()
+{
+	std::cout << "Номер телефона (+375...): ";
+	while (true)
+	{
+		try
+		{
+			this->mobileNumber_ = utils::checkStringInRange(9, 9, false);
+			for (const auto& element : this->mobileNumber_)
+			{
+				if (!std::isdigit(element))
+				{
+					throw std::runtime_error("Недопустимые символы!");
+				}
+			}
+			return;
+		}
+		catch (const std::runtime_error &error)
+		{
+			std::cout << error.what() << " Попробуйте снова: ";
+		}
+	}
+}
+
+
 std::string Client::getMobileNumber() const
 {
 	return this->mobileNumber_;
@@ -64,11 +97,16 @@ void Client::setStatusOfDriverLicense(bool isDriverLicense)
 	this->isDriverLicense_ = isDriverLicense;
 }
 
+void Client::functionalSetStatusOfDriverLicense()
+{
+	std::cout << "Лицензия на авто (1 - имеется, 0 - отсутствует): ";
+	this->isDriverLicense_ = static_cast<bool>(utils::checkIntInRange(0, 1));
+}
+
 bool Client::getStatusOfDriverLicense() const
 {
 	return this->isDriverLicense_;
 }
-
 
 bool Client::isAdmin() const
 {

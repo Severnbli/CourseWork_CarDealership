@@ -7,7 +7,7 @@
 class Client: public User
 {
 public:
-	Client() = default;
+	Client();
 
 	Client(const std::string&, bool);
 
@@ -23,9 +23,13 @@ public:
 
 	void setMobileNumber(const std::string&);
 
+	void functionalSetMobileNumber();
+
 	std::string getMobileNumber() const;
 
 	void setStatusOfDriverLicense(bool);
+
+	void functionalSetStatusOfDriverLicense();
 
 	bool getStatusOfDriverLicense() const;
 

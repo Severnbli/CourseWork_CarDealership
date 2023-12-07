@@ -2,6 +2,12 @@
 #include "utils.h"
 #include <iostream>
 
+User::User()
+{
+	this->functionalSetUsername();
+	this->functionalSetPassword();
+}
+
 User::User(const std::string& username, const std::string& password, const std::string& fio)
 {
 	this->username_ = username;
