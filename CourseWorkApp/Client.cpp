@@ -4,7 +4,7 @@
 
 int Client::dimensionality_ = 5;
 
-Client::Client()
+Client::Client(int)
 {
 	this->functionalSetUsername();
 	this->functionalSetPassword();

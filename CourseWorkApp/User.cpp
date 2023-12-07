@@ -2,7 +2,7 @@
 #include "utils.h"
 #include <iostream>
 
-User::User()
+User::User(int)
 {
 	this->functionalSetUsername();
 	this->functionalSetPassword();

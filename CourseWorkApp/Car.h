@@ -5,7 +5,9 @@
 class Car
 {
 public:
-	Car();
+	Car() = default;
+
+	Car(int);
 
 	Car(const std::string&, const std::string&, int, int, double);
 

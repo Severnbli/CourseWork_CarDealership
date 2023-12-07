@@ -37,4 +37,6 @@ namespace utils {
 	std::string checkString(bool = true);
 
 	std::string checkStringInRange(int, int, bool = true);
+
+	int patternForMenus(std::string, std::vector<std::string>, bool = true, bool = true);
 }

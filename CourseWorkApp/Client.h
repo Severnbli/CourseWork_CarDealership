@@ -7,7 +7,9 @@
 class Client: public User
 {
 public:
-	Client();
+	Client() = default;
+
+	Client(int);
 
 	Client(const std::string&, bool);
 

@@ -4,7 +4,7 @@
 
 int Car::dimensionality_ = 5;
 
-Car::Car()
+Car::Car(int)
 {
 	this->functionalSetBrand();
 	this->functionalSetModel();

@@ -5,7 +5,9 @@
 class User
 {
 public:
-	User();
+	User() = default;
+
+	User(int);
 
 	User(const std::string&, const std::string&, const std::string& = "");
 

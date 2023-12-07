@@ -6,7 +6,9 @@
 class Employee: public User
 {
 public:
-	Employee();
+	Employee() = default;
+
+	Employee(int);
 
 	Employee(const std::string&, double);
 

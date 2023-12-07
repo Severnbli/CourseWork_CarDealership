@@ -1,34 +1,37 @@
 ﻿#include "menus.h"
+#include "utils.h"
 #include <string>
 #include <iostream>
 #include <vector>
 #include <memory>
-#include "checks.h"
 
 int adminMenu(Manager&, std::shared_ptr<User>&);
 
 int userMenu(Manager&, std::shared_ptr<User>&);
 
-int patternForMenus(std::string name, std::vector<std::string> fields, bool isClearBefore,
-    bool isClearAfter)
+namespace utils
 {
-    if (isClearBefore)
+    int patternForMenus(std::string name, std::vector<std::string> fields, bool isClearBefore,
+        bool isClearAfter)
     {
-        system("cls");
+        if (isClearBefore)
+        {
+            system("cls");
+        }
+        std::cout << name << "\n\n";
+        int counter = 1;
+        for (std::string& field : fields)
+        {
+            std::cout << counter++ << " - " << field << ".\n";
+        }
+        std::cout << "0 - Выход.\n\nВыберите: ";
+        int choice = checkIntInRange(0, fields.size());
+        if (isClearAfter)
+        {
+            system("cls");
+        }
+        return choice;
     }
-    std::cout << name << "\n\n";
-    int counter = 1;
-    for (std::string& field : fields)
-    {
-        std::cout << counter++ << " - " << field << ".\n";
-    }
-    std::cout << "0 - Выход.\n\nВыберите: ";
-    int choice = checkIntInRange(0, fields.size());
-    if (isClearAfter)
-    {
-        system("cls");
-    }
-    return choice;
 }
 
 int mainMenu(Manager& manager)
@@ -37,7 +40,7 @@ int mainMenu(Manager& manager)
     {
         try
         {
-            switch (patternForMenus("Автоматизированная система автосалона",
+            switch (utils::patternForMenus("Автоматизированная система автосалона",
                 { "Регистрация", "Вход в систему"}))
             {
             case 1:
@@ -89,7 +92,7 @@ int adminMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
 	{
         try
         {
-            switch (patternForMenus("АСА - Меню администратора " + authorizedUser->getUsername(), { "Работа с профилями", "Каталог",
+            switch (utils::patternForMenus("АСА - Меню администратора " + authorizedUser->getUsername(), { "Работа с профилями", "Каталог",
                 "Добавление авто","Просмотр продаж", "Генерация отчётов" }))
             {
             case 1:
@@ -138,8 +141,8 @@ int userMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
 {
 	while (true)
 	{
-		switch (patternForMenus("АСА - Меню пользователя " + authorizedUser->getUsername(), {"Настройка профиля", "Каталог", 
-            "Избранное", "История покупок"}))
+		switch (utils::patternForMenus("АСА - Меню пользователя " + authorizedUser->getUsername(), {"Настройка профиля", "Каталог", 
+			                               "Избранное", "История покупок"}))
 		{
         case 1:
         {

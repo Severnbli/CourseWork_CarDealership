@@ -1,7 +1,6 @@
 ﻿#include "Manager.h"
 #include "User.h"
-#include "checks.h"
-#include "menus.h"
+#include "utils.h"
 #include <iostream>
 #include <string>
 #include <memory>
@@ -67,7 +66,7 @@ void Manager::beginAuthorization(bool& isAuthorize, std::shared_ptr<User>& autho
 		}
 		std::cout << "\nНе удалось найти аккаунт по введёным данным.\n\nЖелаете попробовать снова?\n"
 			"1 - Да.\n0 - Нет.\n\nВыберите: ";
-		if (!checkIntInRange(0, 1))
+		if (!utils::checkIntInRange(0, 1))
 		{
 			isAuthorize = false;
 			system("cls");
@@ -81,8 +80,8 @@ int Manager::workingWithProfiles(std::shared_ptr<User>& authorizedUser)
 {
 	while (true)
 	{
-		switch (patternForMenus("АСА - Меню работы с профилями", { "Настроить свой профиль",
-			"Настроить другие существующие профили" }))
+		switch (utils::patternForMenus("АСА - Меню работы с профилями", { "Настроить свой профиль",
+			                               "Настроить другие существующие профили" }))
 		{
 		case 1:
 		{
@@ -116,7 +115,7 @@ int Manager::customizeAuthorizedUserProfile(std::shared_ptr<User>& authorizedUse
 		std::cout << "АСА - Меню настройки своего профиля\n\n";
 		this->database_.showUsersInfo(authorizedUser);
 		std::cout << "\n\n";
-		switch (patternForMenus("Желаете ли изменить какой-нибудь параметр?", {"Логин", "Пароль", "ФИО"}, false, false))
+		switch (utils::patternForMenus("Желаете ли изменить какой-нибудь параметр?", {"Логин", "Пароль", "ФИО"}, false, false))
 		{
 		case 1:
 			{

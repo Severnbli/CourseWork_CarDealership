@@ -4,7 +4,7 @@
 
 int Employee::dimensionality_ = 5;
 
-Employee::Employee()
+Employee::Employee(int)
 {
 	this->functionalSetUsername();
 	this->functionalSetPassword();
