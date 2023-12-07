@@ -8,6 +8,7 @@ Client::Client()
 {
 	this->functionalSetUsername();
 	this->functionalSetPassword();
+	this->functionalSetFio();
 	this->functionalSetMobileNumber();
 	this->functionalSetStatusOfDriverLicense();
 }

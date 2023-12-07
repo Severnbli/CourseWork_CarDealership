@@ -8,6 +8,7 @@ Employee::Employee()
 {
 	this->functionalSetUsername();
 	this->functionalSetPassword();
+	this->functionalSetFio();
 	this->functionalSetPosition();
 	this->functionalSetAward();
 }

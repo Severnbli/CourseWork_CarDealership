@@ -32,6 +32,8 @@ namespace utils {
 
 	double checkDoubleInRange(double, double);
 
+	double checkDoublePositive();
+
 	std::string checkString(bool = true);
 
 	std::string checkStringInRange(int, int, bool = true);

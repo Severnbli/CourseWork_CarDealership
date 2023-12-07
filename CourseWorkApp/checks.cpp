@@ -198,6 +198,27 @@ namespace utils
 		}
 	}
 
+	double checkDoublePositive()
+	{
+		while (true)
+		{
+			try
+			{
+				double enteredNumber = checkDouble();
+				if (enteredNumber < 0)
+				{
+					throw std::runtime_error(UNCORRECTED_INPUT);
+				}
+				return enteredNumber;
+			}
+			catch (const std::runtime_error& error)
+			{
+				std::cout << error.what();
+			}
+			std::cout << TRY_AGAIN;
+		}
+	}
+
 	std::string checkString(bool isSpaces) {
 		while (true) {
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
