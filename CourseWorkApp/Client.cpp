@@ -4,8 +4,10 @@
 
 int Client::dimensionality_ = 5;
 
-Client::Client() : User()
+Client::Client()
 {
+	this->functionalSetUsername();
+	this->functionalSetPassword();
 	this->functionalSetMobileNumber();
 	this->functionalSetStatusOfDriverLicense();
 }

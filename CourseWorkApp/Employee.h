@@ -6,7 +6,7 @@
 class Employee: public User
 {
 public:
-	Employee() = default;
+	Employee();
 
 	Employee(const std::string&, double);
 
@@ -22,9 +22,13 @@ public:
 
 	void setPosition(const std::string&);
 
+	void functionalSetPosition();
+
 	std::string getPosition() const;
 
 	void setAward(double);
+
+	void functionalSetAward();
 
 	double getAward() const;
 

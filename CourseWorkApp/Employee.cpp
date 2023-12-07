@@ -1,7 +1,16 @@
 ﻿#include "Employee.h"
 #include "utils.h"
+#include <iostream>
 
 int Employee::dimensionality_ = 5;
+
+Employee::Employee()
+{
+	this->functionalSetUsername();
+	this->functionalSetPassword();
+	this->functionalSetPosition();
+	this->functionalSetAward();
+}
 
 Employee::Employee(const std::string& position, double award)
 {
@@ -50,6 +59,13 @@ void Employee::setPosition(const std::string& position)
 	this->position_ = position;
 }
 
+void Employee::functionalSetPosition()
+{
+	std::cout << "Должность (до 12 символов): ";
+	this->position_ = utils::checkStringInRange(0, 12);
+}
+
+
 std::string Employee::getPosition() const
 {
 	return this->position_;
@@ -59,6 +75,13 @@ void Employee::setAward(double award)
 {
 	this->award_ = award;
 }
+
+void Employee::functionalSetAward()
+{
+	std::cout << "Премия: ";
+	this->award_ = utils::checkDouble();
+}
+
 
 double Employee::getAward() const
 {

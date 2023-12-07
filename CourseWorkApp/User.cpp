@@ -29,7 +29,7 @@ void User::setUsername(const std::string& username)
 
 void User::functionalSetUsername()
 {
-	std::cout << "Имя пользователя (3 - 12): ";
+	std::cout << "Имя пользователя (3 - 12 символа (ов)): ";
 	while (true)
 	{
 		try {
@@ -63,7 +63,7 @@ void User::setPassword(const std::string& password)
 
 void User::functionalSetPassword()
 {
-	std::cout << "Пароль (8 - 16): ";
+	std::cout << "Пароль (8 - 16 символов): ";
 	this->password_ = utils::MD5(utils::checkStringInRange(8, 16, false));
 }
 
@@ -80,7 +80,7 @@ void User::setFio(const std::string& fio)
 
 void User::functionalSetFio()
 {
-	std::cout << "ФИО (до 30): ";
+	std::cout << "ФИО (до 30 символов): ";
 	while (true)
 	{
 		try {
