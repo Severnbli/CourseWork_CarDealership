@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace utils {
 	
@@ -37,4 +38,6 @@ namespace utils {
 	std::string checkStringInRange(int, int, bool = true);
 
 	int patternForMenus(std::string, std::vector<std::string>, bool = true, bool = true);
+
+	void patternForTableHeader(std::unordered_map<std::string, int>);
 }

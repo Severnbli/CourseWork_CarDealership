@@ -194,23 +194,20 @@ int Database::showUsersInfo(const std::shared_ptr<User>& userReferense) const //
 	{
 		throw std::runtime_error("Нет ни одного зарегистрированного пользователя!");
 	}
+	utils::patternForTableHeader({ {"ИМЯ ПОЛЬЗ.", 12}, {"ФИО", 30}, {"АДМ", 3} });
 	int counter = 1;
-	std::cout << "+----+------------+--------------------+-----+\n";
-	std::cout << '|' << std::setw(4) << '#' << '|' << std::setw(12) << "ИМЯ_ПОЛЬЗ." << '|' << std::setw(20) << "ФИО" << '|'
-		<< std::setw(5) << "АДМИН" << "|\n";
-	std::cout << "+----+------------+--------------------+-----+\n";
 	if (userReferense)
 	{
-		std::cout << '|' << std::setw(4) << counter++ << '|' << std::setw(12) << userReferense->getUsername() << "|"
-			<< std::setw(20) << userReferense->getFio() << '|' << std::setw(5) << userReferense->isAdmin() << "|\n";
-		std::cout << "+----+------------+--------------------+-----+\n";
-		return 1;
+		std::cout << '|' << std::setw(4) << counter++;
+		userReferense->printInfoTableForm();
 	}
-	for (const auto& user : this->users_)
+	else
 	{
-		std::cout << '|' << std::setw(4) << counter++ << '|' << std::setw(12) << user->getUsername() << "|"
-			<< std::setw(20) << user->getFio() << '|' << std::setw(5) << user->isAdmin() << "|\n";
-		std::cout << "+----+------------+--------------------+-----+\n";
+		for (const auto& user : this->users_)
+		{
+			std::cout << '|' << std::setw(4) << counter++;
+			user->printInfoTableForm();
+		}
 	}
 	return counter - 1;
 }
@@ -221,25 +218,20 @@ int Database::showCarsInfo(const std::shared_ptr<Car>& carReferense) const
 	{
 		throw std::runtime_error("В каталоге не находится ни одного автомобиля!");
 	}
+	utils::patternForTableHeader({ {"БРЕНД", 10}, {"МОДЕЛЬ", 7}, {"ГОД_ВЫПУСКА", 11}, {"КОЛ_ВО", 6}, {"ЦЕНА", 12} });
 	int counter = 1;
-	std::cout << "+----+---------------+----------+-----------+------+------------+\n";
-	std::cout << '|' << std::setw(4) << '#' << '|' << std::setw(15) << "БРЕНД" << '|' << std::setw(10) << "МОДЕЛЬ" << '|'
-		<< std::setw(11) << "ГОД_ВЫПУСКА" << '|' << std::setw(6) << "КОЛ-ВО" << '|' << std::setw(12) << "ЦЕНА" << "|\n";
-	std::cout << "+----+---------------+----------+-----------+------+------------+\n";
 	if (carReferense)
 	{
-		std::cout << '|' << std::setw(4) << counter++ << '|' << std::setw(15) << carReferense->getBrand() << '|'
-			<< std::setw(10) << carReferense->getModel() << '|' << std::setw(11) << carReferense->getYearOfManufacture()
-			<< '|' << std::setw(6) << carReferense->getAmount() << '|' << std::setw(12) << carReferense->getPrice() << "|\n";
-		std::cout << "+----+---------------+----------+-----------+------+------------+\n";
-		return 1;
+		std::cout << '|' << std::setw(4) << counter++;
+		carReferense->printInfoTableForm();
 	}
-	for (const auto& car : this->cars_)
+	else
 	{
-		std::cout << '|' << std::setw(4) << counter++ << '|' << std::setw(15) << car->getBrand() << '|'
-			<< std::setw(10) << car->getModel() << '|' << std::setw(11) << car->getYearOfManufacture()
-			<< '|' << std::setw(6) << car->getAmount() << '|' << std::setw(12) << car->getPrice() << "|\n";
-		std::cout << "+----+---------------+----------+-----------+------+------------+\n";
+		for (const auto& car : this->cars_)
+		{
+			std::cout << '|' << std::setw(4) << counter++;
+			car->printInfoTableForm();
+		}
 	}
 	return counter - 1;
 }

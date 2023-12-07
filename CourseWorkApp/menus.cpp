@@ -9,31 +9,6 @@ int adminMenu(Manager&, std::shared_ptr<User>&);
 
 int userMenu(Manager&, std::shared_ptr<User>&);
 
-namespace utils
-{
-    int patternForMenus(std::string name, std::vector<std::string> fields, bool isClearBefore,
-        bool isClearAfter)
-    {
-        if (isClearBefore)
-        {
-            system("cls");
-        }
-        std::cout << name << "\n\n";
-        int counter = 1;
-        for (std::string& field : fields)
-        {
-            std::cout << counter++ << " - " << field << ".\n";
-        }
-        std::cout << "0 - Выход.\n\nВыберите: ";
-        int choice = checkIntInRange(0, fields.size());
-        if (isClearAfter)
-        {
-            system("cls");
-        }
-        return choice;
-    }
-}
-
 int mainMenu(Manager& manager)
 {
     while (true)

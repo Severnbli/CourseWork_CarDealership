@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <limits>
+#include <iomanip>
 
 #define UNCORRECTED_INPUT "Ввод неверный!"
 #define TRY_AGAIN " Попробуйте снова: "
@@ -320,4 +321,46 @@ namespace utils {
 			}
 		}
 	}
+
+	int patternForMenus(std::string name, std::vector<std::string> fields, bool isClearBefore,
+		bool isClearAfter)
+	{
+		if (isClearBefore)
+		{
+			system("cls");
+		}
+		std::cout << name << "\n\n";
+		int counter = 1;
+		for (std::string& field : fields)
+		{
+			std::cout << counter++ << " - " << field << ".\n";
+		}
+		std::cout << "0 - Выход.\n\nВыберите: ";
+		int choice = checkIntInRange(0, fields.size());
+		if (isClearAfter)
+		{
+			system("cls");
+		}
+		return choice;
+	}
+
+	void patternForTableHeader(std::unordered_map<std::string, int> header)
+    {
+		std::cout << '+' << std::string(4, '-');
+		for (const auto& pair : header)
+		{
+			std::cout << '+' << std::string(pair.second, '-');
+		}
+		std::cout << "+\n|" << std::setw(4) << "№";
+		for (const auto& pair : header)
+		{
+			std::cout << '|' << std::setw(pair.second) << pair.first;
+		}
+		std::cout << "|\n+" << std::string(4, '-');
+		for (const auto& pair : header)
+		{
+			std::cout << '+' << std::string(pair.second, '-');
+		}
+		std::cout << "+\n";
+    }
 }

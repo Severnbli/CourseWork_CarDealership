@@ -51,6 +51,8 @@ public:
 
 	static int getDimensionality();
 
+	void printInfoTableForm();
+
 private:
 	static int dimensionality_;
 

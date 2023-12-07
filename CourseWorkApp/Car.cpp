@@ -1,6 +1,7 @@
 ﻿#include "Car.h"
 #include "utils.h"
 #include <iostream>
+#include <iomanip>
 
 int Car::dimensionality_ = 5;
 
@@ -59,8 +60,8 @@ void Car::setBrand(const std::string& brand)
 
 void Car::functionalSetBrand()
 {
-	std::cout << "Бренд (до 15 символов): ";
-	this->brand_ = utils::checkStringInRange(0, 15);
+	std::cout << "Бренд (до 10 символов): ";
+	this->brand_ = utils::checkStringInRange(0, 10);
 }
 
 
@@ -139,3 +140,13 @@ int Car::getDimensionality()
 {
 	return dimensionality_;
 }
+
+void Car::printInfoTableForm()
+{
+	std::cout << '|' << std::setw(10) << this->brand_ << '|' << std::setw(7) << this->model_ << '|';
+	std::cout << std::setw(11) << this->yearOfManufacture_ << '|' << std::setw(6) << this->amount_ << '|';
+	std::cout << std::setw(12) << std::fixed << std::setprecision(2) << this->price_ << '|' << std::endl;
+	std::cout << '+' << std::string(4, '-') << '+' << std::string(10, '-') << '+';
+	std::cout << std::string(7, '-') << '+' << std::string(11, '-') << '+';
+	std::cout << std::string(6, '-') << '+' << std::string(12, '-') << std::endl;
+ }

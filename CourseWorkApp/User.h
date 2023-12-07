@@ -33,6 +33,8 @@ public:
 
 	std::string getFio() const;
 
+	virtual void printInfoTableForm();
+
 	virtual bool isAdmin() const = 0;
 
 	virtual int getDimensionality() = 0;
