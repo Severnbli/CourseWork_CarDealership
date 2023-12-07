@@ -17,4 +17,22 @@ namespace utils {
 	void rebuildFile(const std::string& nameOfFile);
 
 	std::string MD5(std::string data);
+
+	int checkInt();
+
+	int checkIntInRange(int, int);
+
+	int checkIntPositive();
+
+	int checkIntNegative();
+
+	int checkIntLength(int);
+
+	double checkDouble();
+
+	double checkDoubleInRange(double, double);
+
+	std::string checkString(bool = true);
+
+	std::string checkStringInRange(int, int, bool = true);
 }

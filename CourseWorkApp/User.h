@@ -7,15 +7,19 @@ class User
 public:
 	User() = default;
 
-	User(const std::string&, const std::string&, const std::string&);
+	User(const std::string&, const std::string&, const std::string& = "");
 
 	User(const User&);
 
 	void setUsername(const std::string&);
 
+	void functionalSetUsername();
+
 	std::string getUsername() const;
 
 	void setPassword(const std::string&);
+
+	void functionalSetPassword();
 
 	std::string getPassword() const;
 
