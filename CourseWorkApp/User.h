@@ -25,6 +25,8 @@ public:
 
 	void setFio(const std::string&);
 
+	void functionalSetFio();
+
 	std::string getFio() const;
 
 	virtual bool isAdmin() const = 0;
@@ -36,9 +38,9 @@ public:
 	virtual std::vector<std::string> getInfoInVectorStringForm() = 0;
 
 private:
-	std::string username_ = "";
+	std::string username_;
 
-	std::string password_ = "";
+	std::string password_;
 
-	std::string fio_ = "";
+	std::string fio_;
 };

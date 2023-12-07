@@ -72,6 +72,30 @@ void User::setFio(const std::string& fio)
 	this->fio_ = fio;
 }
 
+void User::functionalSetFio()
+{
+	std::cout << "ФИО (до 30): ";
+	while (true)
+	{
+		try {
+			this->fio_ = utils::checkStringInRange(0, 30, true);
+			for (const auto& element : this->fio_)
+			{
+				if (!std::isalpha(element))
+				{
+					throw std::runtime_error("Недопустимые символы!");
+				}
+			}
+			return;
+		}
+		catch (const std::runtime_error& error)
+		{
+			std::cout << error.what() << " Попробуйте снова: ";
+		}
+	}
+}
+
+
 std::string User::getFio() const
 {
 	return this->fio_;
