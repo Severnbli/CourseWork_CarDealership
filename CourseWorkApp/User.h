@@ -11,8 +11,6 @@ public:
 
 	User(const User&);
 
-	~User() = default;
-
 	void setUsername(const std::string&);
 
 	std::string getUsername() const;

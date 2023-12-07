@@ -17,8 +17,6 @@ public:
 
 	Client(const Client&);
 
-	~Client() = default;
-
 	void setInfoInVectorStringForm(const std::vector<std::string>&) override;
 
 	std::vector<std::string> getInfoInVectorStringForm() override;
