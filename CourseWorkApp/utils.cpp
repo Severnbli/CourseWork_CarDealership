@@ -5,7 +5,7 @@
 namespace utils {
 
     /*template <typename T>
-    std::vector<std::vector<T>> parseVectorBySize(const std::vector<T>& input, size_t subvectorSize) {
+    std::vector<std::vector<T>> parseStringVectorBySize(const std::vector<T>& input, size_t subvectorSize) {
         std::vector<std::vector<T>> result;
         auto begin = input.begin();
         const auto end = input.end();
@@ -17,7 +17,7 @@ namespace utils {
         return result;
     }*/
 
-    std::vector<std::vector<std::string>> parseVectorBySize(const std::vector<std::string>& input, int subVectorSize)
+    std::vector<std::vector<std::string>> parseStringVectorBySize(const std::vector<std::string>& input, int subVectorSize)
     {
         std::vector<std::vector<std::string>> result;
         auto begin = input.begin();

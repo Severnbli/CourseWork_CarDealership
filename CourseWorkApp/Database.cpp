@@ -31,37 +31,23 @@ Database::Database(const Database& other)
 
 Database::~Database()
 {
-	/*std::vector<std::shared_ptr<Employee>> employees;
-
-	auto beginEmployees = this->users_.begin();
-
-	while (beginEmployees != this->users_.end())
+	std::vector<std::shared_ptr<User>> employees;
+	auto begin = this->users_.begin();
+	while (begin != this->users_.end())
 	{
-		if ((*beginEmployees)->isAdmin())
+		if ((*begin)->isAdmin())
 		{
-			employees.emplace_back(std::dynamic_pointer_cast<Employee>(*beginEmployees));
-			this->users_.erase(beginEmployees);
+			employees.push_back(*begin);
+			begin = this->users_.erase(begin);
 		}
 		else
 		{
-			beginEmployees++;
+			++begin;
 		}
 	}
-
-	std::vector<std::shared_ptr<Client>> clients;
-
-	auto beginClients = this->users_.begin();
-
-	while (beginClients != this->users_.end())
-	{
-		clients.emplace_back(std::dynamic_pointer_cast<Client>(*beginClients));
-		this->users_.erase(beginClients);
-		beginClients++;
-	}
-
-	this->unloadInfoToFile(clients, CLIENTS_FILE);
 	this->unloadInfoToFile(employees, EMPLOYEES_FILE);
-	this->unloadInfoToFile(this->cars_, CARS_FILE);*/
+	this->unloadInfoToFile(this->users_, CLIENTS_FILE);
+	this->unloadInfoToFile(this->cars_, CARS_FILE);
 }
 
 std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName) { // получение вектора строк (информация из файла)
@@ -105,7 +91,7 @@ void Database::loadUsersVector(const std::string& fileName)
 	if (fileName == CLIENTS_FILE)
 	{
 		Client client;
-		auto parsedVectors = utils::parseVectorBySize(donor, client.getDimensionality()); // разбиваем вектор с данными на кусочки
+		auto parsedVectors = utils::parseStringVectorBySize(donor, client.getDimensionality()); // разбиваем вектор с данными на кусочки
 		for (const auto& parsedVector : parsedVectors) {
 			this->users_.push_back(std::make_shared<Client>(parsedVector));
 		}
@@ -113,7 +99,7 @@ void Database::loadUsersVector(const std::string& fileName)
 	else if (fileName == EMPLOYEES_FILE)
 	{
 		Employee employee;
-		auto parsedVectors = utils::parseVectorBySize(donor, employee.getDimensionality());
+		auto parsedVectors = utils::parseStringVectorBySize(donor, employee.getDimensionality());
 		for (const auto& parsedVector : parsedVectors) {
 			this->users_.push_back(std::make_shared<Employee>(parsedVector));
 		}
@@ -136,7 +122,7 @@ void Database::loadCarsVector(const std::string& fileName)
 	}
 	if (fileName == CARS_FILE)
 	{
-		auto parsedVectors = utils::parseVectorBySize(donor, Car::getDimensionality()); // разбиваем вектор с данными на кусочки
+		auto parsedVectors = utils::parseStringVectorBySize(donor, Car::getDimensionality()); // разбиваем вектор с данными на кусочки
 		for (const auto& parsedVector : parsedVectors) {
 			this->cars_.push_back(std::make_shared<Car>(parsedVector));
 		}
@@ -148,10 +134,6 @@ void Database::unloadInfoToFile(const std::vector<std::shared_ptr<T>>& donor, co
 	std::ofstream file(fileName, std::ios::out);
 	if (!file.is_open()) {
 		utils::customTerminate("выгрузкой информации в файл");
-	}
-	if (donor.empty())
-	{
-		return;
 	}
 	for (const auto& element : donor) {
 		const auto& vectorOfData = element->getInfoInVectorStringForm();

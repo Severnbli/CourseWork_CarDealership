@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <string>
+#include <vector>
 
 class User
 {
@@ -27,6 +28,10 @@ public:
 	virtual bool isAdmin() const = 0;
 
 	virtual int getDimensionality() = 0;
+
+	virtual void setInfoInVectorStringForm(const std::vector<std::string>&) = 0;
+
+	virtual std::vector<std::string> getInfoInVectorStringForm() = 0;
 
 private:
 	std::string username_ = "";

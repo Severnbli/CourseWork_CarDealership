@@ -19,9 +19,9 @@ public:
 
 	~Client() = default;
 
-	void setInfoInVectorStringForm(const std::vector<std::string>&);
+	void setInfoInVectorStringForm(const std::vector<std::string>&) override;
 
-	std::vector<std::string> getInfoInVectorStringForm();
+	std::vector<std::string> getInfoInVectorStringForm() override;
 
 	void setMobileNumber(const std::string&);
 

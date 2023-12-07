@@ -18,9 +18,9 @@ public:
 
 	~Employee() = default;
 
-	void setInfoInVectorStringForm(const std::vector<std::string>&);
+	void setInfoInVectorStringForm(const std::vector<std::string>&) override;
 
-	std::vector<std::string> getInfoInVectorStringForm();
+	std::vector<std::string> getInfoInVectorStringForm() override;
 
 	void setPosition(const std::string&);
 
