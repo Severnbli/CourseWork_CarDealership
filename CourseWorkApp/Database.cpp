@@ -7,17 +7,39 @@
 
 Database::Database()
 {
-	while (true)
+	try
 	{
-		try {
-			this->loadUsersVector(CLIENTS_FILE);
-			this->loadUsersVector(EMPLOYEES_FILE);
-			this->loadCarsVector(CARS_FILE);
-			break;
-		}
-		catch (const std::runtime_error& error)
+		this->loadUsersVector(CLIENTS_FILE);
+	}
+	catch (const std::runtime_error& error)
+	{
+		if (!strcmp(error.what(),NO_INFO_IN_FILE))
 		{
-			this->cleanAllVectors();
+			utils::rebuildFile(error.what());
+		}
+	}
+	try
+	{
+		this->loadUsersVector(EMPLOYEES_FILE);
+	}
+	catch (const std::runtime_error& error)
+	{
+		if (!strcmp(error.what(), NO_INFO_IN_FILE))
+		{
+			utils::rebuildFile(error.what());
+		}
+		const std::string usernameOfSuperAdmin = "admin";
+		const std::string passwordOfSuperAdmin = "adminadmin";
+		this->fullUpUsersVector(Employee(usernameOfSuperAdmin, passwordOfSuperAdmin));
+	}
+	try
+	{
+		this->loadCarsVector(CARS_FILE);
+	}
+	catch (const std::runtime_error& error)
+	{
+		if (!strcmp(error.what(), NO_INFO_IN_FILE))
+		{
 			utils::rebuildFile(error.what());
 		}
 	}
@@ -56,13 +78,7 @@ std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName)
 		throw std::runtime_error(fileName);
 	}
 	if (file.peek() == EOF) {
-		if (fileName == EMPLOYEES_FILE) // создаём первый аккаунт админа
-		{
-			file.close();
-			const std::string usernameOfSuperAdmin = "admin";
-			const std::string passwordOfSuperAdmin = "admin";
-			this->fullUpUsersVector(Employee(usernameOfSuperAdmin, passwordOfSuperAdmin));
-		}
+		file.close();
 		throw std::runtime_error(NO_INFO_IN_FILE);
 	}
 	std::vector<std::string> linesInFile;
@@ -76,18 +92,7 @@ std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName)
 
 void Database::loadUsersVector(const std::string& fileName)
 {
-	std::vector<std::string> donor;
-	try
-	{
-		donor = this->loadInfoFromFile(fileName);
-	}
-	catch (const std::runtime_error &error)
-	{
-		if (!std::strcmp(error.what(), NO_INFO_IN_FILE))
-		{
-			return;
-		}
-	}
+	std::vector<std::string> donor = this->loadInfoFromFile(fileName);
 	if (fileName == CLIENTS_FILE)
 	{
 		Client client;
@@ -136,7 +141,7 @@ void Database::unloadInfoToFile(const std::vector<std::shared_ptr<T>>& donor, co
 		utils::customTerminate("выгрузкой информации в файл");
 	}
 	for (const auto& element : donor) {
-		const auto& vectorOfData = element->getInfoInVectorStringForm();
+		const std::vector<std::string>& vectorOfData = element->getInfoInVectorStringForm();
 		for (const auto& data : vectorOfData) {
 			file << data << '\n';
 		}

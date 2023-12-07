@@ -13,16 +13,15 @@ Manager::Manager(const Manager& other)
 void Manager::beginRegistration()
 {
 	std::cout << "АСА - Регистрация\n\n";
-	std::cout << "Введите логин: ";
-	std::string username;
+	Client client;
 	while (true)
 	{
 		try
 		{
-			std::cin >> username;
-			if (!database_.isValidUsername(username))
+			client.functionalSetUsername();
+			if (!database_.isValidUsername(client.getUsername()))
 			{
-				throw std::runtime_error("Такое имя пользователя занято. Попробуйте снова: ");
+				throw std::runtime_error("Такое имя пользователя занято. Попробуйте снова.\n");
 			}
 			break;
 		}
@@ -31,13 +30,9 @@ void Manager::beginRegistration()
 			std::cout << error.what();
 		}
 	}
-	std::cout << "Введите пароль: ";
-	std::string password;
-	std::cin >> password;
-	std::cout << "Введите ФИО: ";
-	std::string fio;
-	std::cin >> fio;
-	database_.fullUpUsersVector(Client(username, password, fio));
+	std::cout << std::endl;
+	client.functionalSetPassword();
+	database_.fullUpUsersVector(client);
 	std::cout << "\nРегистрация успешна!\n\n";
 	system("pause");
 }
@@ -48,15 +43,13 @@ void Manager::beginAuthorization(bool& isAuthorize, std::shared_ptr<User>& autho
 	while (true)
 	{
 		std::cout << "АСА - Авторизация\n\n";
-		std::cout << "Введите логин: ";
-		std::string username;
-		std::cin >> username;
-		std::cout << "Введите пароль: ";
-		std::string password;
-		std::cin >> password;
+		Client client;
+		client.functionalSetUsername();
+		std::cout << std::endl;
+		client.functionalSetPassword();
 		for (const auto& user : database_.getUsersList())
 		{
-			if (user->getUsername() == username && user->getPassword() == password)
+			if (user->getUsername() == client.getUsername() && user->getPassword() == client.getPassword())
 			{
 				isAuthorize = true;
 				authorizedUser = user;

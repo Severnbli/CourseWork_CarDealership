@@ -1,6 +1,7 @@
 ﻿#include "User.h"
 #include "utils.h"
 #include <iostream>
+#include <functional>
 
 User::User(int)
 {
@@ -36,7 +37,11 @@ void User::functionalSetUsername()
 			this->username_ = utils::checkStringInRange(3, 12, false);
 			for (const auto& element : this->username_)
 			{
-				if (!std::isalnum(element) && element != '_')
+				if (element >= 'А' && element <= 'я')
+				{
+					continue;
+				}
+				if (!isalnum(element) && element != '_')
 				{
 					throw std::runtime_error("Недопустимые символы!");
 				}
@@ -56,15 +61,20 @@ std::string User::getUsername() const
 	return this->username_;
 }
 
+void User::setUnmodifiedPassword(const std::string& password)
+{
+	this->password_ = password;
+}
+
 void User::setPassword(const std::string& password)
 {
-	this->password_ = utils::MD5(password);
+	this->password_ = std::to_string(std::hash<std::string>()(password));
 }
 
 void User::functionalSetPassword()
 {
 	std::cout << "Пароль (8 - 16 символов): ";
-	this->password_ = utils::MD5(utils::checkStringInRange(8, 16, false));
+	this->password_ = std::to_string(std::hash<std::string>()(utils::checkStringInRange(8, 16, false)));
 }
 
 

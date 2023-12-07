@@ -45,7 +45,7 @@ void Employee::setInfoInVectorStringForm(const std::vector<std::string>& donor) 
 		utils::customTerminate("созданием объекта типа Employee");
 	}
 	this->setUsername(donor[0]);
-	this->setPassword(donor[1]);
+	this->setUnmodifiedPassword(donor[1]);
 	this->setFio(donor[2]);
 	this->position_ = donor[3];
 	this->award_ = std::stod(donor[4]);

@@ -19,6 +19,8 @@ public:
 
 	std::string getUsername() const;
 
+	void setUnmodifiedPassword(const std::string&);
+
 	void setPassword(const std::string&);
 
 	void functionalSetPassword();

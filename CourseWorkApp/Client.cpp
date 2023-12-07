@@ -45,7 +45,7 @@ void Client::setInfoInVectorStringForm(const std::vector<std::string>& donor) {
 		utils::customTerminate("созданием объекта типа Client");
 	}
 	this->setUsername(donor[0]);
-	this->setPassword(donor[1]);
+	this->setUnmodifiedPassword(donor[1]);
 	this->setFio(donor[2]);
 	this->mobileNumber_ = donor[3];
 	if (donor[4] == "true" || donor[4] == "1") {

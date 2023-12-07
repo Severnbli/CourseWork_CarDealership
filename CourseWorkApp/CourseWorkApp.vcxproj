@@ -128,13 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Car.cpp" />
-    <ClCompile Include="checks.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="CourseWorkApp.cpp" />
     <ClCompile Include="Database.cpp" />
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="Employee.cpp" />
-    <ClCompile Include="hash.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="menus.cpp" />
     <ClCompile Include="utils.cpp" />
