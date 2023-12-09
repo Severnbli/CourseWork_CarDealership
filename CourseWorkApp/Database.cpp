@@ -175,9 +175,41 @@ size_t Database::getUsersVectorSize() const
 	return this->users_.size();
 }
 
+std::shared_ptr<User> Database::getUserByPositionInVector(size_t position)
+{
+	return this->users_.at(position);
+}
+
+void Database::updateAccessRights(const std::shared_ptr<User>& user)
+{
+	if (user->isAdmin())
+	{
+		return;
+	}
+	std::cout << "\nВы уверены в своих действиях?\nВся информация об аккаунте, как о клиенте, будет удалена.\n"
+		"1 - Да.\n0 - Нет.\n\nВыберите: ";
+	if (!static_cast<bool>(utils::checkIntInRange(0, 1)))
+	{
+		return;
+	}
+	const std::shared_ptr<Employee> employee = std::make_shared<Employee>();
+	employee->setUsername(user->getUsername());
+	employee->setUnmodifiedPassword(user->getPassword());
+	employee->setFio(user->getFio());
+	this->users_.erase(std::find(this->users_.begin(), this->users_.end(), user));
+	this->users_.push_back(employee);
+	std::cout << "\nПрава успешно выданы!\n\n";
+	system("pause");
+}
+
 size_t Database::getCarsVectorSize() const
 {
 	return this->cars_.size();
+}
+
+std::shared_ptr<Car> Database::getCarByPositionInVector(size_t position)
+{
+	return this->cars_.at(position);
 }
 
 void Database::cleanAllVectors()
@@ -254,7 +286,6 @@ void Database::functionalCheckUsername(std::shared_ptr<User>& user)
 	}
 }
 
-
 void Database::showUsersInfo(const std::shared_ptr<User>& userReferense) const //печатает инфу о пользователе/ползователях
 {
 	if (!userReferense && this->users_.empty())
@@ -263,7 +294,7 @@ void Database::showUsersInfo(const std::shared_ptr<User>& userReferense) const /
 	}
 	utils::patternForTableHeader({
 									{"ИМЯ ПОЛЬЗ.", 12 }, { "ФИО", 30 }, { "АДМ", 3 },
-									{"ДОЛЖНОСТЬ", 12}, {"ПРЕМИЯ", 8}, {"МОБ_ТЕЛЕФОН", 13},
+									{"ДОЛЖНОСТЬ", 12}, {"ПРЕМИЯ", 8}, {"МОБ. ТЕЛЕФОН", 13},
 									{"ЛИЦ", 3}
 	});
 	int counter = 1;

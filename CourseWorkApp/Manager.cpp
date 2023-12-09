@@ -210,7 +210,8 @@ void Manager::workingWithProfiles(std::shared_ptr<User>&)
 		switch (utils::patternForMenus("", {
 			"Сортировка", 
 			"Поиск",
-			"Настройка аккаунтов"}, false, false))
+			"Настройка аккаунтов",
+			"Выдача прав администратора"}, false, false))
 		{
 		case 1:
 			{
@@ -222,6 +223,34 @@ void Manager::workingWithProfiles(std::shared_ptr<User>&)
 			}
 		case 3:
 			{
+			std::cout << "\nВведите номер редактируемого аккаунта: ";
+			const size_t selectedNumber = utils::checkIntInRange(1, this->database_.getUsersVectorSize());
+			system("cls");
+			auto selectedUser = this->database_.getUserByPositionInVector(selectedNumber - 1);
+			try
+			{
+				if (selectedUser->isAdmin())
+				{
+					this->customizeEmloyeeProfile(selectedUser);
+				}
+				else
+				{
+					this->customizeClientProfile(selectedUser);
+				}
+			}
+			catch (const utils::CustomExcept &error)
+			{
+				std::cout << error.what() << "\n\n";
+				system("pause");
+			}
+			system("cls");
+			break;
+			}
+		case 4:
+			{
+			std::cout << "\nВведите номер редактируемого аккаунта: ";
+			this->database_.updateAccessRights(this->database_.getUserByPositionInVector(utils::checkIntInRange(1, this->database_.getUsersVectorSize()) - 1));
+			system("cls");
 			break;
 			}
 		default:

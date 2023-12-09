@@ -40,7 +40,13 @@ public:
 
 	size_t getUsersVectorSize() const;
 
+	std::shared_ptr<User> getUserByPositionInVector(size_t);
+
+	void updateAccessRights(const std::shared_ptr<User>&);
+
 	size_t getCarsVectorSize() const;
+
+	std::shared_ptr<Car> getCarByPositionInVector(size_t);
 
 	void cleanAllVectors();
 
