@@ -43,6 +43,8 @@ public:
 	size_t getCarsVectorSize() const;
 
 	void cleanAllVectors();
+
+	void deleteUser(std::shared_ptr<User>&);
 	
 	bool isValidUsername(const std::string&) const;
 

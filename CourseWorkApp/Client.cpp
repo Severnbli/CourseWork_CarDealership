@@ -81,6 +81,7 @@ void Client::functionalSetMobileNumber()
 					throw std::runtime_error("Недопустимые символы!");
 				}
 			}
+			this->mobileNumber_ = "+375" + this->mobileNumber_;
 			return;
 		}
 		catch (const std::runtime_error &error)

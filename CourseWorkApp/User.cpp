@@ -97,7 +97,11 @@ void User::functionalSetFio()
 			this->fio_ = utils::checkStringInRange(0, 30, true);
 			for (const auto& element : this->fio_)
 			{
-				if (!std::isalpha(element))
+				if (element >= 'А' && element <= 'я')
+				{
+					continue;
+				}
+				if (!std::isalpha(element) && element != ' ')
 				{
 					throw std::runtime_error("Недопустимые символы!");
 				}

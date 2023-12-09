@@ -23,7 +23,6 @@ void Manager::beginRegistration()
 	system("pause");	
 }
 
-
 void Manager::beginAuthorization(bool& isAuthorize, std::shared_ptr<User>& authorizedUser) const
 {
 	while (true)
@@ -65,12 +64,12 @@ void Manager::workingWithEmployeeProfile(std::shared_ptr<User>& authorizedUser)
 		case 1:
 		{
 			this->customizeEmloyeeProfile(authorizedUser);
-			return;
+			break;
 		}
 		case 2:
 		{
 			this->workingWithProfiles(authorizedUser);
-			return;
+			break;
 		}
 		default:
 		{
@@ -81,6 +80,124 @@ void Manager::workingWithEmployeeProfile(std::shared_ptr<User>& authorizedUser)
 			return;
 		}
 		}
+	}
+}
+
+void Manager::customizeClientProfile(std::shared_ptr<User>& authorizedUser)
+{
+	while (true)
+	{
+		std::cout << "АСА - Меню настройки профиля клиента\n\n";
+		this->database_.showUsersInfo(authorizedUser);
+		std::cout << "\n\n";
+		switch (utils::patternForMenus("Желаете ли изменить какой-нибудь параметр?",
+			{ "Логин", "Пароль", "ФИО", "Номер телефона",
+				"Наличие вод. удостоверения", "Удаление аккаунта" }, false, false))
+		{
+		case 1:
+		{
+			std::cout << '\n';
+			database_.functionalCheckUsername(authorizedUser);
+			break;
+		}
+		case 2:
+		{
+			std::cout << '\n';
+			authorizedUser->functionalSetPassword();
+			break;
+		}
+		case 3:
+		{
+			std::cout << '\n';
+			authorizedUser->functionalSetFio();
+			break;
+		}
+		case 4:
+		{
+			std::cout << '\n';
+			std::dynamic_pointer_cast<Client>(authorizedUser)->functionalSetMobileNumber();
+			break;
+		}
+		case 5:
+		{
+			std::cout << '\n';
+			std::dynamic_pointer_cast<Client>(authorizedUser)->functionalSetStatusOfDriverLicense();
+			break;
+		}
+		case 6:
+			{
+			std::cout << '\n';
+			this->database_.deleteUser(authorizedUser);
+			break;
+			}
+		default:
+		{
+			break;
+		}
+		case 0:
+		{
+			return;
+		}
+		}
+		system("cls");
+	}
+}
+
+void Manager::customizeEmloyeeProfile(std::shared_ptr<User>& authorizedUser)
+{
+	while (true)
+	{
+		std::cout << "АСА - Меню настройки профиля администратора\n\n";
+		this->database_.showUsersInfo(authorizedUser);
+		std::cout << "\n\n";
+		switch (utils::patternForMenus("Желаете ли изменить какой-нибудь параметр?", 
+			{ "Логин",
+				"Пароль",
+				"ФИО",
+				"Должность",
+				"Удаление аккаунта"
+			}, false, false))
+		{
+		case 1:
+		{
+			std::cout << '\n';
+			this->database_.functionalCheckUsername(authorizedUser);
+			break;
+		}
+		case 2:
+		{
+			std::cout << '\n';
+			authorizedUser->functionalSetPassword();
+			break;
+		}
+		case 3:
+		{
+			std::cout << '\n';
+			authorizedUser->functionalSetFio();
+			break;
+		}
+		case 4:
+		{
+			std::cout << '\n';
+			std::dynamic_pointer_cast<Employee>(authorizedUser)->functionalSetPosition();
+			break;
+		}
+		case 5:
+			{
+			std::cout << '\n';
+			this->database_.deleteUser(authorizedUser);
+			break;
+			}
+		default:
+		{
+			break;
+		}
+		case 0:
+		{
+			return;
+		}
+		}
+		system("cls");
 	}
 }
 
@@ -90,7 +207,10 @@ void Manager::workingWithProfiles(std::shared_ptr<User>&)
 	{
 		std::cout << "АСА - Обозреватель профилей\n\n";
 		this->database_.showUsersInfo();
-		switch (utils::patternForMenus("", {"Сортировка", "Поиск","вф"}, false, false))
+		switch (utils::patternForMenus("", {
+			"Сортировка", 
+			"Поиск",
+			"Настройка аккаунтов"}, false, false))
 		{
 		case 1:
 			{
@@ -116,49 +236,28 @@ void Manager::workingWithProfiles(std::shared_ptr<User>&)
 	}
 }
 
-
-void Manager::customizeEmloyeeProfile(std::shared_ptr<User>& authorizedUser)
-{
-	while (true)
-	{
-		std::cout << "АСА - Меню настройки профиля администратора " << "\n\n";
-		this->database_.showUsersInfo(authorizedUser);
-		std::cout << "\n\n";
-		switch (utils::patternForMenus("Желаете ли изменить какой-нибудь параметр?", {"Логин", "Пароль", "ФИО"}, false, false))
-		{
-		case 1:
-			{
-			database_.functionalCheckUsername(authorizedUser);
-			break;
-			}
-		case 2:
-			{
-			authorizedUser->functionalSetPassword();
-			break;
-			}
-		case 3:
-			{
-			authorizedUser->functionalSetFio();
-			break;
-			}
-		default:
-		{
-			break;
-		}
-		case 0:
-		{
-			system("cls");
-			return;
-		}
-		}
-		system("cls");
-	}
-}
-
-int Manager::workingWithCatalog()
+void Manager::workingWithCatalog()
 {
 	std::cout << "АСА - Меню работы с каталогом\n\n";
 	this->database_.showCarsInfo();
-	system("pause");
-	return 0;
+	switch (utils::patternForMenus("" , {"Сортировка", "Поиск"}))
+	{
+	case 1:
+		{
+		break;
+		}
+	case 2:
+		{
+		break;
+		}
+	default:
+		{
+		break;
+		}
+	case 0:
+		{
+		break;
+		}
+	}
+	return;
 }

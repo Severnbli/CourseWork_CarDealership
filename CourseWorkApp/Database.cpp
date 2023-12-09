@@ -186,6 +186,40 @@ void Database::cleanAllVectors()
 	this->users_.clear();
 }
 
+void Database::deleteUser(std::shared_ptr<User>& user)
+{
+	auto findIterator = std::find(this->users_.begin(), this->users_.end(), user);
+	if (findIterator == this->users_.end())
+	{
+		return;
+	}
+	std::cout << "Вы уверены в своих действиях?\n1 - Да.\n0 - Нет.\n\nВыберите: ";
+	if (!static_cast<bool>(utils::checkIntInRange(0, 1)))
+	{
+		return;
+	}
+	size_t counterOfEmployees = 0;
+	if ((*findIterator)->isAdmin())
+	{
+		for (const auto& element : this->users_)
+		{
+			if (element->isAdmin())
+			{
+				counterOfEmployees++;
+			}
+		}
+		if (counterOfEmployees == 1)
+		{
+			std::cout << "\nУдаление единственного администрирующего аккаунта недопустимо!\n\n";
+			system("pause");
+			return;
+		}
+	}
+	this->users_.erase(findIterator);
+	std::cout << '\n';
+	throw utils::CustomExcept("Удаление аккаунта совершено успешно!");
+}
+
 bool Database::isValidUsername(const std::string& username) const
 {
 	for (const auto &user : this->users_)
@@ -204,16 +238,18 @@ void Database::functionalCheckUsername(std::shared_ptr<User>& user)
 	{
 		try
 		{
-			user->functionalSetUsername();
-			if (!this->isValidUsername(user->getUsername()))
+			Client client;
+			client.functionalSetUsername();
+			if (!this->isValidUsername(client.getUsername()))
 			{
-				throw std::runtime_error("Такое имя пользователя занято. Попробуйте снова.\n");
+				throw std::runtime_error("Такое имя пользователя занято!");
 			}
+			user->setUsername(client.getUsername());
 			break;
 		}
 		catch (const std::runtime_error& error)
 		{
-			std::cout << error.what();
+			std::cout << error.what() << " Попробуйте снова.\n";
 		}
 	}
 }

@@ -39,4 +39,28 @@ namespace utils {
 	int patternForMenus(std::string, std::vector<std::string>, bool = true, bool = true);
 
 	void patternForTableHeader(std::vector<std::pair<std::string, int>>);
+
+	class CustomExcept
+	{
+	public:
+		CustomExcept()
+		{
+			this->content_ = "custom except";
+		}
+		CustomExcept(std::string content)
+		{
+			this->content_ = content;
+		}
+		CustomExcept(const CustomExcept& other)
+		{
+			this->content_ = other.content_;
+		}
+		~CustomExcept() = default;
+		std::string what() const
+		{
+			return this->content_;
+		}
+	private:
+		std::string content_;
+	};
 }

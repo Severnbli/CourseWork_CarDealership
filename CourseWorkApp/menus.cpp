@@ -43,9 +43,7 @@ int mainMenu(Manager& manager)
             }
             default:
             {
-                std::cout << "Ошибка! Выход из системы...";
-                system("pause");
-                return 1;
+                break;
             }
             case 0:
             {
@@ -56,6 +54,11 @@ int mainMenu(Manager& manager)
         catch (const std::runtime_error &error)
         {
             std::cout << "\n\n" << error.what() << "\n\n";
+            system("pause");
+        }
+        catch (const utils::CustomExcept &error)
+        {
+            std::cout << error.what() << "\n\n";
             system("pause");
         }
     }
@@ -121,6 +124,7 @@ int userMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
 		{
         case 1:
         {
+            manager.customizeClientProfile(authorizedUser);
             break;
         }
         case 2:
