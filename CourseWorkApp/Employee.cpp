@@ -1,6 +1,7 @@
 ﻿#include "Employee.h"
 #include "utils.h"
 #include <iostream>
+#include <iomanip>
 
 int Employee::dimensionality_ = 5;
 
@@ -31,7 +32,7 @@ Employee::Employee(const std::string& username, const std::string& password, con
 
 Employee::Employee(const std::vector<std::string>& data)
 {
-	this->setInfoInVectorStringForm(data);
+	Employee::setInfoInVectorStringForm(data);
 }
 
 Employee::Employee(const Employee& other) : User(other)
@@ -98,4 +99,25 @@ bool Employee::isAdmin() const
 int Employee::getDimensionality()
 {
 	return dimensionality_;
+}
+
+void Employee::printInfoTableForm() const
+{
+	std::cout << "|" << std::setw(12) << this->getUsername() << '|' << std::setw(30)
+		<< this->getFio() << '|' << std::setw(3);
+	if (this->isAdmin())
+	{
+		std::cout << "Да";
+	}
+	else
+	{
+		std::cout << "Нет";
+	}
+	std::cout << '|' << std::setw(12) << this->position_ << '|' << std::setw(8) << std::fixed
+		<< std::setprecision(2) << this->award_	<< '|' << std::string(13, ' ')
+		<< '|' << std::string(3, ' ') << '|' << std::endl;
+	std::cout << "+" << std::string(4, '-') << '+' << std::string(12, '-')
+		<< '+' << std::string(30, '-') << '+' << std::string(3, '-') << '+';
+	std::cout << std::string(12, '-') << '+' << std::string(8, '-') << '+'
+		<< std::string(13, '-') << '+' << std::string(3, '-') << "+\n";
 }

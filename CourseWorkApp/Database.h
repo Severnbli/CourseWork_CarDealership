@@ -38,13 +38,19 @@ public:
 
 	std::vector<std::shared_ptr<User>> getUsersList() const;
 
+	size_t getUsersVectorSize() const;
+
+	size_t getCarsVectorSize() const;
+
 	void cleanAllVectors();
 	
 	bool isValidUsername(const std::string&) const;
+
+	void functionalCheckUsername(std::shared_ptr<User>&);
 	
-	int showUsersInfo(const std::shared_ptr<User>& = nullptr) const;
+	void showUsersInfo(const std::shared_ptr<User>& = nullptr) const;
 	
-	int showCarsInfo(const std::shared_ptr<Car> & = nullptr) const;
+	void showCarsInfo(const std::shared_ptr<Car> & = nullptr) const;
 
 private:
 	std::vector<std::shared_ptr<User>> users_;

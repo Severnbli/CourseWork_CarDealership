@@ -344,7 +344,7 @@ namespace utils {
 		return choice;
 	}
 
-	void patternForTableHeader(std::unordered_map<std::string, int> header)
+	void patternForTableHeader(std::vector<std::pair<std::string, int>> header)
     {
 		std::cout << '+' << std::string(4, '-');
 		for (const auto& pair : header)

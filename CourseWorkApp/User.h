@@ -33,7 +33,7 @@ public:
 
 	std::string getFio() const;
 
-	virtual void printInfoTableForm();
+	virtual void printInfoTableForm() const = 0;
 
 	virtual bool isAdmin() const = 0;
 

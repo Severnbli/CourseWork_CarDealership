@@ -170,6 +170,16 @@ std::vector<std::shared_ptr<User>> Database::getUsersList() const
 	return this->users_;
 }
 
+size_t Database::getUsersVectorSize() const
+{
+	return this->users_.size();
+}
+
+size_t Database::getCarsVectorSize() const
+{
+	return this->cars_.size();
+}
+
 void Database::cleanAllVectors()
 {
 	this->cars_.clear();
@@ -188,13 +198,38 @@ bool Database::isValidUsername(const std::string& username) const
 	return true;
 }
 
-int Database::showUsersInfo(const std::shared_ptr<User>& userReferense) const //печатает инфу о пользователе/ползователях
+void Database::functionalCheckUsername(std::shared_ptr<User>& user)
+{
+	while (true)
+	{
+		try
+		{
+			user->functionalSetUsername();
+			if (!this->isValidUsername(user->getUsername()))
+			{
+				throw std::runtime_error("Такое имя пользователя занято. Попробуйте снова.\n");
+			}
+			break;
+		}
+		catch (const std::runtime_error& error)
+		{
+			std::cout << error.what();
+		}
+	}
+}
+
+
+void Database::showUsersInfo(const std::shared_ptr<User>& userReferense) const //печатает инфу о пользователе/ползователях
 {
 	if (!userReferense && this->users_.empty())
 	{
 		throw std::runtime_error("Нет ни одного зарегистрированного пользователя!");
 	}
-	utils::patternForTableHeader({ {"ИМЯ ПОЛЬЗ.", 12}, {"ФИО", 30}, {"АДМ", 3} });
+	utils::patternForTableHeader({
+									{"ИМЯ ПОЛЬЗ.", 12 }, { "ФИО", 30 }, { "АДМ", 3 },
+									{"ДОЛЖНОСТЬ", 12}, {"ПРЕМИЯ", 8}, {"МОБ_ТЕЛЕФОН", 13},
+									{"ЛИЦ", 3}
+	});
 	int counter = 1;
 	if (userReferense)
 	{
@@ -209,10 +244,9 @@ int Database::showUsersInfo(const std::shared_ptr<User>& userReferense) const //
 			user->printInfoTableForm();
 		}
 	}
-	return counter - 1;
 }
 
-int Database::showCarsInfo(const std::shared_ptr<Car>& carReferense) const
+void Database::showCarsInfo(const std::shared_ptr<Car>& carReferense) const
 {
 	if (!carReferense && this->cars_.empty())
 	{
@@ -233,6 +267,5 @@ int Database::showCarsInfo(const std::shared_ptr<Car>& carReferense) const
 			car->printInfoTableForm();
 		}
 	}
-	return counter - 1;
 }
 

@@ -72,7 +72,7 @@ int adminMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
             {
             case 1:
             {
-                manager.workingWithProfiles(authorizedUser);
+                manager.workingWithEmployeeProfile(authorizedUser);
                 break;
             }
             case 2:

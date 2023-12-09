@@ -12,11 +12,13 @@ public:
 
 	void beginRegistration();
 
-	void beginAuthorization(bool&, std::shared_ptr<User>&);
+	void beginAuthorization(bool&, std::shared_ptr<User>&) const;
 
-	int workingWithProfiles(std::shared_ptr<User>&);
+	void workingWithEmployeeProfile(std::shared_ptr<User>&);
 
-	int customizeAuthorizedUserProfile(std::shared_ptr<User>&);
+	void workingWithProfiles(std::shared_ptr<User>&);
+
+	void customizeEmloyeeProfile(std::shared_ptr<User>&);
 
 	int workingWithCatalog();
 

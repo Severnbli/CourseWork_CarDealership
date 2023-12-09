@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <unordered_map>
 
 namespace utils {
 	
@@ -39,5 +38,5 @@ namespace utils {
 
 	int patternForMenus(std::string, std::vector<std::string>, bool = true, bool = true);
 
-	void patternForTableHeader(std::unordered_map<std::string, int>);
+	void patternForTableHeader(std::vector<std::pair<std::string, int>>);
 }

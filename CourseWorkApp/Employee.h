@@ -38,6 +38,8 @@ public:
 
 	int getDimensionality() override;
 
+	void printInfoTableForm() const override;
+
 private:
 	static int dimensionality_;
 

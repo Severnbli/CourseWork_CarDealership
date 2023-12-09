@@ -2,7 +2,6 @@
 #include "utils.h"
 #include <iostream>
 #include <functional>
-#include <iomanip>
 
 User::User(int)
 {
@@ -116,22 +115,4 @@ void User::functionalSetFio()
 std::string User::getFio() const
 {
 	return this->fio_;
-}
-
-void User::printInfoTableForm()
-{
-	std::cout << "|" << std::setw(12) << this->username_ << '|' << std::setw(30)
-		<< this->fio_ << '|' << std::setw(3);
-	if (this->isAdmin())
-	{
-		std::cout << "Да";
-	}
-	else
-	{
-		std::cout << "Нет";
-	}
-	std::cout << '|' << std::endl;
-	std::cout << "+" << std::string(4, '-') << '+' << std::string(12, '-')
-		<< '+' << std::string(30, '-') << '+' << std::string(3, '-') << '+';
-	std::cout << std::endl;
 }

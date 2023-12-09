@@ -1,4 +1,5 @@
-﻿#include "Manager.h"
+﻿
+#include "Manager.h"
 #include "User.h"
 #include "utils.h"
 #include <iostream>
@@ -13,32 +14,17 @@ Manager::Manager(const Manager& other)
 void Manager::beginRegistration()
 {
 	std::cout << "АСА - Регистрация\n\n";
-	Client client;
-	while (true)
-	{
-		try
-		{
-			client.functionalSetUsername();
-			if (!database_.isValidUsername(client.getUsername()))
-			{
-				throw std::runtime_error("Такое имя пользователя занято. Попробуйте снова.\n");
-			}
-			break;
-		}
-		catch (const std::runtime_error &error)
-		{
-			std::cout << error.what();
-		}
-	}
+	std::shared_ptr<User> registeredPerson = std::make_shared<Client>();
+	database_.functionalCheckUsername(registeredPerson);
 	std::cout << std::endl;
-	client.functionalSetPassword();
-	database_.fullUpUsersVector(client);
+	registeredPerson->functionalSetPassword();
+	database_.fullUpUsersVector(*std::dynamic_pointer_cast<Client>(registeredPerson));
 	std::cout << "\nРегистрация успешна!\n\n";
-	system("pause");
+	system("pause");	
 }
 
 
-void Manager::beginAuthorization(bool& isAuthorize, std::shared_ptr<User>& authorizedUser)
+void Manager::beginAuthorization(bool& isAuthorize, std::shared_ptr<User>& authorizedUser) const
 {
 	while (true)
 	{
@@ -59,7 +45,7 @@ void Manager::beginAuthorization(bool& isAuthorize, std::shared_ptr<User>& autho
 		}
 		std::cout << "\nНе удалось найти аккаунт по введёным данным.\n\nЖелаете попробовать снова?\n"
 			"1 - Да.\n0 - Нет.\n\nВыберите: ";
-		if (!utils::checkIntInRange(0, 1))
+		if (!static_cast<bool>(utils::checkIntInRange(0, 1)))
 		{
 			isAuthorize = false;
 			system("cls");
@@ -69,102 +55,103 @@ void Manager::beginAuthorization(bool& isAuthorize, std::shared_ptr<User>& autho
 	}
 }
 
-int Manager::workingWithProfiles(std::shared_ptr<User>& authorizedUser)
+void Manager::workingWithEmployeeProfile(std::shared_ptr<User>& authorizedUser)
 {
 	while (true)
 	{
 		switch (utils::patternForMenus("АСА - Меню работы с профилями", { "Настроить свой профиль",
-			                               "Настроить другие существующие профили" }))
+			                               "Обозреватель других существующих профилей" }))
 		{
 		case 1:
 		{
-			this->customizeAuthorizedUserProfile(authorizedUser);
-			break;
+			this->customizeEmloyeeProfile(authorizedUser);
+			return;
 		}
 		case 2:
 		{
-			this->database_.showUsersInfo();
-			system("pause");
-			break;
+			this->workingWithProfiles(authorizedUser);
+			return;
 		}
 		default:
 		{
-			std::cout << "Ошибка! Выход из системы...";
-			system("pause");
-			return 1;
+			break;
 		}
 		case 0:
 		{
-			return 0;
+			return;
 		}
 		}
 	}
 }
 
-int Manager::customizeAuthorizedUserProfile(std::shared_ptr<User>& authorizedUser)
+void Manager::workingWithProfiles(std::shared_ptr<User>&)
 {
 	while (true)
 	{
-		std::cout << "АСА - Меню настройки своего профиля\n\n";
+		std::cout << "АСА - Обозреватель профилей\n\n";
+		this->database_.showUsersInfo();
+		switch (utils::patternForMenus("", {"Сортировка", "Поиск","вф"}, false, false))
+		{
+		case 1:
+			{
+			break;
+			}
+		case 2:
+			{
+			break;
+			}
+		case 3:
+			{
+			break;
+			}
+		default:
+			{
+			break;
+			}
+		case 0:
+			{
+			return;
+			}
+		}
+	}
+}
+
+
+void Manager::customizeEmloyeeProfile(std::shared_ptr<User>& authorizedUser)
+{
+	while (true)
+	{
+		std::cout << "АСА - Меню настройки профиля администратора " << "\n\n";
 		this->database_.showUsersInfo(authorizedUser);
 		std::cout << "\n\n";
 		switch (utils::patternForMenus("Желаете ли изменить какой-нибудь параметр?", {"Логин", "Пароль", "ФИО"}, false, false))
 		{
 		case 1:
 			{
-			std::cout << "Введите новый логин: ";
-			std::string newUsername;
-			while (true)
-			{
-				try
-				{
-					std::cin >> newUsername;
-					if (!database_.isValidUsername(newUsername))
-					{
-						throw std::runtime_error("Такое имя пользователя занято. Попробуйте снова: ");
-					}
-					break;
-				}
-				catch (const std::runtime_error& error)
-				{
-					std::cout << error.what();
-				}
-			}
-			authorizedUser->setUsername(newUsername);
-			system("cls");
+			database_.functionalCheckUsername(authorizedUser);
 			break;
 			}
 		case 2:
 			{
-			std::cout << "Введите новый пароль: ";
-			std::string newPassword;
-			std::cin >> newPassword;
-			authorizedUser->setPassword(newPassword);
-			system("cls");
+			authorizedUser->functionalSetPassword();
 			break;
 			}
 		case 3:
 			{
-			std::cout << "Введите новое ФИО: ";
-			std::string newFIO;
-			std::cin >> newFIO;
-			authorizedUser->setFio(newFIO);
-			system("cls");
+			authorizedUser->functionalSetFio();
 			break;
 			}
 		default:
 		{
-			system("cls");
-			std::cout << "Ошибка! Выход из системы...";
-			system("pause");
-			return 1;
+			break;
 		}
 		case 0:
 		{
 			system("cls");
-			return 0;
+			return;
 		}
 		}
+		system("cls");
 	}
 }
 

@@ -1,4 +1,5 @@
 ﻿#include "Client.h"
+#include <iomanip>
 #include "utils.h"
 #include <iostream>
 
@@ -21,7 +22,7 @@ Client::Client(const std::string& mobileNumber, bool isDriverLicense)
 }
 
 Client::Client(const std::vector<std::string>& data) {
-	this->setInfoInVectorStringForm(data);
+	Client::setInfoInVectorStringForm(data);
 }
 
 Client::Client(const std::string& username, const std::string& password, const std::string fio, const std::string mobileNumber, bool isDriverLicense)
@@ -119,5 +120,34 @@ bool Client::isAdmin() const
 int Client::getDimensionality()
 {
 	return dimensionality_;
+}
+
+void Client::printInfoTableForm() const
+{
+	std::cout << "|" << std::setw(12) << this->getUsername() << '|' << std::setw(30)
+		<< this->getFio() << '|' << std::setw(3);
+	if (this->isAdmin())
+	{
+		std::cout << "Да";
+	}
+	else
+	{
+		std::cout << "Нет";
+	}
+	std::cout << '|' << std::string(12, ' ') << '|' << std::string(8, ' ')
+		<< '|' << std::setw(13) << this->mobileNumber_ << '|' << std::setw(3);
+	if (this->isDriverLicense_)
+	{
+		std::cout << "Да";
+	}
+	else
+	{
+		std::cout << "Нет";
+	}
+	std::cout << '|' << std::endl;
+	std::cout << "+" << std::string(4, '-') << '+' << std::string(12, '-')
+		<< '+' << std::string(30, '-') << '+' << std::string(3, '-') << '+';
+	std::cout << std::string(12, '-') << '+' << std::string(8, '-') << '+'
+		<< std::string(13, '-') << '+' << std::string(3, '-') << "+\n";
 }
 
