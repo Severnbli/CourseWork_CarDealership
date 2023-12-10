@@ -44,6 +44,10 @@ public:
 
 	void updateAccessRights(const std::shared_ptr<User>&);
 
+	void sortUsersVector();
+
+	std::vector<std::shared_ptr<User>> parseUsersVector(bool);
+
 	size_t getCarsVectorSize() const;
 
 	std::shared_ptr<Car> getCarByPositionInVector(size_t);

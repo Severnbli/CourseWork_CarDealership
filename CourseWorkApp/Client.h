@@ -19,6 +19,8 @@ public:
 
 	Client(const Client&);
 
+	bool operator<(const Client&);
+
 	void setInfoInVectorStringForm(const std::vector<std::string>&) override;
 
 	std::vector<std::string> getInfoInVectorStringForm() override;
@@ -48,3 +50,11 @@ private:
 
 	bool isDriverLicense_ = false;
 };
+
+bool compareClientsByMobileNumber(const Client&, const Client&);
+
+bool compareClientsByMobileNumber(const std::shared_ptr<Client>&, const std::shared_ptr<Client>&);
+
+bool compareClientsByDriverLicense(const Client&, const Client&);
+
+bool compareClientsByDriverLicense(const std::shared_ptr<Client>&, const std::shared_ptr<Client>&);

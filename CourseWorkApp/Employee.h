@@ -18,6 +18,8 @@ public:
 
 	Employee(const Employee&);
 
+	bool operator<(const Employee&) const;
+
 	void setInfoInVectorStringForm(const std::vector<std::string>&) override;
 
 	std::vector<std::string> getInfoInVectorStringForm() override;
@@ -47,3 +49,11 @@ private:
 
 	double award_ = 0.0;
 };
+
+bool compareEmployeesByPosition(const Employee&, const Employee&);
+
+bool compareEmployeesByPosition(const std::shared_ptr<Employee>&, const std::shared_ptr<Employee>&);
+
+bool compareEmployeesByAward(const Employee&, const Employee&);
+
+bool compareEmployeesByAward(const std::shared_ptr<Employee>&, const std::shared_ptr<Employee>&);

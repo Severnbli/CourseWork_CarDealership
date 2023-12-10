@@ -14,7 +14,6 @@ Client::Client(int)
 	this->functionalSetStatusOfDriverLicense();
 }
 
-
 Client::Client(const std::string& mobileNumber, bool isDriverLicense)
 {
 	this->mobileNumber_ = mobileNumber;
@@ -34,11 +33,15 @@ Client::Client(const std::string& username, const std::string& password, const s
 	this->isDriverLicense_ = isDriverLicense;
 }
 
-
 Client::Client(const Client& other) : User(other)
 {
 	this->mobileNumber_ = other.mobileNumber_;
 	this->isDriverLicense_ = other.isDriverLicense_;
+}
+
+bool Client::operator<(const Client& other)
+{
+	return this->mobileNumber_ < other.mobileNumber_;
 }
 
 void Client::setInfoInVectorStringForm(const std::vector<std::string>& donor) {
@@ -90,7 +93,6 @@ void Client::functionalSetMobileNumber()
 		}
 	}
 }
-
 
 std::string Client::getMobileNumber() const
 {
@@ -150,5 +152,25 @@ void Client::printInfoTableForm() const
 		<< '+' << std::string(30, '-') << '+' << std::string(3, '-') << '+';
 	std::cout << std::string(12, '-') << '+' << std::string(8, '-') << '+'
 		<< std::string(13, '-') << '+' << std::string(3, '-') << "+\n";
+}
+
+bool compareClientsByMobileNumber(const Client& firstObject, const Client& secondObject)
+{
+	return firstObject.getMobileNumber() < secondObject.getMobileNumber();
+}
+
+bool compareClientsByMobileNumber(const std::shared_ptr<Client>& firstObject, const std::shared_ptr<Client>& secondObject)
+{
+	return firstObject->getMobileNumber() < secondObject->getMobileNumber();
+}
+
+bool compareClientsByDriverLicense(const Client& firstObject, const Client& secondObject)
+{
+	return static_cast<short>(firstObject.getStatusOfDriverLicense()) < static_cast<short>(secondObject.getStatusOfDriverLicense());
+}
+
+bool compareClientsByDriverLicense(const std::shared_ptr<Client>& firstObject, const std::shared_ptr<Client>& secondObject)
+{
+	return static_cast<short>(firstObject->getStatusOfDriverLicense()) < static_cast<short>(secondObject->getStatusOfDriverLicense());
 }
 

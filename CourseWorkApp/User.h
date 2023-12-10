@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <future>
 #include <string>
 #include <vector>
 
@@ -12,6 +13,8 @@ public:
 	User(const std::string&, const std::string&, const std::string& = "");
 
 	User(const User&);
+
+	bool operator<(const User&) const;
 
 	void setUsername(const std::string&);
 
@@ -50,3 +53,15 @@ private:
 
 	std::string fio_;
 };
+
+bool compareUsersByUsername(const User&, const User&);
+
+bool compareUsersByUsername(const std::shared_ptr<User>&, const std::shared_ptr<User>&);
+
+bool compareUsersByFio(const User&, const User&);
+
+bool compareUsersByFio(const std::shared_ptr<User>&, const std::shared_ptr<User>&);
+
+bool compareUsersByAdmin(const User&, const User&);
+
+bool compareUsersByAdmin(const std::shared_ptr<User>&, const std::shared_ptr<User>&);

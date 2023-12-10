@@ -215,6 +215,7 @@ void Manager::workingWithProfiles(std::shared_ptr<User>&)
 		{
 		case 1:
 			{
+			this->database_.sortUsersVector();
 			break;
 			}
 		case 2:

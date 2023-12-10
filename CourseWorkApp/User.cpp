@@ -23,6 +23,12 @@ User::User(const User& other)
 	this->fio_ = other.fio_;
 }
 
+bool User::operator<(const User& other) const
+{
+	return this->username_ < other.username_;
+}
+
+
 void User::setUsername(const std::string& username)
 {
 	this->username_ = username;
@@ -55,7 +61,6 @@ void User::functionalSetUsername()
 	}
 }
 
-
 std::string User::getUsername() const
 {
 	return this->username_;
@@ -76,7 +81,6 @@ void User::functionalSetPassword()
 	std::cout << "Пароль (8 - 16 символов): ";
 	this->password_ = std::to_string(std::hash<std::string>()(utils::checkStringInRange(8, 16, false)));
 }
-
 
 std::string User::getPassword() const
 {
@@ -115,8 +119,38 @@ void User::functionalSetFio()
 	}
 }
 
-
 std::string User::getFio() const
 {
 	return this->fio_;
+}
+
+bool compareUsersByUsername(const User& firstObject, const User& secondObject)
+{
+	return firstObject.getUsername() < secondObject.getUsername();
+}
+
+bool compareUsersByUsername(const std::shared_ptr<User>& firstObject, const std::shared_ptr<User>& secondObject)
+{
+	return firstObject->getUsername() < secondObject->getUsername();
+}
+
+
+bool compareUsersByFio(const User& firstObject, const User& secondObject)
+{
+	return firstObject.getFio() < secondObject.getFio();
+}
+
+bool compareUsersByFio(const std::shared_ptr<User>& firstObject, const std::shared_ptr<User>& secondObject)
+{
+	return firstObject->getFio() < secondObject->getFio();
+}
+
+bool compareUsersByAdmin(const User& firstObject, const User& secondObject)
+{
+	return static_cast<short>(firstObject.isAdmin()) < static_cast<short>(secondObject.isAdmin());
+}
+
+bool compareUsersByAdmin(const std::shared_ptr<User>& firstObject, const std::shared_ptr<User>& secondObject)
+{
+	return static_cast<short>(firstObject->isAdmin()) < static_cast<short>(secondObject->isAdmin());
 }

@@ -29,7 +29,6 @@ Employee::Employee(const std::string& username, const std::string& password, con
 	this->award_ = award;
 }
 
-
 Employee::Employee(const std::vector<std::string>& data)
 {
 	Employee::setInfoInVectorStringForm(data);
@@ -39,6 +38,11 @@ Employee::Employee(const Employee& other) : User(other)
 {
 	this->position_ = other.position_;
 	this->award_ = other.award_;
+}
+
+bool Employee::operator<(const Employee& other) const
+{
+	return this->award_ < other.award_;
 }
 
 void Employee::setInfoInVectorStringForm(const std::vector<std::string>& donor) {
@@ -67,7 +71,6 @@ void Employee::functionalSetPosition()
 	this->position_ = utils::checkStringInRange(0, 12);
 }
 
-
 std::string Employee::getPosition() const
 {
 	return this->position_;
@@ -84,12 +87,10 @@ void Employee::functionalSetAward()
 	this->award_ = utils::checkDouble();
 }
 
-
 double Employee::getAward() const
 {
 	return this->award_;
 }
-
 
 bool Employee::isAdmin() const
 {
@@ -120,4 +121,24 @@ void Employee::printInfoTableForm() const
 		<< '+' << std::string(30, '-') << '+' << std::string(3, '-') << '+';
 	std::cout << std::string(12, '-') << '+' << std::string(8, '-') << '+'
 		<< std::string(13, '-') << '+' << std::string(3, '-') << "+\n";
+}
+
+bool compareEmployeesByPosition(const Employee& firstObject, const Employee& secondObject)
+{
+	return firstObject.getPosition() < secondObject.getPosition();
+}
+
+bool compareEmployeesByPosition(const std::shared_ptr<Employee>& firstObject, const std::shared_ptr<Employee>& secondObject)
+{
+	return firstObject->getPosition() < secondObject->getPosition();
+}
+
+bool compareEmployeesByAward(const Employee& firstObject, const Employee& secondObject)
+{
+	return firstObject.getAward() < secondObject.getAward();
+}
+
+bool compareEmployeesByAward(const std::shared_ptr<Employee>& firstObject, const std::shared_ptr<Employee>& secondObject)
+{
+	return firstObject->getAward() < secondObject->getAward();
 }

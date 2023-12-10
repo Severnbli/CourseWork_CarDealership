@@ -53,21 +53,7 @@ Database::Database(const Database& other)
 
 Database::~Database()
 {
-	std::vector<std::shared_ptr<User>> employees;
-	auto begin = this->users_.begin();
-	while (begin != this->users_.end())
-	{
-		if ((*begin)->isAdmin())
-		{
-			employees.push_back(*begin);
-			begin = this->users_.erase(begin);
-		}
-		else
-		{
-			++begin;
-		}
-	}
-	this->unloadInfoToFile(employees, EMPLOYEES_FILE);
+	this->unloadInfoToFile(this->parseUsersVector(true), EMPLOYEES_FILE);
 	this->unloadInfoToFile(this->users_, CLIENTS_FILE);
 	this->unloadInfoToFile(this->cars_, CARS_FILE);
 }
@@ -200,6 +186,170 @@ void Database::updateAccessRights(const std::shared_ptr<User>& user)
 	this->users_.push_back(employee);
 	std::cout << "\nПрава успешно выданы!\n\n";
 	system("pause");
+}
+
+void Database::sortUsersVector()
+{
+	switch (utils::patternForMenus("Выберите параметр сортировки\n"
+								"< - по убыванию, > - по возрастанию", {
+		"Имя пользователя >",
+		"Имя пользователя <",
+		"ФИО >",
+		"ФИО <",
+		"Админ-права >",
+		"Админ-права <",
+		"Должность >",
+		"Должность <",
+		"Премия >",
+		"Премия <",
+		"Ном. телефона >",
+		"Ном. телефона <",
+		"Лицензия на авто >",
+		"Лицензия на авто <"
+	}))
+	{
+	case 1:
+		{
+		std::sort(this->users_.begin(), this->users_.end(), 
+			[](const auto& a, const auto& b) 
+			{ return compareUsersByUsername(a, b); });
+		break;
+		}
+	case 2:
+		{
+		std::sort(this->users_.begin(), this->users_.end(),
+			[](const auto& a, const auto& b)
+			{ return compareUsersByUsername(b, a); });
+		break;
+		}
+	case 3:
+		{
+		std::sort(this->users_.begin(), this->users_.end(),
+			[](const auto& a, const auto& b)
+			{ return compareUsersByFio(a, b); });
+		break;
+		}
+	case 4:
+		{
+		std::sort(this->users_.begin(), this->users_.end(),
+			[](const auto& a, const auto& b)
+			{ return compareUsersByFio(b, a); });
+		break;
+		}
+	case 5:
+		{
+		std::sort(this->users_.begin(), this->users_.end(),
+			[](const auto& a, const auto& b)
+			{ return compareUsersByAdmin(a, b); });
+		break;
+		}
+	case 6:
+		{
+		std::sort(this->users_.begin(), this->users_.end(),
+			[](const auto& a, const auto& b)
+			{ return compareUsersByAdmin(b, a); });
+		break;
+		}
+	case 7:
+		{
+		auto employeesVector = this->parseUsersVector(true);
+		std::sort(employeesVector.begin(), employeesVector.end(),
+			[](const auto& a, const auto& b)
+			{ return compareEmployeesByPosition(std::dynamic_pointer_cast<Employee>(a), std::dynamic_pointer_cast<Employee>(b)); });
+		this->users_.insert(this->users_.begin(), employeesVector.begin(), employeesVector.end());
+		break;
+		}
+	case 8:
+		{
+		auto employeesVector = this->parseUsersVector(true);
+		std::sort(employeesVector.begin(), employeesVector.end(),
+			[](const auto& a, const auto& b)
+			{ return compareEmployeesByPosition(std::dynamic_pointer_cast<Employee>(b), std::dynamic_pointer_cast<Employee>(a)); });
+		this->users_.insert(this->users_.begin(), employeesVector.begin(), employeesVector.end());
+		break;
+		}
+	case 9:
+		{
+		auto employeesVector = this->parseUsersVector(true);
+		std::sort(employeesVector.begin(), employeesVector.end(),
+			[](const auto& a, const auto& b)
+			{ return compareEmployeesByAward(std::dynamic_pointer_cast<Employee>(a), std::dynamic_pointer_cast<Employee>(b)); });
+		this->users_.insert(this->users_.begin(), employeesVector.begin(), employeesVector.end());
+		break;
+		}
+	case 10:
+		{
+		auto employeesVector = this->parseUsersVector(true);
+		std::sort(employeesVector.begin(), employeesVector.end(),
+			[](const auto& a, const auto& b)
+			{ return compareEmployeesByAward(std::dynamic_pointer_cast<Employee>(b), std::dynamic_pointer_cast<Employee>(a)); });
+		this->users_.insert(this->users_.begin(), employeesVector.begin(), employeesVector.end());
+		break;
+		}
+	case 11:
+		{
+		auto clientsVector = this->parseUsersVector(false);
+		std::sort(clientsVector.begin(), clientsVector.end(),
+			[](const auto& a, const auto& b)
+			{ return compareClientsByMobileNumber(std::dynamic_pointer_cast<Client>(a), std::dynamic_pointer_cast<Client>(b)); });
+		this->users_.insert(this->users_.begin(), clientsVector.begin(), clientsVector.end());
+		break;
+		}
+	case 12:
+		{
+		auto clientsVector = this->parseUsersVector(false);
+		std::sort(clientsVector.begin(), clientsVector.end(),
+			[](const auto& a, const auto& b)
+			{ return compareClientsByMobileNumber(std::dynamic_pointer_cast<Client>(b), std::dynamic_pointer_cast<Client>(a)); });
+		this->users_.insert(this->users_.begin(), clientsVector.begin(), clientsVector.end());
+		break;
+		}
+	case 13:
+		{
+		auto clientsVector = this->parseUsersVector(false);
+		std::sort(clientsVector.begin(), clientsVector.end(),
+			[](const auto& a, const auto& b)
+			{ return compareClientsByDriverLicense(std::dynamic_pointer_cast<Client>(a), std::dynamic_pointer_cast<Client>(b)); });
+		this->users_.insert(this->users_.begin(), clientsVector.begin(), clientsVector.end());
+		break;
+		}
+	case 14:
+		{
+		auto clientsVector = this->parseUsersVector(false);
+		std::sort(clientsVector.begin(), clientsVector.end(),
+			[](const auto& a, const auto& b)
+			{ return compareClientsByMobileNumber(std::dynamic_pointer_cast<Client>(b), std::dynamic_pointer_cast<Client>(a)); });
+		this->users_.insert(this->users_.begin(), clientsVector.begin(), clientsVector.end());
+		break;
+		}
+	default:
+		{
+		break;
+		}
+	case 0:
+		{
+		break;
+		}
+	}
+}
+
+std::vector<std::shared_ptr<User>> Database::parseUsersVector(bool isAdmin)
+{
+	std::vector<std::shared_ptr<User>> result;
+	auto begin = this->users_.begin();
+	while (begin != this->users_.end())
+	{
+		if ((*begin)->isAdmin() == isAdmin)
+		{
+			result.push_back(*begin);
+			begin = this->users_.erase(begin);
+		}
+		else
+		{
+			++begin;
+		}
+	}
+	return result;
 }
 
 size_t Database::getCarsVectorSize() const
