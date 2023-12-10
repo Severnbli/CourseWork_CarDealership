@@ -201,17 +201,20 @@ void Manager::customizeEmloyeeProfile(std::shared_ptr<User>& authorizedUser)
 	}
 }
 
-void Manager::workingWithProfiles(std::shared_ptr<User>&)
+void Manager::workingWithProfiles(std::shared_ptr<User>& authorizedUser)
 {
 	while (true)
 	{
+		system("cls");
 		std::cout << "АСА - Обозреватель профилей\n\n";
 		this->database_.showUsersInfo();
 		switch (utils::patternForMenus("", {
 			"Сортировка", 
 			"Поиск",
 			"Настройка аккаунтов",
-			"Выдача прав администратора"}, false, false))
+			"Выдача прав администратора",
+			"Очистить базу данных"
+		}, false, false))
 		{
 		case 1:
 			{
@@ -220,6 +223,7 @@ void Manager::workingWithProfiles(std::shared_ptr<User>&)
 			}
 		case 2:
 			{
+			this->database_.searchInUsersVector();
 			break;
 			}
 		case 3:
@@ -244,14 +248,21 @@ void Manager::workingWithProfiles(std::shared_ptr<User>&)
 				std::cout << error.what() << "\n\n";
 				system("pause");
 			}
-			system("cls");
 			break;
 			}
 		case 4:
 			{
 			std::cout << "\nВведите номер редактируемого аккаунта: ";
 			this->database_.updateAccessRights(this->database_.getUserByPositionInVector(utils::checkIntInRange(1, this->database_.getUsersVectorSize()) - 1));
-			system("cls");
+			break;
+			}
+		case 5:
+			{
+			std::cout << '\n';
+				if (utils::isYouConfident())
+				{
+					this->database_.clearDatabase(authorizedUser->getUsername());
+				}
 			break;
 			}
 		default:

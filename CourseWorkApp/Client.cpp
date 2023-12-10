@@ -79,6 +79,10 @@ void Client::functionalSetMobileNumber()
 			this->mobileNumber_ = utils::checkStringInRange(9, 9, false);
 			for (const auto& element : this->mobileNumber_)
 			{
+				if (element >= 'А' && element <= 'я')
+				{
+					throw std::runtime_error("Недопустимые символы!");
+				}
 				if (!std::isdigit(element))
 				{
 					throw std::runtime_error("Недопустимые символы!");

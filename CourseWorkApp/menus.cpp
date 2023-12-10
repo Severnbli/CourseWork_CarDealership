@@ -97,9 +97,7 @@ int adminMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
             }
             default:
             {
-                std::cout << "Ошибка! Выход из системы...";
-                system("pause");
-                return 1;
+                break;
             }
             case 0:
             {
@@ -141,9 +139,7 @@ int userMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
         }
         default:
         {
-            std::cout << "Ошибка! Выход из системы...";
-            system("pause");
-            return 1;
+            break;
         }
         case 0:
         {

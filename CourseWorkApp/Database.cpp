@@ -190,7 +190,7 @@ void Database::updateAccessRights(const std::shared_ptr<User>& user)
 
 void Database::sortUsersVector()
 {
-	switch (utils::patternForMenus("Выберите параметр сортировки\n"
+	switch (utils::patternForMenus("АСА - Меню сортировки	\n\nВыберите параметр сортировки\n"
 								"< - по убыванию, > - по возрастанию", {
 		"Имя пользователя >",
 		"Имя пользователя <",
@@ -333,7 +333,154 @@ void Database::sortUsersVector()
 	}
 }
 
-std::vector<std::shared_ptr<User>> Database::parseUsersVector(bool isAdmin)
+void Database::searchInUsersVector()
+{
+	while (true)
+	{
+		std::shared_ptr<User> foundUser = nullptr;
+		std::vector<std::shared_ptr<User>> foundUsers;
+		switch(utils::patternForMenus("АСА - Меню поиска\n\nВыберите параметр поиска", {
+			"Имя пользователя",
+			"ФИО",
+			"Админ-права",
+			"Должность",
+			"Премия",
+			"Ном. телефона",
+			"Лицензия на авто"
+		}, true, false))
+		{
+		case 1:
+			{
+			std::cout << '\n';
+			Client client;
+			client.functionalSetUsername();
+			for (const auto& user : this->users_)
+			{
+				if (user->getUsername() == client.getUsername())
+				{
+					foundUser = user;
+				}
+				else if (user->getUsername().find(client.getUsername()) != std::string::npos)
+				{
+					foundUsers.push_back(user);
+				}
+			}
+			break;
+			}
+		case 2:
+			{
+			std::cout << '\n';
+			Client client;
+			client.functionalSetFio();
+			for (const auto& user : this->users_)
+			{
+				if (user->getFio().find(client.getFio()) != std::string::npos)
+				{
+					foundUsers.push_back(user);
+				}
+			}
+			break;
+			}
+		case 3:
+			{
+			std::cout << '\n';
+			std::cout << "Выберите характер поиска:\n"
+				"1 - Админ-права.\n0 - Пользовательские права.\n\nВыберите: ";
+			foundUsers = this->parseUsersVector(static_cast<bool>(utils::checkIntInRange(0, 1)), false);
+			break;
+			}
+		case 4:
+			{
+			std::cout << '\n';
+			Employee employee;
+			employee.functionalSetPosition();
+			const auto employees = this->parseUsersVector(true, false);
+			for (const auto& element : employees)
+			{
+				if (std::dynamic_pointer_cast<Employee>(element)->getPosition() == employee.getPosition())
+				{
+					foundUser = element;
+				}
+				else if (std::dynamic_pointer_cast<Employee>(element)->getPosition().find(employee.getPosition()) != std::string::npos)
+				{
+					foundUsers.push_back(element);
+				}
+			}
+			break;
+			}
+		case 5:
+			{
+			std::cout << '\n';
+			Employee employee;
+			employee.functionalSetAward();
+			const auto employees = this->parseUsersVector(true, false);
+			for (const auto& element : employees)
+			{
+				if (std::dynamic_pointer_cast<Employee>(element)->getAward() == employee.getAward())
+				{
+					foundUser = element;
+				}
+				else if (std::to_string(std::dynamic_pointer_cast<Employee>(element)->getAward()).find(std::to_string(employee.getAward())) != std::string::npos)
+				{
+					foundUsers.push_back(element);
+				}
+			}
+			break;
+			}
+		case 6:
+			{
+			std::cout << '\n';
+			Client client;
+			client.functionalSetMobileNumber();
+			const auto clients = this->parseUsersVector(false, false);
+			for (const auto& element : clients)
+			{
+				if (std::dynamic_pointer_cast<Client>(element)->getMobileNumber() == client.getMobileNumber())
+				{
+					foundUser = element;
+				}
+			}
+			break;
+			}
+		case 7:
+			{
+			std::cout << '\n';
+			Client client;
+			client.functionalSetStatusOfDriverLicense();
+			const auto clients = this->parseUsersVector(false, false);
+			for (const auto& element : clients)
+			{
+				if (std::dynamic_pointer_cast<Client>(element)->getStatusOfDriverLicense() == client.getStatusOfDriverLicense())
+				{
+					foundUsers.push_back(element);
+				}
+			}
+			break;
+			}
+		default:
+			{
+			continue;
+			}
+		case 0:
+			{
+			return;
+			}
+		}
+		system("cls");
+		std::cout << "АСА - Меню поиска - найденные записи\n\n";
+		if (!foundUser && foundUsers.empty())
+		{
+			std::cout << "Ни одной записи не было найдено!";
+		} else
+		{
+			this->showUsersInfo(foundUser, foundUsers);
+		}
+		std::cout << "\n\n";
+		system("pause");
+	}
+}
+
+std::vector<std::shared_ptr<User>> Database::parseUsersVector(bool isAdmin, bool isErase)
 {
 	std::vector<std::shared_ptr<User>> result;
 	auto begin = this->users_.begin();
@@ -342,12 +489,13 @@ std::vector<std::shared_ptr<User>> Database::parseUsersVector(bool isAdmin)
 		if ((*begin)->isAdmin() == isAdmin)
 		{
 			result.push_back(*begin);
-			begin = this->users_.erase(begin);
+			if (isErase)
+			{
+				begin = this->users_.erase(begin);
+				continue;
+			}
 		}
-		else
-		{
-			++begin;
-		}
+		++begin;
 	}
 	return result;
 }
@@ -362,10 +510,20 @@ std::shared_ptr<Car> Database::getCarByPositionInVector(size_t position)
 	return this->cars_.at(position);
 }
 
-void Database::cleanAllVectors()
+void Database::clearDatabase(const std::string& username)
 {
 	this->cars_.clear();
-	this->users_.clear();
+	auto begin = this->users_.begin();
+	while (begin != this->users_.end())
+	{
+		if ((*begin)->getUsername() != username)
+		{
+			begin = this->users_.erase(begin);
+		} else
+		{
+			++begin;
+		}
+	}
 }
 
 void Database::deleteUser(std::shared_ptr<User>& user)
@@ -375,8 +533,7 @@ void Database::deleteUser(std::shared_ptr<User>& user)
 	{
 		return;
 	}
-	std::cout << "Вы уверены в своих действиях?\n1 - Да.\n0 - Нет.\n\nВыберите: ";
-	if (!static_cast<bool>(utils::checkIntInRange(0, 1)))
+	if (!utils::isYouConfident())
 	{
 		return;
 	}
@@ -414,7 +571,7 @@ bool Database::isValidUsername(const std::string& username) const
 	return true;
 }
 
-void Database::functionalCheckUsername(std::shared_ptr<User>& user)
+void Database::functionalCheckUsername(std::shared_ptr<User>& user) const
 {
 	while (true)
 	{
@@ -436,7 +593,7 @@ void Database::functionalCheckUsername(std::shared_ptr<User>& user)
 	}
 }
 
-void Database::showUsersInfo(const std::shared_ptr<User>& userReferense) const //печатает инфу о пользователе/ползователях
+void Database::showUsersInfo(const std::shared_ptr<User>& userReferense, const std::vector<std::shared_ptr<User>>& usersVector) const //печатает инфу о пользователе/ползователях
 {
 	if (!userReferense && this->users_.empty())
 	{
@@ -453,7 +610,28 @@ void Database::showUsersInfo(const std::shared_ptr<User>& userReferense) const /
 		std::cout << '|' << std::setw(4) << counter++;
 		userReferense->printInfoTableForm();
 	}
-	else
+	if(!usersVector.empty())
+	{
+		if (counter == 2)
+		{
+			std::cout << "\n\n";
+			utils::patternForTableHeader({
+									{"ИМЯ ПОЛЬЗ.", 12 }, { "ФИО", 30 }, { "АДМ", 3 },
+									{"ДОЛЖНОСТЬ", 12}, {"ПРЕМИЯ", 8}, {"МОБ. ТЕЛЕФОН", 13},
+									{"ЛИЦ", 3}
+			});
+		} else
+		{
+			
+		}
+		for (const auto& element : usersVector)
+		{
+			std::cout << '|' << std::setw(4) << counter++;
+			element->printInfoTableForm();
+		}
+		std::cout << "^^^\nСовпадения";
+	}
+	if (!userReferense && usersVector.empty())
 	{
 		for (const auto& user : this->users_)
 		{

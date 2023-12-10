@@ -91,15 +91,12 @@ namespace utils {
 					{
 						break;
 					}
-					if (isdigit(charToCheck))
-					{
-						continue;
-					}
-					else if (charToCheck == '-' && counter > 0)
+					if (charToCheck >= 'А' && charToCheck <= 'я')
 					{
 						throw std::runtime_error(UNCORRECTED_INPUT);
+
 					}
-					else
+					if (!isdigit(charToCheck))
 					{
 						throw std::runtime_error(UNCORRECTED_INPUT);
 					}
@@ -229,6 +226,10 @@ namespace utils {
 						isFirstPoint = false;
 						counter += 2;
 					}
+					if (bufferInput[counter] >= 'А' && bufferInput[counter] <= 'я')
+					{
+						throw std::runtime_error(UNCORRECTED_INPUT);
+					}
 					if (!isdigit(bufferInput[counter])) {
 						throw std::runtime_error(UNCORRECTED_INPUT);
 					}
@@ -236,10 +237,10 @@ namespace utils {
 				return stod(bufferInput);
 			}
 			catch (const std::runtime_error& error) {
-				std::cerr << error.what();
+				std::cout << error.what();
 			}
-			catch (const std::out_of_range& error) {
-				std::cerr << "Введённое слишком велико!";
+			catch (const std::out_of_range) {
+				std::cout << UNCORRECTED_INPUT;
 			}
 			std::cin.clear();
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -362,5 +363,11 @@ namespace utils {
 			std::cout << '+' << std::string(pair.second, '-');
 		}
 		std::cout << "+\n";
+    }
+
+	bool isYouConfident()
+    {
+		std::cout << "Вы уверены в своих действиях?\n1 - Да.\n0 - Нет.\n\nВыберите: ";
+		return static_cast<bool>(checkIntInRange(0, 1));
     }
 }

@@ -46,21 +46,23 @@ public:
 
 	void sortUsersVector();
 
-	std::vector<std::shared_ptr<User>> parseUsersVector(bool);
+	void searchInUsersVector();
+
+	std::vector<std::shared_ptr<User>> parseUsersVector(bool, bool = true);
 
 	size_t getCarsVectorSize() const;
 
 	std::shared_ptr<Car> getCarByPositionInVector(size_t);
 
-	void cleanAllVectors();
+	void clearDatabase(const std::string&);
 
 	void deleteUser(std::shared_ptr<User>&);
 	
 	bool isValidUsername(const std::string&) const;
 
-	void functionalCheckUsername(std::shared_ptr<User>&);
+	void functionalCheckUsername(std::shared_ptr<User>&) const;
 	
-	void showUsersInfo(const std::shared_ptr<User>& = nullptr) const;
+	void showUsersInfo(const std::shared_ptr<User>& = nullptr, const std::vector<std::shared_ptr<User>>& = {}) const;
 	
 	void showCarsInfo(const std::shared_ptr<Car> & = nullptr) const;
 
