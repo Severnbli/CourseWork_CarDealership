@@ -107,7 +107,7 @@ namespace utils {
 			{
 				std::cout << error.what();
 			}
-			catch (const std::out_of_range& error)
+			catch (const std::out_of_range)
 			{
 				std::cout << UNCORRECTED_INPUT;
 			}

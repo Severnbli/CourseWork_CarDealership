@@ -337,8 +337,8 @@ void Database::searchInUsersVector()
 {
 	while (true)
 	{
-		std::shared_ptr<User> foundUser = nullptr;
 		std::vector<std::shared_ptr<User>> foundUsers;
+		std::vector<std::shared_ptr<User>> foundСoincidences;
 		switch(utils::patternForMenus("АСА - Меню поиска\n\nВыберите параметр поиска", {
 			"Имя пользователя",
 			"ФИО",
@@ -356,13 +356,13 @@ void Database::searchInUsersVector()
 			client.functionalSetUsername();
 			for (const auto& user : this->users_)
 			{
-				if (user->getUsername() == client.getUsername())
+				if (foundUsers.empty() && user->getUsername() == client.getUsername())
 				{
-					foundUser = user;
+					foundUsers.push_back(user);
 				}
 				else if (user->getUsername().find(client.getUsername()) != std::string::npos)
 				{
-					foundUsers.push_back(user);
+					foundСoincidences.push_back(user);
 				}
 			}
 			break;
@@ -399,11 +399,11 @@ void Database::searchInUsersVector()
 			{
 				if (std::dynamic_pointer_cast<Employee>(element)->getPosition() == employee.getPosition())
 				{
-					foundUser = element;
+					foundUsers.push_back(element);
 				}
 				else if (std::dynamic_pointer_cast<Employee>(element)->getPosition().find(employee.getPosition()) != std::string::npos)
 				{
-					foundUsers.push_back(element);
+					foundСoincidences.push_back(element);
 				}
 			}
 			break;
@@ -418,11 +418,11 @@ void Database::searchInUsersVector()
 			{
 				if (std::dynamic_pointer_cast<Employee>(element)->getAward() == employee.getAward())
 				{
-					foundUser = element;
+					foundUsers.push_back(element);
 				}
 				else if (std::to_string(std::dynamic_pointer_cast<Employee>(element)->getAward()).find(std::to_string(employee.getAward())) != std::string::npos)
 				{
-					foundUsers.push_back(element);
+					foundСoincidences.push_back(element);
 				}
 			}
 			break;
@@ -437,7 +437,7 @@ void Database::searchInUsersVector()
 			{
 				if (std::dynamic_pointer_cast<Client>(element)->getMobileNumber() == client.getMobileNumber())
 				{
-					foundUser = element;
+					foundUsers.push_back(element);
 				}
 			}
 			break;
@@ -468,12 +468,18 @@ void Database::searchInUsersVector()
 		}
 		system("cls");
 		std::cout << "АСА - Меню поиска - найденные записи\n\n";
-		if (!foundUser && foundUsers.empty())
+		if (!foundUsers.empty())
+		{
+			this->showUsersInfo(nullptr, foundUsers);
+		}
+		if (!foundСoincidences.empty())
+		{
+			std::cout << "\n\nНайденные похожие:";
+			this->showUsersInfo(nullptr, foundСoincidences);
+		}
+		if (foundUsers.empty() && foundСoincidences.empty())
 		{
 			std::cout << "Ни одной записи не было найдено!";
-		} else
-		{
-			this->showUsersInfo(foundUser, foundUsers);
 		}
 		std::cout << "\n\n";
 		system("pause");
@@ -508,6 +514,239 @@ size_t Database::getCarsVectorSize() const
 std::shared_ptr<Car> Database::getCarByPositionInVector(size_t position)
 {
 	return this->cars_.at(position);
+}
+
+void Database::sortCarsVector()
+{
+	switch(utils::patternForMenus("АСА - Меню сортировки	\n\nВыберите параметр сортировки\n"
+								"< - по убыванию, > - по возрастанию", {
+		"Бренд >",
+		"Бренд <",
+		"Модель >",
+		"Модель <",
+		"Год выпуска >",
+		"Год выпуска <",
+		"Количество на складе >",
+		"Количество на складе <",
+		"Цена >",
+		"Цена <"
+		}))
+	{
+	case 1:
+		{
+		std::sort(this->cars_.begin(), this->cars_.end(),
+			[](const auto& a, const auto& b)
+			{
+				compareByBrand(a, b);
+			});
+		break;
+		}
+	case 2:
+		{
+		std::sort(this->cars_.begin(), this->cars_.end(),
+			[](const auto& a, const auto& b)
+			{
+				compareByBrand(b, a);
+			});
+		break;
+		}
+	case 3:
+		{
+		std::sort(this->cars_.begin(), this->cars_.end(),
+			[](const auto& a, const auto& b)
+			{
+				compareByModel(a, b);
+			});
+		break;
+		}
+	case 4:
+		{
+		std::sort(this->cars_.begin(), this->cars_.end(),
+			[](const auto& a, const auto& b)
+			{
+				compareByModel(b, a);
+			});
+		break;
+		}
+	case 5:
+		{
+		std::sort(this->cars_.begin(), this->cars_.end(),
+			[](const auto& a, const auto& b)
+			{
+				compareByYearOfManufacture(a, b);
+			});
+		break;
+		}
+	case 6:
+		{
+		std::sort(this->cars_.begin(), this->cars_.end(),
+			[](const auto& a, const auto& b)
+			{
+				compareByYearOfManufacture(b, a);
+			});
+		break;
+		}
+	case 7:
+		{
+		std::sort(this->cars_.begin(), this->cars_.end(),
+			[](const auto& a, const auto& b)
+			{
+				compareByAmount(a, b);
+			});
+		break;
+		}
+	case 8:
+		{
+		std::sort(this->cars_.begin(), this->cars_.end(),
+			[](const auto& a, const auto& b)
+			{
+				compareByAmount(b, a);
+			});
+		break;
+		}
+	case 9:
+		{
+		std::sort(this->cars_.begin(), this->cars_.end(),
+			[](const auto& a, const auto& b)
+			{
+				compareByPrice(a, b);
+			});
+		break;
+		}
+	case 10:
+		{
+		std::sort(this->cars_.begin(), this->cars_.end(),
+			[](const auto& a, const auto& b)
+			{
+				compareByPrice(b, a);
+			});
+		break;
+		}
+	default:
+		{
+		break;
+		}
+	case 0:
+		{
+		break;
+		}
+	}
+}
+
+void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser)
+{
+	while (true)
+	{
+		std::vector<std::shared_ptr<Car>> foundCars;
+		std::vector<std::shared_ptr<Car>> foundСoincidences;
+		switch (utils::patternForMenus("АСА - Меню поиска\n\nВыберите параметр поиска", {
+			"Бренд",
+			"Модель",
+			"Год выпуска",
+			"Количество на складе",
+			"Цена"
+			}, true, false))
+		{
+		case 1:
+			{
+			Car car;
+			car.functionalSetBrand();
+				for (const auto& element : this->cars_)
+				{
+					if (element->getBrand() == car.getBrand())
+					{
+						foundCars.push_back(element);
+					}
+					else if (element->getBrand().find(car.getBrand()) != std::string::npos)
+					{
+						foundСoincidences.push_back(element);
+					} 
+				}
+			break;	
+			}
+		case 2:
+			{
+			Car car;
+			car.functionalSetModel();
+			for (const auto& element : this->cars_)
+			{
+				if (element->getModel() == car.getModel())
+				{
+					foundCars.push_back(element);
+				}
+				else if (element->getModel().find(car.getModel()) != std::string::npos)
+				{
+					foundСoincidences.push_back(element);
+				}
+			}
+			break;
+			}
+		case 3:
+			{
+			Car car;
+			car.functionalSetYearOfManufacture();
+			for (const auto& element : this->cars_)
+			{
+				if (element->getYearOfManufacture() == car.getYearOfManufacture())
+				{
+					foundCars.push_back(element);
+				}
+			}
+			break;
+			}
+		case 4:
+			{
+			Car car;
+			car.functionalSetAmount();
+			for (const auto& element : this->cars_)
+			{
+				if (element->getAmount() == car.getAmount())
+				{
+					foundCars.push_back(element);
+				}
+			}
+			break;
+			}
+		case 5:
+			{
+			Car car;
+			car.functionalSetPrice();
+			for (const auto& element : this->cars_)
+			{
+				if (element->getPrice() == car.getPrice())
+				{
+					foundCars.push_back(element);
+				}
+			}
+			break;
+			}
+		default:
+				{
+				break;
+				}
+		case 0:
+				{
+			return;
+				}
+		}
+		system("cls");
+		std::cout << "АСА - Меню поиска - найденные записи\n\n";
+		if (!foundCars.empty())
+		{
+			this->showCarsInfo(nullptr, foundCars);
+		}
+		if (!foundСoincidences.empty())
+		{
+			std::cout << "\n\nНайденные похожие:";
+			this->showCarsInfo(nullptr, foundСoincidences);
+		}
+		if (foundCars.empty() && foundСoincidences.empty())
+		{
+			std::cout << "Ни одной записи не было найдено!";
+		}
+		std::cout << "\n\n";
+		system("pause");
+	}
 }
 
 void Database::clearDatabase(const std::string& username)
@@ -612,24 +851,11 @@ void Database::showUsersInfo(const std::shared_ptr<User>& userReferense, const s
 	}
 	if(!usersVector.empty())
 	{
-		if (counter == 2)
-		{
-			std::cout << "\n\n";
-			utils::patternForTableHeader({
-									{"ИМЯ ПОЛЬЗ.", 12 }, { "ФИО", 30 }, { "АДМ", 3 },
-									{"ДОЛЖНОСТЬ", 12}, {"ПРЕМИЯ", 8}, {"МОБ. ТЕЛЕФОН", 13},
-									{"ЛИЦ", 3}
-			});
-		} else
-		{
-			
-		}
 		for (const auto& element : usersVector)
 		{
 			std::cout << '|' << std::setw(4) << counter++;
 			element->printInfoTableForm();
 		}
-		std::cout << "^^^\nСовпадения";
 	}
 	if (!userReferense && usersVector.empty())
 	{
@@ -641,7 +867,7 @@ void Database::showUsersInfo(const std::shared_ptr<User>& userReferense, const s
 	}
 }
 
-void Database::showCarsInfo(const std::shared_ptr<Car>& carReferense) const
+void Database::showCarsInfo(const std::shared_ptr<Car>& carReferense, const std::vector<std::shared_ptr<Car>>& carsVector) const
 {
 	if (!carReferense && this->cars_.empty())
 	{
@@ -654,7 +880,15 @@ void Database::showCarsInfo(const std::shared_ptr<Car>& carReferense) const
 		std::cout << '|' << std::setw(4) << counter++;
 		carReferense->printInfoTableForm();
 	}
-	else
+	if (!carsVector.empty())
+	{
+		for (const auto& element : carsVector)
+		{
+			std::cout << '|' << std::setw(4) << counter++;
+			element->printInfoTableForm();
+		}
+	}
+	if (!carReferense && carsVector.empty())
 	{
 		for (const auto& car : this->cars_)
 		{

@@ -2,6 +2,7 @@
 #include "utils.h"
 #include <iostream>
 #include <iomanip>
+#include <Windows.h>
 
 int Car::dimensionality_ = 5;
 
@@ -28,6 +29,10 @@ Car::Car(const std::vector<std::string>& data)
 	this->setInfoInVectorStringForm(data);
 }
 
+bool Car::operator<(const Car& other) const
+{
+	return this->amount_ < other.amount_;
+}
 
 Car::Car(const Car& other)
 {
@@ -63,7 +68,6 @@ void Car::functionalSetBrand()
 	std::cout << "Бренд (до 10 символов): ";
 	this->brand_ = utils::checkStringInRange(0, 10);
 }
-
 
 std::string Car::getBrand() const
 {
@@ -113,7 +117,6 @@ void Car::functionalSetAmount()
 	this->amount_ = utils::checkIntPositive();
 }
 
-
 int Car::getAmount() const
 {
 	return this->amount_;
@@ -130,7 +133,6 @@ void Car::functionalSetPrice()
 	this->price_ = utils::checkDoublePositive();
 }
 
-
 double Car::getPrice() const
 {
 	return this->price_;
@@ -141,7 +143,7 @@ int Car::getDimensionality()
 	return dimensionality_;
 }
 
-void Car::printInfoTableForm()
+void Car::printInfoTableForm() const
 {
 	std::cout << '|' << std::setw(10) << this->brand_ << '|' << std::setw(7) << this->model_ << '|';
 	std::cout << std::setw(11) << this->yearOfManufacture_ << '|' << std::setw(6) << this->amount_ << '|';
@@ -150,3 +152,53 @@ void Car::printInfoTableForm()
 	std::cout << std::string(7, '-') << '+' << std::string(11, '-') << '+';
 	std::cout << std::string(6, '-') << '+' << std::string(12, '-') << std::endl;
  }
+
+bool compareByBrand(const Car& firstObject, const Car& secondObject)
+{
+	return firstObject.getBrand() < secondObject.getBrand();
+}
+
+bool compareByBrand(const std::shared_ptr<Car>& firstObject, const std::shared_ptr<Car>& secondObject)
+{
+	return firstObject->getBrand() < secondObject->getBrand();
+}
+
+bool compareByModel(const Car& firstObject, const Car& secondObject)
+{
+	return firstObject.getModel() < secondObject.getModel();
+}
+
+bool compareByModel(const std::shared_ptr<Car>& firstObject, const std::shared_ptr<Car>& secondObject)
+{
+	return firstObject->getModel() < secondObject->getModel();
+}
+
+bool compareByYearOfManufacture(const Car& firstObject, const Car& secondObject)
+{
+	return firstObject.getYearOfManufacture() < secondObject.getYearOfManufacture();
+}
+
+bool compareByYearOfManufacture(const std::shared_ptr<Car>& firstObject, const std::shared_ptr<Car>& secondObject)
+{
+	return firstObject->getYearOfManufacture() < secondObject->getYearOfManufacture();
+}
+
+bool compareByAmount(const Car& firstObject, const Car& secondObject)
+{
+	return firstObject.getAmount() < secondObject.getAmount();
+}
+
+bool compareByAmount(const std::shared_ptr<Car>& firstObject, const std::shared_ptr<Car>& secondObject)
+{
+	return firstObject->getAmount() < secondObject->getAmount();
+}
+
+bool compareByPrice(const Car& firstObject, const Car& secondObject)
+{
+	return firstObject.getPrice() < secondObject.getPrice();
+}
+
+bool compareByPrice(const std::shared_ptr<Car>& firstObject, const std::shared_ptr<Car>& secondObject)
+{
+	return firstObject->getPrice() < secondObject->getPrice();
+}

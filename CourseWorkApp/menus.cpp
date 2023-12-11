@@ -80,7 +80,7 @@ int adminMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
             }
             case 2:
             {
-                manager.workingWithCatalog();
+                manager.workingEmployeeWithCatalog(authorizedUser);
                 break;
             }
             case 3:

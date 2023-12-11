@@ -16,13 +16,13 @@ public:
 
 	void workingWithEmployeeProfile(std::shared_ptr<User>&);
 
-	void workingWithProfiles(std::shared_ptr<User>&);
+	void workingEmployeeWithProfiles(std::shared_ptr<User>&);
 
 	void customizeClientProfile(std::shared_ptr<User>&);
 
 	void customizeEmloyeeProfile(std::shared_ptr<User>&);
 
-	void workingWithCatalog();
+	void workingEmployeeWithCatalog(const std::shared_ptr<User>&);
 
 private:
 	Database database_;

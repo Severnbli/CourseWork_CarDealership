@@ -68,7 +68,7 @@ void Manager::workingWithEmployeeProfile(std::shared_ptr<User>& authorizedUser)
 		}
 		case 2:
 		{
-			this->workingWithProfiles(authorizedUser);
+			this->workingEmployeeWithProfiles(authorizedUser);
 			break;
 		}
 		default:
@@ -201,7 +201,7 @@ void Manager::customizeEmloyeeProfile(std::shared_ptr<User>& authorizedUser)
 	}
 }
 
-void Manager::workingWithProfiles(std::shared_ptr<User>& authorizedUser)
+void Manager::workingEmployeeWithProfiles(std::shared_ptr<User>& authorizedUser)
 {
 	while (true)
 	{
@@ -277,28 +277,38 @@ void Manager::workingWithProfiles(std::shared_ptr<User>& authorizedUser)
 	}
 }
 
-void Manager::workingWithCatalog()
+void Manager::workingEmployeeWithCatalog(const std::shared_ptr<User>& authorizedUser)
 {
-	std::cout << "АСА - Меню работы с каталогом\n\n";
-	this->database_.showCarsInfo();
-	switch (utils::patternForMenus("" , {"Сортировка", "Поиск"}))
+	while (true)
 	{
-	case 1:
+		system("cls");
+		std::cout << "АСА - Меню работы с каталогом\n\n";
+		this->database_.showCarsInfo();
+		switch (utils::patternForMenus("", {
+			"Сортировка",
+			"Поиск",
+			"Добавление авто",
+			"Редактирование"
+		}, false, false))
 		{
-		break;
+		case 1:
+		{
+			this->database_.sortCarsVector();
+			break;
 		}
-	case 2:
+		case 2:
 		{
-		break;
+			this->database_.searchInCarsVector(authorizedUser);
+			break;
 		}
-	default:
+		default:
 		{
-		break;
+			break;
 		}
-	case 0:
+		case 0:
 		{
-		break;
+			return;
+		}
 		}
 	}
-	return;
 }

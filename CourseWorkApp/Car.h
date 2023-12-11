@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -14,6 +15,8 @@ public:
 	Car(const std::vector<std::string>&);
 
 	Car(const Car&);
+
+	bool operator<(const Car&) const;
 
 	void setInfoInVectorStringForm(const std::vector<std::string>&);
 
@@ -51,7 +54,7 @@ public:
 
 	static int getDimensionality();
 
-	void printInfoTableForm();
+	void printInfoTableForm() const;
 
 private:
 	static int dimensionality_;
@@ -66,3 +69,23 @@ private:
 
 	double price_ = 0.0;
 };
+
+bool compareByBrand(const Car&, const Car&);
+
+bool compareByBrand(const std::shared_ptr<Car>&, const std::shared_ptr<Car>&);
+
+bool compareByModel(const Car&, const Car&);
+
+bool compareByModel(const std::shared_ptr<Car>&, const std::shared_ptr<Car>&);
+
+bool compareByYearOfManufacture(const Car&, const Car&);
+
+bool compareByYearOfManufacture(const std::shared_ptr<Car>&, const std::shared_ptr<Car>&);
+
+bool compareByAmount(const Car&, const Car&);
+
+bool compareByAmount(const std::shared_ptr<Car>&, const std::shared_ptr<Car>&);
+
+bool compareByPrice(const Car&, const Car&);
+
+bool compareByPrice(const std::shared_ptr<Car>&, const std::shared_ptr<Car>&);
