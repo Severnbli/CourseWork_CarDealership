@@ -282,7 +282,7 @@ void Manager::workingEmployeeWithCatalog(const std::shared_ptr<User>& authorized
 	while (true)
 	{
 		system("cls");
-		std::cout << "АСА - Меню работы с каталогом\n\n";
+		std::cout << "АСА - Меню работы с каталогом";
 		this->database_.showCarsInfo();
 		switch (utils::patternForMenus("", {
 			"Сортировка",

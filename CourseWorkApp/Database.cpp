@@ -537,7 +537,7 @@ void Database::sortCarsVector()
 		std::sort(this->cars_.begin(), this->cars_.end(),
 			[](const auto& a, const auto& b)
 			{
-				compareByBrand(a, b);
+				return compareByBrand(a, b);
 			});
 		break;
 		}
@@ -546,7 +546,7 @@ void Database::sortCarsVector()
 		std::sort(this->cars_.begin(), this->cars_.end(),
 			[](const auto& a, const auto& b)
 			{
-				compareByBrand(b, a);
+				return compareByBrand(b, a);
 			});
 		break;
 		}
@@ -555,7 +555,7 @@ void Database::sortCarsVector()
 		std::sort(this->cars_.begin(), this->cars_.end(),
 			[](const auto& a, const auto& b)
 			{
-				compareByModel(a, b);
+				return compareByModel(a, b);
 			});
 		break;
 		}
@@ -564,7 +564,7 @@ void Database::sortCarsVector()
 		std::sort(this->cars_.begin(), this->cars_.end(),
 			[](const auto& a, const auto& b)
 			{
-				compareByModel(b, a);
+				return compareByModel(b, a);
 			});
 		break;
 		}
@@ -573,7 +573,7 @@ void Database::sortCarsVector()
 		std::sort(this->cars_.begin(), this->cars_.end(),
 			[](const auto& a, const auto& b)
 			{
-				compareByYearOfManufacture(a, b);
+				return compareByYearOfManufacture(a, b);
 			});
 		break;
 		}
@@ -582,7 +582,7 @@ void Database::sortCarsVector()
 		std::sort(this->cars_.begin(), this->cars_.end(),
 			[](const auto& a, const auto& b)
 			{
-				compareByYearOfManufacture(b, a);
+				return compareByYearOfManufacture(b, a);
 			});
 		break;
 		}
@@ -591,7 +591,7 @@ void Database::sortCarsVector()
 		std::sort(this->cars_.begin(), this->cars_.end(),
 			[](const auto& a, const auto& b)
 			{
-				compareByAmount(a, b);
+				return compareByAmount(a, b);
 			});
 		break;
 		}
@@ -600,7 +600,7 @@ void Database::sortCarsVector()
 		std::sort(this->cars_.begin(), this->cars_.end(),
 			[](const auto& a, const auto& b)
 			{
-				compareByAmount(b, a);
+				return compareByAmount(b, a);
 			});
 		break;
 		}
@@ -609,7 +609,7 @@ void Database::sortCarsVector()
 		std::sort(this->cars_.begin(), this->cars_.end(),
 			[](const auto& a, const auto& b)
 			{
-				compareByPrice(a, b);
+				return compareByPrice(a, b);
 			});
 		break;
 		}
@@ -618,7 +618,7 @@ void Database::sortCarsVector()
 		std::sort(this->cars_.begin(), this->cars_.end(),
 			[](const auto& a, const auto& b)
 			{
-				compareByPrice(b, a);
+				return compareByPrice(b, a);
 			});
 		break;
 		}
