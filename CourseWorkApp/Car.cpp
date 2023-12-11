@@ -150,7 +150,7 @@ void Car::printInfoTableForm() const
 	std::cout << std::setw(12) << std::fixed << std::setprecision(2) << this->price_ << '|' << std::endl;
 	std::cout << '+' << std::string(4, '-') << '+' << std::string(10, '-') << '+';
 	std::cout << std::string(7, '-') << '+' << std::string(11, '-') << '+';
-	std::cout << std::string(6, '-') << '+' << std::string(12, '-') << std::endl;
+	std::cout << std::string(6, '-') << '+' << std::string(12, '-') << '+' << std::endl;
  }
 
 bool compareByBrand(const Car& firstObject, const Car& secondObject)

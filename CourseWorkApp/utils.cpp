@@ -215,16 +215,18 @@ namespace utils {
 					}
 					counter++;
 				}
-				for (bool isFirstPoint = true;; counter++) {
+				bool isPoint = false;
+				for (;; counter++) {
 					if (bufferInput[counter] == '\0') {
 						break;
 					}
 					if (bufferInput[counter] == '.') {
-						if (bufferInput[counter + 1] == '\0' || !isFirstPoint) {
+						if (bufferInput[counter + 1] == '\0' || isPoint) {
 							throw std::runtime_error(UNCORRECTED_INPUT);
 						}
-						isFirstPoint = false;
+						isPoint = true;
 						counter += 2;
+						continue;
 					}
 					if (bufferInput[counter] >= 'À' && bufferInput[counter] <= 'ÿ')
 					{
@@ -233,6 +235,11 @@ namespace utils {
 					if (!isdigit(bufferInput[counter])) {
 						throw std::runtime_error(UNCORRECTED_INPUT);
 					}
+				}
+				if (isPoint)
+				{
+					size_t pointPos = bufferInput.find('.');
+					return std::stod(bufferInput.substr(0, pointPos + 3));
 				}
 				return stod(bufferInput);
 			}

@@ -416,14 +416,11 @@ void Database::searchInUsersVector()
 			const auto employees = this->parseUsersVector(true, false);
 			for (const auto& element : employees)
 			{
-				if (std::dynamic_pointer_cast<Employee>(element)->getAward() == employee.getAward())
+				if (std::dynamic_pointer_cast<Employee>(element)->getAward() < employee.getAward() || std::dynamic_pointer_cast<Employee>(element)->getAward() > employee.getAward())
 				{
-					foundUsers.push_back(element);
+					continue;
 				}
-				else if (std::to_string(std::dynamic_pointer_cast<Employee>(element)->getAward()).find(std::to_string(employee.getAward())) != std::string::npos)
-				{
-					foundСoincidences.push_back(element);
-				}
+				foundUsers.push_back(element);
 			}
 			break;
 			}
@@ -474,7 +471,7 @@ void Database::searchInUsersVector()
 		}
 		if (!foundСoincidences.empty())
 		{
-			std::cout << "\n\nНайденные похожие:";
+			std::cout << "\n\nНайденные похожие:\n";
 			this->showUsersInfo(nullptr, foundСoincidences);
 		}
 		if (foundUsers.empty() && foundСoincidences.empty())
@@ -650,6 +647,7 @@ void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser)
 		case 1:
 			{
 			Car car;
+			std::cout << '\n';
 			car.functionalSetBrand();
 				for (const auto& element : this->cars_)
 				{
@@ -667,6 +665,7 @@ void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser)
 		case 2:
 			{
 			Car car;
+			std::cout << '\n';
 			car.functionalSetModel();
 			for (const auto& element : this->cars_)
 			{
@@ -684,6 +683,7 @@ void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser)
 		case 3:
 			{
 			Car car;
+			std::cout << '\n';
 			car.functionalSetYearOfManufacture();
 			for (const auto& element : this->cars_)
 			{
@@ -697,6 +697,7 @@ void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser)
 		case 4:
 			{
 			Car car;
+			std::cout << '\n';
 			car.functionalSetAmount();
 			for (const auto& element : this->cars_)
 			{
@@ -710,13 +711,15 @@ void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser)
 		case 5:
 			{
 			Car car;
+			std::cout << '\n';
 			car.functionalSetPrice();
 			for (const auto& element : this->cars_)
 			{
-				if (element->getPrice() == car.getPrice())
+				if (element->getPrice() < car.getPrice() || element->getPrice() > car.getPrice())
 				{
-					foundCars.push_back(element);
+					continue;
 				}
+				foundCars.push_back(element);
 			}
 			break;
 			}
@@ -737,7 +740,7 @@ void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser)
 		}
 		if (!foundСoincidences.empty())
 		{
-			std::cout << "\n\nНайденные похожие:";
+			std::cout << "\n\nНайденные похожие:\n";
 			this->showCarsInfo(nullptr, foundСoincidences);
 		}
 		if (foundCars.empty() && foundСoincidences.empty())
@@ -873,7 +876,7 @@ void Database::showCarsInfo(const std::shared_ptr<Car>& carReferense, const std:
 	{
 		throw std::runtime_error("В каталоге не находится ни одного автомобиля!");
 	}
-	utils::patternForTableHeader({ {"БРЕНД", 10}, {"МОДЕЛЬ", 7}, {"ГОД_ВЫПУСКА", 11}, {"КОЛ_ВО", 6}, {"ЦЕНА", 12} });
+	utils::patternForTableHeader({ {"БРЕНД", 10}, {"МОДЕЛЬ", 7}, {"ГОД ВЫПУСКА", 11}, {"КОЛ-ВО", 6}, {"ЦЕНА", 12} });
 	int counter = 1;
 	if (carReferense)
 	{
