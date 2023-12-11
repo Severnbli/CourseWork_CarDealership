@@ -64,5 +64,5 @@ namespace utils {
 		std::string content_;
 	};
 
-	bool isYouConfident();
+	bool areYouConfident();
 }

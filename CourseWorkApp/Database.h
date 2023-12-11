@@ -60,7 +60,9 @@ public:
 
 	void clearDatabase(const std::string&);
 
-	void deleteUser(std::shared_ptr<User>&);
+	void deleteUser(const std::shared_ptr<User>&);
+
+	void deleteCar(const std::shared_ptr<Car>&);
 	
 	bool isValidUsername(const std::string&) const;
 
@@ -69,6 +71,8 @@ public:
 	void showUsersInfo(const std::shared_ptr<User>& = nullptr, const std::vector<std::shared_ptr<User>>& = {}) const;
 	
 	void showCarsInfo(const std::shared_ptr<Car> & = nullptr, const std::vector<std::shared_ptr<Car>>& = {}) const;
+
+	void customizeCar(const std::shared_ptr<Car>&);
 
 private:
 	std::vector<std::shared_ptr<User>> users_;

@@ -8,9 +8,13 @@ int Employee::dimensionality_ = 5;
 Employee::Employee(int)
 {
 	this->functionalSetUsername();
+	std::cout << '\n';
 	this->functionalSetPassword();
+	std::cout << '\n';
 	this->functionalSetFio();
+	std::cout << '\n';
 	this->functionalSetPosition();
+	std::cout << '\n';
 	this->functionalSetAward();
 }
 

@@ -259,7 +259,7 @@ void Manager::workingEmployeeWithProfiles(std::shared_ptr<User>& authorizedUser)
 		case 5:
 			{
 			std::cout << '\n';
-				if (utils::isYouConfident())
+				if (utils::areYouConfident())
 				{
 					this->database_.clearDatabase(authorizedUser->getUsername());
 				}
@@ -300,6 +300,69 @@ void Manager::workingEmployeeWithCatalog(const std::shared_ptr<User>& authorized
 		{
 			this->database_.searchInCarsVector(authorizedUser);
 			break;
+		}
+		case 3:
+			{
+			system("cls");
+			std::cout << "АСА - Добавление автомобиля в каталог\n\n";
+			Car car(4);
+			this->database_.fullUpCarsVector(car);
+			std::cout << "\nАвтомобиль успешно добавлен в каталог!\n\n";
+			system("pause");
+			break;
+			}
+		case 4:
+			{
+			std::cout << "\nВыберите номер редактируемого автомобиля: ";
+				try
+				{
+					this->database_.customizeCar(this->database_.getCarByPositionInVector(utils::checkIntInRange(1, this->database_.getCarsVectorSize()) - 1));
+				}
+				catch (const utils::CustomExcept &error)
+				{
+					std::cout << error.what() << "\n\n";
+					system("pause");
+				}
+				break;
+			}
+		default:
+		{
+			break;
+		}
+		case 0:
+		{
+			return;
+		}
+		}
+	}
+}
+
+void Manager::workingClientWithCatalog(const std::shared_ptr<User>& authorizedUser)
+{
+	while (true)
+	{
+		system("cls");
+		std::cout << "АСА - Меню работы с каталогом\n\n";
+		this->database_.showCarsInfo();
+		switch (utils::patternForMenus("", {
+			"Сортировка",
+			"Поиск",
+			"Добавление в избранное"
+			}, false, false))
+		{
+		case 1:
+		{
+			this->database_.sortCarsVector();
+			break;
+		}
+		case 2:
+		{
+			this->database_.searchInCarsVector(authorizedUser);
+			break;
+		}
+		case 3:
+		{
+			;
 		}
 		default:
 		{

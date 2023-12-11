@@ -70,8 +70,11 @@ int adminMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
 	{
         try
         {
-            switch (utils::patternForMenus("АСА - Меню администратора " + authorizedUser->getUsername(), { "Работа с профилями", "Каталог",
-                "Добавление авто","Просмотр продаж", "Генерация отчётов" }))
+            switch (utils::patternForMenus("АСА - Меню администратора " + authorizedUser->getUsername(), { 
+                "Работа с профилями",
+            	"Каталог",
+            	"Генерация отчётов"
+            }))
             {
             case 1:
             {
@@ -84,14 +87,6 @@ int adminMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
                 break;
             }
             case 3:
-            {
-                break;
-            }
-            case 4:
-            {
-                break;
-            }
-            case 5:
             {
                 break;
             }
@@ -127,6 +122,7 @@ int userMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
         }
         case 2:
         {
+            manager.workingClientWithCatalog(authorizedUser);
             break;
         }
         case 3:

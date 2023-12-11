@@ -372,7 +372,7 @@ namespace utils {
 		std::cout << "+\n";
     }
 
-	bool isYouConfident()
+	bool areYouConfident()
     {
 		std::cout << "Вы уверены в своих действиях?\n1 - Да.\n0 - Нет.\n\nВыберите: ";
 		return static_cast<bool>(checkIntInRange(0, 1));

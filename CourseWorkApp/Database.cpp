@@ -145,6 +145,8 @@ void Database::fullUpUsersVector(const Employee& object)
 	this->users_.push_back(std::make_shared<Employee>(object));
 }
 
+template void Database::fullUpCarsVector<Car>(const Car&);
+
 template <typename T>
 void Database::fullUpCarsVector(const T& object)
 {
@@ -747,6 +749,22 @@ void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser)
 		{
 			std::cout << "Ни одной записи не было найдено!";
 		}
+		/*else
+		{
+			std::cout << "\n\n";
+			if (authorizedUser->isAdmin())
+			{
+				while (true)
+				{
+					switch (utils::patternForMenus("", {
+
+					}))
+					{
+						
+					}
+				}
+			}
+		}*/
 		std::cout << "\n\n";
 		system("pause");
 	}
@@ -768,14 +786,14 @@ void Database::clearDatabase(const std::string& username)
 	}
 }
 
-void Database::deleteUser(std::shared_ptr<User>& user)
+void Database::deleteUser(const std::shared_ptr<User>& user)
 {
 	auto findIterator = std::find(this->users_.begin(), this->users_.end(), user);
 	if (findIterator == this->users_.end())
 	{
 		return;
 	}
-	if (!utils::isYouConfident())
+	if (!utils::areYouConfident())
 	{
 		return;
 	}
@@ -800,6 +818,18 @@ void Database::deleteUser(std::shared_ptr<User>& user)
 	std::cout << '\n';
 	throw utils::CustomExcept("Удаление аккаунта совершено успешно!");
 }
+
+void Database::deleteCar(const std::shared_ptr<Car>& car)
+{
+	auto findIterator = std::find(this->cars_.begin(), this->cars_.end(), car);
+	if (!utils::areYouConfident())
+	{
+		return;
+	}
+	this->cars_.erase(findIterator);
+	std::cout << '\n';
+	throw utils::CustomExcept("Удаление автомобиля совершено успешно!");
+} 
 
 bool Database::isValidUsername(const std::string& username) const
 {
@@ -876,7 +906,7 @@ void Database::showCarsInfo(const std::shared_ptr<Car>& carReferense, const std:
 	{
 		throw std::runtime_error("В каталоге не находится ни одного автомобиля!");
 	}
-	utils::patternForTableHeader({ {"БРЕНД", 10}, {"МОДЕЛЬ", 7}, {"ГОД ВЫПУСКА", 11}, {"КОЛ-ВО", 6}, {"ЦЕНА", 12} });
+	utils::patternForTableHeader({ {"БРЕНД", 10}, {"МОДЕЛЬ", 7}, {"ГОД ВЫП.", 8}, {"КОЛ-ВО", 6}, {"ЦЕНА", 15} });
 	int counter = 1;
 	if (carReferense)
 	{
@@ -901,3 +931,67 @@ void Database::showCarsInfo(const std::shared_ptr<Car>& carReferense, const std:
 	}
 }
 
+void Database::customizeCar(const std::shared_ptr<Car>& car)
+{
+	while (true)
+	{
+		system("cls");
+		std::cout << "АСА - Меню редактирования автомобиля\n\n";
+		this->showCarsInfo(car);
+		std::cout << "\n\n";
+		switch (utils::patternForMenus("Желаете ли изменить какой-нибудь параметр?", {
+			"Бренд",
+			"Модель",
+			"Год выпуска",
+			"Количество",
+			"Цена",
+			"Удаление автомобиля"
+		}, false, false))
+		{
+		case 1:
+			{
+			std::cout << '\n';
+			car->functionalSetBrand();
+			break;
+			}
+		case 2:
+			{
+			std::cout << '\n';
+			car->functionalSetModel();
+			break;
+			}
+		case 3:
+			{
+			std::cout << '\n';
+			car->functionalSetYearOfManufacture();
+			break;
+			}
+		case 4:
+			{
+			std::cout << '\n';
+			car->functionalSetAmount();
+			break;
+			}
+		case 5:
+			{
+			std::cout << "\n";
+			car->functionalSetPrice();
+			break;
+			}
+		case 6:
+			{
+			std::cout << '\n';
+			this->deleteCar(car);
+			}
+		default:
+			{
+			break;
+			}
+		case 0:
+			{
+			return;
+			}
+		}
+		
+	}
+}

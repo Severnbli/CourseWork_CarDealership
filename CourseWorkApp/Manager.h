@@ -24,6 +24,8 @@ public:
 
 	void workingEmployeeWithCatalog(const std::shared_ptr<User>&);
 
+	void workingClientWithCatalog(const std::shared_ptr<User>&);
+
 private:
 	Database database_;
 };

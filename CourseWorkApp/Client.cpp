@@ -8,9 +8,13 @@ int Client::dimensionality_ = 5;
 Client::Client(int)
 {
 	this->functionalSetUsername();
+	std::cout << '\n';
 	this->functionalSetPassword();
+	std::cout << '\n';
 	this->functionalSetFio();
+	std::cout << '\n';
 	this->functionalSetMobileNumber();
+	std::cout << '\n';
 	this->functionalSetStatusOfDriverLicense();
 }
 
