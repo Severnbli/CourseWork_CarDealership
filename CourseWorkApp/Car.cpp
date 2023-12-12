@@ -58,7 +58,8 @@ void Car::setInfoInVectorStringForm(const std::vector<std::string>& donor) {
 	this->price_ = std::stod(donor[4]);
 }
 
-std::vector<std::string> Car::getInfoInVectorStringForm() {
+std::vector<std::string> Car::getInfoInVectorStringForm()
+{
 	return { this->brand_, this->model_, std::to_string(this->yearOfManufacture_), std::to_string(this->amount_), std::to_string(price_) };
 }
 

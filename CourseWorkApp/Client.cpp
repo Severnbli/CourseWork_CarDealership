@@ -64,7 +64,8 @@ void Client::setInfoInVectorStringForm(const std::vector<std::string>& donor) {
 	}
 }
 
-std::vector<std::string> Client::getInfoInVectorStringForm() {
+std::vector<std::string> Client::getInfoInVectorStringForm()
+{
 	return { this->getUsername(), this->getPassword(), this->getFio(), this->mobileNumber_, std::to_string(isDriverLicense_) };
 }
 

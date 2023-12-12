@@ -60,7 +60,8 @@ void Employee::setInfoInVectorStringForm(const std::vector<std::string>& donor) 
 	this->award_ = std::stod(donor[4]);
 }
 
-std::vector<std::string> Employee::getInfoInVectorStringForm() {
+std::vector<std::string> Employee::getInfoInVectorStringForm()
+{
 	return { this->getUsername(), this->getPassword(), this->getFio(), this->position_, std::to_string(award_) };
 }
 

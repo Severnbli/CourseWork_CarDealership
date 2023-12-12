@@ -362,7 +362,43 @@ void Manager::workingClientWithCatalog(const std::shared_ptr<User>& authorizedUs
 		}
 		case 3:
 		{
-			;
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		case 0:
+		{
+			return;
+		}
+		}
+	}
+}
+
+void Manager::workingEmployeeWithReceipts()
+{
+	while (true)
+	{
+		system("cls");
+		std::cout << "АСА - Меню работы с чеками\n\n";
+		this->database_.showReceiptsInfo();
+		switch (utils::patternForMenus("", {
+			/*"Сортировка",
+			"Поиск"*/
+			}, false, false))
+		{
+		case 1:
+		{
+			break;
+		}
+		case 2:
+		{
+			break;
+		}
+		case 3:
+		{
+			break;
 		}
 		default:
 		{

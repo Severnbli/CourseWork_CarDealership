@@ -26,6 +26,8 @@ public:
 
 	void workingClientWithCatalog(const std::shared_ptr<User>&);
 
+	void workingEmployeeWithReceipts();
+
 private:
 	Database database_;
 };

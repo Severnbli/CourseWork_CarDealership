@@ -73,6 +73,7 @@ int adminMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
             switch (utils::patternForMenus("АСА - Меню администратора " + authorizedUser->getUsername(), { 
                 "Работа с профилями",
             	"Каталог",
+                "Просмотр продаж",
             	"Генерация отчётов"
             }))
             {
@@ -88,6 +89,7 @@ int adminMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
             }
             case 3:
             {
+                manager.workingEmployeeWithReceipts();
                 break;
             }
             default:

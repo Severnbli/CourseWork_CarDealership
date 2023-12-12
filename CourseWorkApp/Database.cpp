@@ -13,10 +13,7 @@ Database::Database()
 	}
 	catch (const std::runtime_error& error)
 	{
-		if (!strcmp(error.what(),NO_INFO_IN_FILE))
-		{
-			utils::rebuildFile(error.what());
-		}
+		utils::rebuildFile(error.what());
 	}
 	try
 	{
@@ -24,10 +21,7 @@ Database::Database()
 	}
 	catch (const std::runtime_error& error)
 	{
-		if (!strcmp(error.what(), NO_INFO_IN_FILE))
-		{
-			utils::rebuildFile(error.what());
-		}
+		utils::rebuildFile(error.what());
 		const std::string usernameOfSuperAdmin = "admin";
 		const std::string passwordOfSuperAdmin = "adminadmin";
 		this->fullUpUsersVector(Employee(usernameOfSuperAdmin, passwordOfSuperAdmin));
@@ -38,10 +32,15 @@ Database::Database()
 	}
 	catch (const std::runtime_error& error)
 	{
-		if (!strcmp(error.what(), NO_INFO_IN_FILE))
-		{
-			utils::rebuildFile(error.what());
-		}
+		utils::rebuildFile(error.what());
+	}
+	try
+	{
+		this->loadReceiptsVector(RECEIPTS_FILE);
+	}
+	catch (const std::runtime_error& error)
+	{
+		utils::rebuildFile(error.what());
 	}
 }
 
@@ -56,6 +55,7 @@ Database::~Database()
 	this->unloadInfoToFile(this->parseUsersVector(true), EMPLOYEES_FILE);
 	this->unloadInfoToFile(this->users_, CLIENTS_FILE);
 	this->unloadInfoToFile(this->cars_, CARS_FILE);
+	this->unloadInfoToFile(this->receipts_, RECEIPTS_FILE);
 }
 
 std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName) { // получение вектора строк (информация из файла)
@@ -65,7 +65,7 @@ std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName)
 	}
 	if (file.peek() == EOF) {
 		file.close();
-		throw std::runtime_error(NO_INFO_IN_FILE);
+		throw utils::CustomExcept();
 	}
 	std::vector<std::string> linesInFile;
 	std::string buffer;
@@ -78,7 +78,15 @@ std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName)
 
 void Database::loadUsersVector(const std::string& fileName)
 {
-	std::vector<std::string> donor = this->loadInfoFromFile(fileName);
+	std::vector<std::string> donor;
+	try
+	{
+		donor = this->loadInfoFromFile(fileName);
+	}
+	catch (const utils::CustomExcept&)
+	{
+		return;
+	}
 	if (fileName == CLIENTS_FILE)
 	{
 		Client client;
@@ -104,12 +112,9 @@ void Database::loadCarsVector(const std::string& fileName)
 	{
 		donor = this->loadInfoFromFile(fileName);
 	}
-	catch (const std::runtime_error& error)
+	catch (const utils::CustomExcept&)
 	{
-		if (!std::strcmp(error.what(), NO_INFO_IN_FILE))
-		{
-			return;
-		}
+		return;
 	}
 	if (fileName == CARS_FILE)
 	{
@@ -119,6 +124,24 @@ void Database::loadCarsVector(const std::string& fileName)
 		}
 	}
 }
+
+void Database::loadReceiptsVector(const std::string& fileName)
+{
+	std::vector<std::string> donor;
+	try
+	{
+		donor = this->loadInfoFromFile(fileName);
+	}
+	catch (const utils::CustomExcept&)
+	{
+		return;
+	}
+	auto parsedVectors = utils::parseStringVectorBySize(donor, Receipt::getDimensionality());
+	for (const auto& parsedVector : parsedVectors) {
+		this->receipts_.push_back(std::make_shared<Receipt>(parsedVector));
+	}
+}
+
 
 template <typename T>
 void Database::unloadInfoToFile(const std::vector<std::shared_ptr<T>>& donor, const std::string& fileName) { // выгрузка данных в файл
@@ -188,6 +211,36 @@ void Database::updateAccessRights(const std::shared_ptr<User>& user)
 	this->users_.push_back(employee);
 	std::cout << "\nПрава успешно выданы!\n\n";
 	system("pause");
+}
+
+std::vector<std::shared_ptr<User>> Database::parseUsersVector(bool isAdmin, bool isErase)
+{
+	std::vector<std::shared_ptr<User>> result;
+	auto begin = this->users_.begin();
+	while (begin != this->users_.end())
+	{
+		if ((*begin)->isAdmin() == isAdmin)
+		{
+			result.push_back(*begin);
+			if (isErase)
+			{
+				begin = this->users_.erase(begin);
+				continue;
+			}
+		}
+		++begin;
+	}
+	return result;
+}
+
+size_t Database::getCarsVectorSize() const
+{
+	return this->cars_.size();
+}
+
+std::shared_ptr<Car> Database::getCarByPositionInVector(size_t position)
+{
+	return this->cars_.at(position);
 }
 
 void Database::sortUsersVector()
@@ -485,36 +538,6 @@ void Database::searchInUsersVector()
 	}
 }
 
-std::vector<std::shared_ptr<User>> Database::parseUsersVector(bool isAdmin, bool isErase)
-{
-	std::vector<std::shared_ptr<User>> result;
-	auto begin = this->users_.begin();
-	while (begin != this->users_.end())
-	{
-		if ((*begin)->isAdmin() == isAdmin)
-		{
-			result.push_back(*begin);
-			if (isErase)
-			{
-				begin = this->users_.erase(begin);
-				continue;
-			}
-		}
-		++begin;
-	}
-	return result;
-}
-
-size_t Database::getCarsVectorSize() const
-{
-	return this->cars_.size();
-}
-
-std::shared_ptr<Car> Database::getCarByPositionInVector(size_t position)
-{
-	return this->cars_.at(position);
-}
-
 void Database::sortCarsVector()
 {
 	switch(utils::patternForMenus("АСА - Меню сортировки	\n\nВыберите параметр сортировки\n"
@@ -632,7 +655,7 @@ void Database::sortCarsVector()
 	}
 }
 
-void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser)
+void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser) const
 {
 	while (true)
 	{
@@ -770,6 +793,208 @@ void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser)
 	}
 }
 
+void Database::sortReceiptsVector()
+{
+	switch (utils::patternForMenus("АСА - Меню сортировки\n\nВыберите параметр сортировки\n< - по убыванию, > - по возрастанию", {
+		"День >",
+		"День <",
+		"Месяц >",
+		"Месяц <",
+		"Год >",
+		"Год <",
+		"Дата >",
+		"Дата <",
+		"Имя пользователя >",
+		"Имя пользователя <",
+		"ФИО >",
+		"ФИО <",
+		"Ном. телефона >",
+		"Ном. телефона <",
+		"Бренд >",
+		"Бренд <",
+		"Модель >",
+		"Модель <",
+		"Год выпуска >",
+		"Год выпуска <",
+		"Цена >",
+		"Цена <"
+	}))
+	{
+	case 1:
+		{
+		break;
+		}
+	case 2:
+		{
+		break;
+		}
+	case 3:
+		{
+		break;
+		}
+	case 4:
+		{
+		break;
+		}
+	case 5:
+		{
+		break;
+		}
+	case 6:
+		{
+		break;
+		}
+	case 7:
+		{
+		break;
+		}
+	case 8:
+		{
+		break;
+		}
+	case 9:
+		{
+		break;
+		}
+	case 10:
+		{
+		break;
+		}
+	case 11:
+		{
+		break;
+		}
+	case 12:
+		{
+		break;
+		}
+	case 13:
+		{
+		break;
+		}
+	case 14:
+		{
+		break;
+		}
+	case 15:
+		{
+		break;
+		}
+	case 16:
+		{
+		break;
+		}
+	case 17:
+		{
+		break;
+		}
+	case 18:
+		{
+		break;
+		}
+	case 19:
+		{
+		break;
+		}
+	case 20:
+		{
+		break;
+		}
+	case 21:
+		{
+		break;
+		}
+	case 22:
+		{
+		break;
+		}
+	default:
+		{
+		break;
+		}
+	case 0:
+		{
+		break;
+		}
+	}
+}
+
+void Database::searchInReceiptsVector() const
+{
+	while (true)
+	{
+		std::vector<std::shared_ptr<Receipt>> foundReceipt;
+		std::vector<std::shared_ptr<Receipt>> foundReceipts;
+		switch (utils::patternForMenus("АСА - Меню поиска\n\nВыберите параметр поиска", {
+			"День",
+			"Месяц",
+			"Год",
+			"Дата",
+			"Имя пользователя",
+			"ФИО",
+			"Ном. телефона",
+			"Бренд",
+			"Модель",
+			"Год выпуска",
+			"Цена"
+			}, true, false))
+		{
+		case 1:
+			{
+			break;
+			}
+		case 2:
+			{
+			break;
+			}
+		case 3:
+			{
+			break;
+			}
+		case 4:
+			{
+			break;
+			}
+		case 5:
+			{
+			break;
+			}
+		case 6:
+			{
+			break;
+			}
+		case 7:
+			{
+			break;
+			}
+		case 8:
+			{
+			break;
+			}
+		case 9:
+			{
+			break;
+			}
+		case 10:
+			{
+			break;
+			}
+		case 11:
+			{
+			break;
+			}
+		default:
+			{
+			break;
+			}
+		case 0:
+			{
+			break;
+			}
+		}
+	}
+}
+
 void Database::clearDatabase(const std::string& username)
 {
 	this->cars_.clear();
@@ -865,72 +1090,6 @@ void Database::functionalCheckUsername(std::shared_ptr<User>& user) const
 	}
 }
 
-void Database::showUsersInfo(const std::shared_ptr<User>& userReferense, const std::vector<std::shared_ptr<User>>& usersVector) const //печатает инфу о пользователе/ползователях
-{
-	if (!userReferense && this->users_.empty())
-	{
-		throw std::runtime_error("Нет ни одного зарегистрированного пользователя!");
-	}
-	utils::patternForTableHeader({
-									{"ИМЯ ПОЛЬЗ.", 12 }, { "ФИО", 30 }, { "АДМ", 3 },
-									{"ДОЛЖНОСТЬ", 12}, {"ПРЕМИЯ", 8}, {"МОБ. ТЕЛЕФОН", 13},
-									{"ЛИЦ", 3}
-	});
-	int counter = 1;
-	if (userReferense)
-	{
-		std::cout << '|' << std::setw(4) << counter++;
-		userReferense->printInfoTableForm();
-	}
-	if(!usersVector.empty())
-	{
-		for (const auto& element : usersVector)
-		{
-			std::cout << '|' << std::setw(4) << counter++;
-			element->printInfoTableForm();
-		}
-	}
-	if (!userReferense && usersVector.empty())
-	{
-		for (const auto& user : this->users_)
-		{
-			std::cout << '|' << std::setw(4) << counter++;
-			user->printInfoTableForm();
-		}
-	}
-}
-
-void Database::showCarsInfo(const std::shared_ptr<Car>& carReferense, const std::vector<std::shared_ptr<Car>>& carsVector) const
-{
-	if (!carReferense && this->cars_.empty())
-	{
-		throw std::runtime_error("В каталоге не находится ни одного автомобиля!");
-	}
-	utils::patternForTableHeader({ {"БРЕНД", 10}, {"МОДЕЛЬ", 7}, {"ГОД ВЫП.", 8}, {"КОЛ-ВО", 6}, {"ЦЕНА", 15} });
-	int counter = 1;
-	if (carReferense)
-	{
-		std::cout << '|' << std::setw(4) << counter++;
-		carReferense->printInfoTableForm();
-	}
-	if (!carsVector.empty())
-	{
-		for (const auto& element : carsVector)
-		{
-			std::cout << '|' << std::setw(4) << counter++;
-			element->printInfoTableForm();
-		}
-	}
-	if (!carReferense && carsVector.empty())
-	{
-		for (const auto& car : this->cars_)
-		{
-			std::cout << '|' << std::setw(4) << counter++;
-			car->printInfoTableForm();
-		}
-	}
-}
-
 void Database::customizeCar(const std::shared_ptr<Car>& car)
 {
 	while (true)
@@ -993,5 +1152,111 @@ void Database::customizeCar(const std::shared_ptr<Car>& car)
 			}
 		}
 		
+	}
+}
+
+void Database::showUsersInfo(const std::shared_ptr<User>& user, const std::vector<std::shared_ptr<User>>& users) const //печатает инфу о пользователе/ползователях
+{
+	if (!user && this->users_.empty() && users.empty())
+	{
+		throw std::runtime_error("Нет ни одного зарегистрированного пользователя!");
+	}
+	utils::patternForTableHeader({
+									{"ИМЯ ПОЛЬЗ.", 12 }, { "ФИО", 30 }, { "АДМ", 3 },
+									{"ДОЛЖНОСТЬ", 12}, {"ПРЕМИЯ", 8}, {"МОБ. ТЕЛЕФОН", 13},
+									{"ЛИЦ", 3}
+	});
+	int counter = 1;
+	if (user)
+	{
+		std::cout << '|' << std::setw(4) << counter++;
+		user->printInfoTableForm();
+	}
+	if(!users.empty())
+	{
+		for (const auto& element : users)
+		{
+			std::cout << '|' << std::setw(4) << counter++;
+			element->printInfoTableForm();
+		}
+	}
+	if (!user && users.empty())
+	{
+		for (const auto& element : this->users_)
+		{
+			std::cout << '|' << std::setw(4) << counter++;
+			element->printInfoTableForm();
+		}
+	}
+}
+
+void Database::showCarsInfo(const std::shared_ptr<Car>& car, const std::vector<std::shared_ptr<Car>>& cars) const
+{
+	if (!car && this->cars_.empty() && cars.empty())
+	{
+		throw std::runtime_error("В каталоге не находится ни одного автомобиля!");
+	}
+	utils::patternForTableHeader({ {"БРЕНД", 10}, {"МОДЕЛЬ", 7}, {"ГОД ВЫП.", 8}, {"КОЛ-ВО", 6}, {"ЦЕНА", 15} });
+	int counter = 1;
+	if (car)
+	{
+		std::cout << '|' << std::setw(4) << counter++;
+		car->printInfoTableForm();
+	}
+	if (!cars.empty())
+	{
+		for (const auto& element : cars)
+		{
+			std::cout << '|' << std::setw(4) << counter++;
+			element->printInfoTableForm();
+		}
+	}
+	if (!car && cars.empty())
+	{
+		for (const auto& element : this->cars_)
+		{
+			std::cout << '|' << std::setw(4) << counter++;
+			element->printInfoTableForm();
+		}
+	}
+}
+
+void Database::showReceiptsInfo(const std::shared_ptr<Receipt>& receipt, const std::vector<std::shared_ptr<Receipt>>& receipts) const
+{
+	if (!receipt && this->receipts_.empty() && receipts.empty())
+	{
+		throw std::runtime_error("В каталоге не находится ни одного автомобиля!");
+	}
+	utils::patternForTableHeader({
+		{"ДАТА", 10},
+		{"ИМЯ ПОЛЬЗ.", 12},
+		{"ФИО", 30},
+		{"МОБ. ТЕЛЕФОН", 13},
+		{"БРЕНД", 10},
+		{"МОДЕЛЬ", 7},
+		{"ГОД ВЫП.", 8},
+		{"ЦЕНА", 15}
+	});
+	int counter = 1;
+	if (receipt)
+	{
+		std::cout << '|' << std::setw(4) << counter++;
+		receipt->printInfoTableForm();
+	}
+	if (!receipts.empty())
+	{
+		for (const auto& element : receipts)
+		{
+			std::cout << '|' << std::setw(4) << counter++;
+			element->printInfoTableForm();
+		}
+	}
+	if (!receipt && receipts.empty())
+	{
+		for (const auto& element : this->receipts_)
+		{
+			std::cout << '|' << std::setw(4) << counter++;
+			element->printInfoTableForm();
+		}
 	}
 }
