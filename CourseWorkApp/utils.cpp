@@ -3,6 +3,9 @@
 #include <fstream>
 #include <limits>
 #include <iomanip>
+#include <random>
+#include <cstdlib>
+#include <ctime>
 
 #define UNCORRECTED_INPUT "Ввод неверный!"
 #define TRY_AGAIN " Попробуйте снова: "
@@ -376,5 +379,14 @@ namespace utils {
     {
 		std::cout << "Вы уверены в своих действиях?\n1 - Да.\n0 - Нет.\n\nВыберите: ";
 		return static_cast<bool>(checkIntInRange(0, 1));
+    }
+
+	std::string generationRandomHash()
+    {
+		std::srand(static_cast<unsigned>(std::time(nullptr)));
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<> distribution(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+    	return std::to_string(std::hash<int>()(distribution(gen) + rand()));
     }
 }

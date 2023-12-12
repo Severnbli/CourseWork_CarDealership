@@ -3,9 +3,9 @@
 #include <iostream>
 #include <iomanip>
 
-int Employee::dimensionality_ = 5;
+int Employee::dimensionality_ = 6;
 
-Employee::Employee(int)
+Employee::Employee(int) : User()
 {
 	this->functionalSetUsername();
 	std::cout << '\n';
@@ -18,13 +18,13 @@ Employee::Employee(int)
 	this->functionalSetAward();
 }
 
-Employee::Employee(const std::string& position, double award)
+Employee::Employee(const std::string& position, double award) : User()
 {
 	this->position_ = position;
 	this->award_ = award;
 }
 
-Employee::Employee(const std::string& username, const std::string& password, const std::string& fio, const std::string& position, double award)
+Employee::Employee(const std::string& username, const std::string& password, const std::string& fio, const std::string& position, double award) : User()
 {
 	this->setUsername(username);
 	this->setPassword(password);
@@ -58,11 +58,12 @@ void Employee::setInfoInVectorStringForm(const std::vector<std::string>& donor) 
 	this->setFio(donor[2]);
 	this->position_ = donor[3];
 	this->award_ = std::stod(donor[4]);
+	this->setUniqueId_(donor[5]);
 }
 
 std::vector<std::string> Employee::getInfoInVectorStringForm()
 {
-	return { this->getUsername(), this->getPassword(), this->getFio(), this->position_, std::to_string(award_) };
+	return { this->getUsername(), this->getPassword(), this->getFio(), this->position_, std::to_string(award_), this->getUniqueId() };
 }
 
 void Employee::setPosition(const std::string& position)

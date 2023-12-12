@@ -7,7 +7,7 @@
 class Client: public User
 {
 public:
-	Client() = default;
+	Client() : User() {}
 
 	Client(int);
 

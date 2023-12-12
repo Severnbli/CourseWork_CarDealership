@@ -6,7 +6,7 @@
 class Employee: public User
 {
 public:
-	Employee() = default;
+	Employee() : User() {}
 
 	Employee(int);
 

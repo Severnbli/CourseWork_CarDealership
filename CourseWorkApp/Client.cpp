@@ -3,9 +3,9 @@
 #include "utils.h"
 #include <iostream>
 
-int Client::dimensionality_ = 5;
+int Client::dimensionality_ = 6;
 
-Client::Client(int)
+Client::Client(int) : User()
 {
 	this->functionalSetUsername();
 	std::cout << '\n';
@@ -18,17 +18,18 @@ Client::Client(int)
 	this->functionalSetStatusOfDriverLicense();
 }
 
-Client::Client(const std::string& mobileNumber, bool isDriverLicense)
+Client::Client(const std::string& mobileNumber, bool isDriverLicense) : User()
 {
 	this->mobileNumber_ = mobileNumber;
 	this->isDriverLicense_ = isDriverLicense;
 }
 
-Client::Client(const std::vector<std::string>& data) {
+Client::Client(const std::vector<std::string>& data)
+{
 	Client::setInfoInVectorStringForm(data);
 }
 
-Client::Client(const std::string& username, const std::string& password, const std::string fio, const std::string mobileNumber, bool isDriverLicense)
+Client::Client(const std::string& username, const std::string& password, const std::string fio, const std::string mobileNumber, bool isDriverLicense) : User()
 {
 	this->setUsername(username);
 	this->setPassword(password);
@@ -62,11 +63,12 @@ void Client::setInfoInVectorStringForm(const std::vector<std::string>& donor) {
 	else {
 		this->isDriverLicense_ = false;
 	}
+	this->setUniqueId_(donor[5]);
 }
 
 std::vector<std::string> Client::getInfoInVectorStringForm()
 {
-	return { this->getUsername(), this->getPassword(), this->getFio(), this->mobileNumber_, std::to_string(isDriverLicense_) };
+	return { this->getUsername(), this->getPassword(), this->getFio(), this->mobileNumber_, std::to_string(isDriverLicense_), this->getUniqueId() };
 }
 
 void Client::setMobileNumber(const std::string& mobileNumber)

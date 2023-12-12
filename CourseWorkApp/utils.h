@@ -65,4 +65,6 @@ namespace utils {
 	};
 
 	bool areYouConfident();
+
+	std::string generationRandomHash();
 }

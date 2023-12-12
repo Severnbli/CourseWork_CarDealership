@@ -6,13 +6,15 @@
 class User
 {
 public:
-	User() = default;
+	User();
 
 	User(int);
 
 	User(const std::string&, const std::string&, const std::string& = "");
 
 	User(const User&);
+
+	virtual ~User() = default;
 
 	bool operator<(const User&) const;
 
@@ -46,12 +48,18 @@ public:
 
 	virtual std::vector<std::string> getInfoInVectorStringForm() = 0;
 
+	void setUniqueId_(const std::string&);
+
+	std::string getUniqueId() const;
+
 private:
 	std::string username_;
 
 	std::string password_;
 
 	std::string fio_;
+
+	std::string uniqueId_;
 };
 
 bool compareUsersByUsername(const User&, const User&);

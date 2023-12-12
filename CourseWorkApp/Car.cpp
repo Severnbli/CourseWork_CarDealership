@@ -2,9 +2,13 @@
 #include "utils.h"
 #include <iostream>
 #include <iomanip>
-#include <Windows.h>
 
-int Car::dimensionality_ = 5;
+int Car::dimensionality_ = 6;
+
+Car::Car()
+{
+	this->uniqueId_ = utils::generationRandomHash();
+}
 
 Car::Car(int)
 {
@@ -17,6 +21,7 @@ Car::Car(int)
 	this->functionalSetAmount();
 	std::cout << '\n';
 	this->functionalSetPrice();
+	this->uniqueId_ = utils::generationRandomHash();
 }
 
 Car::Car(const std::string& brand, const std::string& model, int yearOfManufacture, int amount, double price) 
@@ -26,6 +31,7 @@ Car::Car(const std::string& brand, const std::string& model, int yearOfManufactu
 	this->setYearOfManufacture(yearOfManufacture);
 	this->setAmount(amount);
 	this->setPrice(price);
+	this->uniqueId_ = utils::generationRandomHash();
 }
 
 Car::Car(const std::vector<std::string>& data)
@@ -45,6 +51,7 @@ Car::Car(const Car& other)
 	this->yearOfManufacture_ = other.yearOfManufacture_;
 	this->amount_ = other.amount_;
 	this->price_ = other.price_;
+	this->uniqueId_ = other.uniqueId_;
 }
 
 void Car::setInfoInVectorStringForm(const std::vector<std::string>& donor) {
@@ -56,11 +63,12 @@ void Car::setInfoInVectorStringForm(const std::vector<std::string>& donor) {
 	this->yearOfManufacture_ = std::stoi(donor[2]);
 	this->amount_ = std::stoi(donor[3]);
 	this->price_ = std::stod(donor[4]);
+	this->uniqueId_ = donor[5];
 }
 
 std::vector<std::string> Car::getInfoInVectorStringForm()
 {
-	return { this->brand_, this->model_, std::to_string(this->yearOfManufacture_), std::to_string(this->amount_), std::to_string(price_) };
+	return { this->brand_, this->model_, std::to_string(this->yearOfManufacture_), std::to_string(this->amount_), std::to_string(this->price_), this->uniqueId_};
 }
 
 void Car::setBrand(const std::string& brand)

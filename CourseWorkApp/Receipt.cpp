@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <iostream>
 
-size_t Receipt::dimensionality_ = Car::getDimensionality() + 5 + Date::getDimensionality(); 
+size_t Receipt::dimensionality_ = Car::getDimensionality() + 6 + Date::getDimensionality(); 
 
 Receipt::Receipt(const std::vector<std::string>& donor)
 {

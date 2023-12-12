@@ -6,7 +6,7 @@
 class Car
 {
 public:
-	Car() = default;
+	Car();
 
 	Car(int);
 
@@ -68,6 +68,8 @@ private:
 	int amount_ = 0;
 
 	double price_ = 0.0;
+
+	std::string uniqueId_;
 };
 
 bool compareByBrand(const Car&, const Car&);

@@ -15,16 +15,17 @@ Database::Database()
 	{
 		utils::rebuildFile(error.what());
 	}
-	try
+	while (true)
 	{
-		this->loadUsersVector(EMPLOYEES_FILE);
-	}
-	catch (const std::runtime_error& error)
-	{
-		utils::rebuildFile(error.what());
-		const std::string usernameOfSuperAdmin = "admin";
-		const std::string passwordOfSuperAdmin = "adminadmin";
-		this->fullUpUsersVector(Employee(usernameOfSuperAdmin, passwordOfSuperAdmin));
+		try
+		{
+			this->loadUsersVector(EMPLOYEES_FILE);
+			break;
+		}
+		catch (const std::runtime_error& error)
+		{
+			utils::rebuildFile(error.what());
+		}
 	}
 	try
 	{
@@ -85,6 +86,12 @@ void Database::loadUsersVector(const std::string& fileName)
 	}
 	catch (const utils::CustomExcept&)
 	{
+		if (fileName == EMPLOYEES_FILE)
+		{
+			const std::string usernameOfSuperAdmin = "admin";
+			const std::string passwordOfSuperAdmin = "adminadmin";
+			this->fullUpUsersVector(Employee(usernameOfSuperAdmin, passwordOfSuperAdmin));
+		}
 		return;
 	}
 	if (fileName == CLIENTS_FILE)
@@ -141,7 +148,6 @@ void Database::loadReceiptsVector(const std::string& fileName)
 		this->receipts_.push_back(std::make_shared<Receipt>(parsedVector));
 	}
 }
-
 
 template <typename T>
 void Database::unloadInfoToFile(const std::vector<std::shared_ptr<T>>& donor, const std::string& fileName) { // выгрузка данных в файл

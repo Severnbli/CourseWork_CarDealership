@@ -3,10 +3,17 @@
 #include <iostream>
 #include <functional>
 
+
+User::User()
+{
+	this->uniqueId_ = utils::generationRandomHash();
+}
+
 User::User(int)
 {
 	this->functionalSetUsername();
 	this->functionalSetPassword();
+	this->uniqueId_ = utils::generationRandomHash();
 }
 
 User::User(const std::string& username, const std::string& password, const std::string& fio)
@@ -14,6 +21,7 @@ User::User(const std::string& username, const std::string& password, const std::
 	this->username_ = username;
 	this->password_ = password;
 	this->fio_ = fio;
+	this->uniqueId_ = utils::generationRandomHash();
 }
 
 User::User(const User& other)
@@ -21,6 +29,7 @@ User::User(const User& other)
 	this->username_ = other.username_;
 	this->password_ = other.password_;
 	this->fio_ = other.fio_;
+	this->uniqueId_ = other.uniqueId_;
 }
 
 bool User::operator<(const User& other) const
@@ -124,6 +133,16 @@ std::string User::getFio() const
 	return this->fio_;
 }
 
+void User::setUniqueId_(const std::string& uniqueId)
+{
+	this->uniqueId_ = uniqueId;
+}
+
+std::string User::getUniqueId() const
+{
+	return this->uniqueId_;
+}
+
 bool compareUsersByUsername(const User& firstObject, const User& secondObject)
 {
 	return firstObject.getUsername() < secondObject.getUsername();
@@ -133,7 +152,6 @@ bool compareUsersByUsername(const std::shared_ptr<User>& firstObject, const std:
 {
 	return firstObject->getUsername() < secondObject->getUsername();
 }
-
 
 bool compareUsersByFio(const User& firstObject, const User& secondObject)
 {
