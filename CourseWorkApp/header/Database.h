@@ -38,6 +38,8 @@ public:
 	template <typename T>
 	void unloadInfoToFile(const std::vector<std::shared_ptr<T>>&, const std::string&);
 
+	void unloadFavoritesToFile(const std::string&) const;
+
 	void fullUpUsersVector(const Client&);
 
 	void fullUpUsersVector(const Employee&);
@@ -46,6 +48,8 @@ public:
 	void fullUpCarsVector(const T&);
 
 	void fullUpReceiptsVector(const std::shared_ptr<User>&, const std::shared_ptr<Car>&);
+
+	bool fullUpFavoritesMap(const std::string&, const std::string&);
 
 	std::vector<std::shared_ptr<User>> getUsersList() const;
 
@@ -60,6 +64,12 @@ public:
 	size_t getCarsVectorSize() const;
 
 	std::shared_ptr<Car> getCarByPositionInVector(size_t);
+
+	std::shared_ptr<Car> getCarByUniqueId(const std::string&) const;
+
+	std::map<std::string, std::vector<std::string>> getFavorites() const;
+
+	std::vector<std::shared_ptr<Car>> getCarsInFavoritesByUserUniqueId(const std::string&) const;
 
 	void sortUsersVector();
 
@@ -80,6 +90,8 @@ public:
 	void deleteUser(const std::shared_ptr<User>&);
 
 	void deleteCar(const std::shared_ptr<Car>&);
+
+	void deleteFavorite(const std::string&, const std::string&);
 	
 	bool isValidUsername(const std::string&) const;
 
@@ -102,5 +114,5 @@ private:
 
 	std::vector<std::shared_ptr<Receipt>> receipts_;
 
-	std::map<std::string, std::string> favorites_;
+	std::map<std::string, std::vector<std::string>> favorites_;
 };

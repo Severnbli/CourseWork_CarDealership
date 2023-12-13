@@ -122,8 +122,8 @@ int userMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
 	{
 		switch (utils::patternForMenus("АСА - Меню пользователя " + authorizedUser->getUsername(), {
 			"Настройка профиля",
-			"Каталог"/*, 
-			"Избранное",
+			"Каталог", 
+			"Избранное"/*,
 			"История покупок"*/
 		}))
 		{
@@ -139,6 +139,7 @@ int userMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
         }
         case 3:
         {
+            manager.workingClientWithFavorites(authorizedUser);
             break;
         }
         case 4:

@@ -28,6 +28,8 @@ public:
 
 	void workingEmployeeWithReceipts();
 
+	void workingClientWithFavorites(const std::shared_ptr<User>&);
+
 	void generateReports() const;
 
 private:

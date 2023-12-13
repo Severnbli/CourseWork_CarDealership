@@ -1,10 +1,12 @@
 ﻿#include "../header/Database.h"
 #include "../header/utils.h"
+#include "../header/date.h"
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <iomanip>
 #include <filesystem>
+#include <ctime>
 
 Database::Database()
 {
@@ -50,6 +52,14 @@ Database::Database()
 	{
 		utils::rebuildFile(error.what());
 	}
+	try
+	{
+		this->loadFavoritesMap(FAVORITES_FILE);
+	}
+	catch (const std::runtime_error& error)
+	{
+		utils::rebuildFile(error.what());
+	}
 }
 
 Database::Database(const Database& other)
@@ -64,6 +74,7 @@ Database::~Database()
 	this->unloadInfoToFile(this->users_, CLIENTS_FILE);
 	this->unloadInfoToFile(this->cars_, CARS_FILE);
 	this->unloadInfoToFile(this->receipts_, RECEIPTS_FILE);
+	this->unloadFavoritesToFile(FAVORITES_FILE);
 }
 
 std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName) { // получение вектора строк (информация из файла)
@@ -156,6 +167,41 @@ void Database::loadReceiptsVector(const std::string& fileName)
 	}
 }
 
+void Database::loadFavoritesMap(const std::string& fileName)
+{
+	std::vector<std::string> donor;
+	try
+	{
+		donor = this->loadInfoFromFile(fileName);
+	}
+	catch (const utils::CustomExcept&)
+	{
+		return;
+	}
+	for (const auto& element : donor)
+	{
+		auto positionOfGapInString = element.find(' ');
+		std::string userId(element.begin(), element.begin() + positionOfGapInString);
+		std::string carsId(element.begin() + positionOfGapInString + 1, element.end());
+		std::vector<std::string> vectorOfCarsId;
+		std::string buffer;
+		for (const auto& ch : carsId)
+		{
+			if (ch == ' ')
+			{
+				vectorOfCarsId.push_back(buffer);
+				buffer = "";
+			}
+			else
+			{
+				buffer += ch;
+			}
+		}
+		vectorOfCarsId.push_back(buffer);
+		this->favorites_.insert(std::make_pair(userId, vectorOfCarsId));
+	}
+}
+
 template <typename T>
 void Database::unloadInfoToFile(const std::vector<std::shared_ptr<T>>& donor, const std::string& fileName) { // выгрузка данных в файл
 	std::ofstream file(fileName, std::ios::out);
@@ -167,6 +213,24 @@ void Database::unloadInfoToFile(const std::vector<std::shared_ptr<T>>& donor, co
 		for (const auto& data : vectorOfData) {
 			file << data << '\n';
 		}
+	}
+	file.close();
+}
+
+void Database::unloadFavoritesToFile(const std::string& fileName) const
+{
+	std::ofstream file(fileName, std::ios::out);
+	if (!file.is_open()) {
+		utils::customTerminate("выгрузкой информации в файл");
+	}
+	for (const auto& favorite: this->favorites_)
+	{
+		file << favorite.first;
+		for (const auto& element : favorite.second)
+		{
+			file << ' ' << element;
+		}
+		file << '\n';
 	}
 	file.close();
 }
@@ -201,6 +265,23 @@ void Database::fullUpReceiptsVector(const std::shared_ptr<User>& user, const std
 	{
 		this->cars_.erase(std::find(this->cars_.begin(), this->cars_.end(), car));
 	}
+}
+
+bool Database::fullUpFavoritesMap(const std::string& userUniqueId, const std::string& carUniqueId)
+{
+	auto foundRecord = this->favorites_.find(userUniqueId);
+	if (foundRecord != this->favorites_.end())
+	{
+		if (std::ranges::find(foundRecord->second, carUniqueId) == foundRecord->second.end())
+		{
+			foundRecord->second.push_back(carUniqueId);
+			return true;
+		}
+		return false;
+	}
+	std::vector<std::string> carsId = { carUniqueId };
+	this->favorites_.insert(std::make_pair(userUniqueId, carsId));
+	return true;
 }
 
 std::vector<std::shared_ptr<User>> Database::getUsersList() const
@@ -268,6 +349,44 @@ size_t Database::getCarsVectorSize() const
 std::shared_ptr<Car> Database::getCarByPositionInVector(size_t position)
 {
 	return this->cars_.at(position);
+}
+
+std::shared_ptr<Car> Database::getCarByUniqueId(const std::string& uniqueId) const
+{
+	for (const auto& car : this->cars_)
+	{
+		if (car->getUniqueId() == uniqueId)
+		{
+			return car;
+		}
+	}
+	return nullptr;
+}
+
+std::map<std::string, std::vector<std::string>> Database::getFavorites() const
+{
+	return this->favorites_;
+}
+
+std::vector<std::shared_ptr<Car>> Database::getCarsInFavoritesByUserUniqueId(const std::string& uniqueId) const
+{
+	std::vector<std::shared_ptr<Car>> carsToOutput;
+	const auto& foundUserRecord = this->favorites_.find(uniqueId);
+	if (foundUserRecord != this->favorites_.end())
+	{
+		const auto& foundCarsUniqueIds = foundUserRecord->second;
+		for (const auto& foundCarUniqueId : foundCarsUniqueIds)
+		{
+			for (const auto& car : this->cars_)
+			{
+				if (car->getUniqueId() == foundCarUniqueId)
+				{
+					carsToOutput.push_back(car);
+				}
+			}
+		}
+	}
+	return carsToOutput;
 }
 
 void Database::sortUsersVector()
@@ -1088,6 +1207,16 @@ void Database::deleteCar(const std::shared_ptr<Car>& car)
 	throw utils::CustomExcept("Удаление автомобиля совершено успешно!");
 } 
 
+void Database::deleteFavorite(const std::string& userUniqueId, const std::string& carUniqueId) 
+{
+	const auto& foundUserRecord = this->favorites_.find(userUniqueId);
+	if (foundUserRecord != this->favorites_.end())
+	{
+		auto& carsInUserFavorites = foundUserRecord->second;
+		carsInUserFavorites.erase(std::ranges::find(carsInUserFavorites.begin(), carsInUserFavorites.end(), carUniqueId));
+	}
+}
+
 bool Database::isValidUsername(const std::string& username) const
 {
 	for (const auto &user : this->users_)
@@ -1311,10 +1440,19 @@ void Database::generateReports() const
 	bool isUsers = false;
 	bool isCars = false;
 	bool isReceipts = false;
+	bool isFavorites = false;
+	time_t rawTime;
+	time(&rawTime);
+	struct tm timeInfo;
+	localtime_s(&timeInfo, &rawTime);
+	const int day = timeInfo.tm_mday;
+	const int month = timeInfo.tm_mon + 1;
+	const int year = timeInfo.tm_year + 1900;
 	std::ofstream file("reports\\users_report.txt", std::ios::out);
 	if (file.is_open())
 	{
 		file << "ОТЧЁТ\nо зарегистрированных пользователях\n\n";
+		file << "Дата формирования отчёта: " << day << ", " << Date::defineMonth(month) << ' ' << year << "\n\n";
 		if (this->users_.empty())
 		{
 			file << "Ни одного аккаунта не зарегистрированно.\n\n";
@@ -1339,6 +1477,7 @@ void Database::generateReports() const
 	if (file.is_open())
 	{
 		file << "ОТЧЁТ\nоб имеющихся автомобилях\n\n";
+		file << "Дата формирования отчёта: " << day << ", " << Date::defineMonth(month) << ' ' << year << "\n\n";
 		if (this->cars_.empty())
 		{
 			file << "Ни одного автомобиля нет в наличии.\n\n";
@@ -1364,6 +1503,7 @@ void Database::generateReports() const
 	if (file.is_open())
 	{
 		file << "ОТЧЁТ\nо продажах\n\n";
+		file << "Дата формирования отчёта: " << day << ", " << Date::defineMonth(month) << ' ' << year << "\n\n";
 		if (this->receipts_.empty())
 		{
 			file << "Ни одного автомобиля не продано.\n\n";
@@ -1385,10 +1525,78 @@ void Database::generateReports() const
 		file << "Конец отчёта\n";
 		file.close();
 	}
+	file.open("reports\\favorites_report.txt", std::ios::out);
+	if (file.is_open())
+	{
+		file << "ОТЧЁТ\nо добавленных в избранное\n\n";
+		file << "Дата формирования отчёта: " << day << ", " << Date::defineMonth(month) << ' ' << year << "\n\n";
+		if (this->favorites_.empty())
+		{
+			file << "Ни одного добавления в избранное нет.\n\n";
+		}
+		else
+		{
+			file << "I Всего насчитывается " << this->favorites_.size() << " пользователей, воспользовавшихся функцией.\n\n";
+			std::map<std::string, int> carUniqueIds;
+			for (const auto& favorite : this->favorites_)
+			{
+				for (const auto& carUniqueId : favorite.second)
+				{
+					if (carUniqueIds.contains(carUniqueId))
+					{
+						carUniqueIds[carUniqueId]++;
+					}
+					else
+					{
+						carUniqueIds.insert(std::make_pair(carUniqueId, 1));
+					}
+				}
+			}
+			if (carUniqueIds.empty())
+			{
+				file << '\n';
+			}
+			else
+			{
+				std::vector<std::pair<std::string, int>> sortedPairs(carUniqueIds.begin(), carUniqueIds.end());
+				std::sort(sortedPairs.begin(), sortedPairs.end(),
+					[](const auto& a, const auto& b)
+					{
+						return a.second > b.second;
+					});
+				std::vector<std::shared_ptr<Car>> foundCars;
+				for (const auto& pair : sortedPairs)
+				{
+					const auto& foundCar = this->getCarByUniqueId(pair.first);
+					if (foundCar)
+					{
+						foundCars.push_back(foundCar);
+					}
+				}
+				if (foundCars.empty())
+				{
+					file << "Все автомобили, добавленные в избранное, были раскуплены.\n\n";
+				}
+				else
+				{
+					file << "II Список автомобилей в избранном в порядке убывания рейтинга:\n";
+					for (const auto& foundCar : foundCars)
+					{
+						file << foundCar->getBrand() << ' ' << foundCar->getModel() << '\n';
+					}
+					file << '\n';
+				}
+			}
+		}
+		isFavorites = true;
+		file << "Конец отчёта\n";
+		file.close();
+	}
 	std::cout << "Отчёт сформирован и находится в папке reports.\n\n";
 	std::cout << "В отчёте были задействованы структуры:\n";
 	std::cout << "Список пользователей: " << std::boolalpha << isUsers << '\n';
 	std::cout << "Список автомобилей: " << std::boolalpha << isCars << '\n';
-	std::cout << "Список продаж: " << std::boolalpha << isReceipts << "\n\n";
+	std::cout << "Список продаж: " << std::boolalpha << isReceipts << "\n";
+	std::cout << "Список добавленных в избранное: " << std::boolalpha << isFavorites << "\n\n";
 	system("pause");
 }

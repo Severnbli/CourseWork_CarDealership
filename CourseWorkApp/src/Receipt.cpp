@@ -20,8 +20,8 @@ Receipt::Receipt(std::pair<std::shared_ptr<Client>, std::shared_ptr<Car>> object
     date_.setDay(timeInfo.tm_mday);
     date_.setMonth(timeInfo.tm_mon + 1);
     date_.setYear(timeInfo.tm_year + 1900);
-    this->client_ = *objects.first.get();
-    this->car_ = *objects.second.get();
+    this->client_ = *objects.first;
+    this->car_ = *objects.second;
     this->car_.setAmount(1);
 }
 

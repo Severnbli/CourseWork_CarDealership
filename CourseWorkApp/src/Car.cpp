@@ -215,3 +215,8 @@ bool compareByPrice(const std::shared_ptr<Car>& firstObject, const std::shared_p
 {
 	return firstObject->getPrice() < secondObject->getPrice();
 }
+
+std::string Car::getUniqueId() const
+{
+	return this->uniqueId_;
+}

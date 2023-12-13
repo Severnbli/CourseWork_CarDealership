@@ -404,6 +404,17 @@ void Manager::workingClientWithCatalog(const std::shared_ptr<User>& authorizedUs
 			}
 		case 4:
 		{
+			std::cout << "\nВыберите номер автомобиля: ";
+			if (this->database_.fullUpFavoritesMap(authorizedUser->getUniqueId(), this->database_.getCarByPositionInVector(utils::checkIntInRange(1, this->database_.getCarsVectorSize()) - 1)->getUniqueId()))
+			{
+				std::cout << "\nАвтомобиль успешно добавлен в избранное.";
+			}
+			else
+			{
+				std::cout << "\nАвтомобиль уже добавлен в избранное.";
+			}
+			std::cout << "\n\n";
+			system("pause");
 			break;
 		}
 		default:
@@ -440,6 +451,54 @@ void Manager::workingEmployeeWithReceipts()
 			this->database_.searchInReceiptsVector();
 			break;
 		}
+		default:
+		{
+			break;
+		}
+		case 0:
+		{
+			return;
+		}
+		}
+	}
+}
+
+void Manager::workingClientWithFavorites(const std::shared_ptr<User>& authorizedUser)
+{
+	while (true)
+	{
+		system("cls");
+		std::cout << "АСА - Меню избранного\n\n";
+		const auto& cars = this->database_.getCarsInFavoritesByUserUniqueId(authorizedUser->getUniqueId());
+		if (cars.empty())
+		{
+			std::cout << "Нет ни одного автомобиля в избранных.\n\n";
+			system("pause");
+			return;
+		}
+		this->database_.showCarsInfo(nullptr, cars);
+		switch (utils::patternForMenus("", {
+			"Покупка",
+			"Удалить из избранного"
+			}, false, false))
+		{
+		case 1:
+		{
+			std::cout << "\nВыберите номер автомобиля: ";
+			this->database_.fullUpReceiptsVector(authorizedUser, this->database_.getCarByPositionInVector(utils::checkIntInRange(1, this->database_.getCarsVectorSize()) - 1));
+			std::cout << "\nАвтомобиль успешно куплен!\n\n";
+			system("pause");
+			break;
+		}
+		case 2:
+			{
+			std::cout << "\nВыберите номер автомобиля: ";
+			this->database_.deleteFavorite(authorizedUser->getUniqueId(), this->database_.getCarByPositionInVector(utils::checkIntInRange(1, this->database_.getCarsVectorSize()) - 1)->getUniqueId());
+			std::cout << "\nАвтомобиль успешно удалён из избранного.\n\n";
+			system("pause");
+			break;
+			break;
+			}
 		default:
 		{
 			break;

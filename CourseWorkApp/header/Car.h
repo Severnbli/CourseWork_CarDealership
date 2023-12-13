@@ -56,6 +56,8 @@ public:
 
 	void printInfoTableForm() const;
 
+	std::string getUniqueId() const;
+
 private:
 	static int dimensionality_;
 
