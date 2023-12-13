@@ -6,11 +6,15 @@
 #include "Receipt.h"
 #include <vector>
 #include <memory>
+#include <map>
 
-#define CLIENTS_FILE "clients.txt"
-#define EMPLOYEES_FILE "employees.txt"
-#define CARS_FILE "cars.txt"
-#define RECEIPTS_FILE "receipts.txt"
+#define REPORTS_DIR "reports"
+#define DATABASE_DIR "database"
+#define CLIENTS_FILE "database\\clients.txt"
+#define EMPLOYEES_FILE "database\\employees.txt"
+#define CARS_FILE "database\\cars.txt"
+#define RECEIPTS_FILE "database\\receipts.txt"
+#define FAVORITES_FILE "database\\favorites.txt"
 
 class Database
 {
@@ -28,6 +32,8 @@ public:
 	void loadCarsVector(const std::string&);
 
 	void loadReceiptsVector(const std::string&);
+
+	void loadFavoritesMap(const std::string&);
 
 	template <typename T>
 	void unloadInfoToFile(const std::vector<std::shared_ptr<T>>&, const std::string&);
@@ -67,7 +73,9 @@ public:
 
 	void searchInReceiptsVector() const;
 
-	void clearDatabase(const std::string&);
+	void clearUsersVector(const std::string&);
+
+	void clearCarsVector();
 
 	void deleteUser(const std::shared_ptr<User>&);
 
@@ -93,4 +101,6 @@ private:
 	std::vector<std::shared_ptr<Car>> cars_;
 
 	std::vector<std::shared_ptr<Receipt>> receipts_;
+
+	std::map<std::string, std::string> favorites_;
 };

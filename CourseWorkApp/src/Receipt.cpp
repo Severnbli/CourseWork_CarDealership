@@ -1,5 +1,5 @@
-#include "Receipt.h"
-#include "utils.h"
+#include "../header/Receipt.h"
+#include "../header/utils.h"
 #include <ctime>
 #include <iomanip>
 #include <iostream>

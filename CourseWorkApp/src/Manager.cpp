@@ -1,7 +1,7 @@
 ﻿
-#include "Manager.h"
-#include "User.h"
-#include "utils.h"
+#include "../header/Manager.h"
+#include "../header/User.h"
+#include "../header/utils.h"
 #include <iostream>
 #include <string>
 #include <memory>
@@ -261,7 +261,7 @@ void Manager::workingEmployeeWithProfiles(std::shared_ptr<User>& authorizedUser)
 			std::cout << '\n';
 				if (utils::areYouConfident())
 				{
-					this->database_.clearDatabase(authorizedUser->getUsername());
+					this->database_.clearUsersVector(authorizedUser->getUsername());
 				}
 			break;
 			}
@@ -302,7 +302,8 @@ void Manager::workingEmployeeWithCatalog(const std::shared_ptr<User>& authorized
 			"Сортировка",
 			"Поиск",
 			"Добавление авто",
-			"Редактирование"
+			"Редактирование",
+			"Очистить базу данных"
 		}, false, false))
 		{
 		case 1:
@@ -339,6 +340,15 @@ void Manager::workingEmployeeWithCatalog(const std::shared_ptr<User>& authorized
 				}
 				break;
 			}
+		case 5:
+			{
+			std::cout << '\n';
+				if (utils::areYouConfident())
+				{
+					this->database_.clearCarsVector();
+				}
+				break;
+			}
 		default:
 		{
 			break;
@@ -357,12 +367,21 @@ void Manager::workingClientWithCatalog(const std::shared_ptr<User>& authorizedUs
 	{
 		system("cls");
 		std::cout << "АСА - Меню работы с каталогом\n\n";
-		this->database_.showCarsInfo();
+		try
+		{
+			this->database_.showCarsInfo();
+		}
+		catch (const std::runtime_error& error)
+		{
+			std::cout << error.what() << "\n\n";
+			system("pause");
+			return;
+		}
 		switch (utils::patternForMenus("", {
 			"Сортировка",
 			"Поиск",
-			"Покупка"
-			/*"Добавление в избранное",*/
+			"Покупка",
+			"Добавление в избранное"
 			}, false, false))
 		{
 		case 1:

@@ -1,6 +1,6 @@
-﻿#include "Client.h"
+﻿#include "../header/Client.h"
 #include <iomanip>
-#include "utils.h"
+#include "../header/utils.h"
 #include <iostream>
 
 int Client::dimensionality_ = 6;

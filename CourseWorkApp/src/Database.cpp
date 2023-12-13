@@ -1,5 +1,5 @@
-﻿#include "Database.h"
-#include "utils.h"
+﻿#include "../header/Database.h"
+#include "../header/utils.h"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -8,6 +8,12 @@
 
 Database::Database()
 {
+	try {
+		std::filesystem::create_directory(DATABASE_DIR);
+	}
+	catch (const std::filesystem::filesystem_error&) {
+		utils::customTerminate("созданием дирректории database");
+	}
 	try
 	{
 		this->loadUsersVector(CLIENTS_FILE);
@@ -1016,7 +1022,7 @@ void Database::searchInReceiptsVector() const
 	}
 }
 
-void Database::clearDatabase(const std::string& username)
+void Database::clearUsersVector(const std::string& username)
 {
 	this->cars_.clear();
 	auto begin = this->users_.begin();
@@ -1030,6 +1036,11 @@ void Database::clearDatabase(const std::string& username)
 			++begin;
 		}
 	}
+}
+
+void Database::clearCarsVector()
+{
+	this->cars_.clear();
 }
 
 void Database::deleteUser(const std::shared_ptr<User>& user)
@@ -1284,13 +1295,12 @@ void Database::showReceiptsInfo(const std::shared_ptr<Receipt>& receipt, const s
 
 void Database::generateReports() const
 {
-	const std::string directoryPath = "reports";
 	try {
-		if (std::filesystem::create_directory(directoryPath)) {
-			std::cout << "Каталог " << directoryPath << " успешно создан" << std::endl;
+		if (std::filesystem::create_directory(REPORTS_DIR)) {
+			std::cout << "Каталог " << REPORTS_DIR << " успешно создан" << std::endl;
 		}
 		else {
-			std::cerr << "Каталог " << directoryPath << " успешно найден." << std::endl;
+			std::cerr << "Каталог " << REPORTS_DIR << " успешно найден." << std::endl;
 		}
 	}
 	catch (const std::filesystem::filesystem_error& ex) {

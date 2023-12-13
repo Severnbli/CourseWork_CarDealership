@@ -1,5 +1,5 @@
-#include "menus.h"
-#include "Manager.h"
+#include "../header/menus.h"
+#include "../header/Manager.h"
 #include "Windows.h"
 
 int main()
