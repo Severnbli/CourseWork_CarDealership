@@ -283,6 +283,20 @@ void Manager::workingEmployeeWithCatalog(const std::shared_ptr<User>& authorized
 	{
 		system("cls");
 		std::cout << "АСА - Меню работы с каталогом\n\n";
+		if (this->database_.getCarsVectorSize() == 0)
+		{
+			std::cout << "Нет ни одного автомобиля. Желаете добавить?\n"
+				"1 - Да.\n0 - Нет.\n\nВыберите: ";
+			if (static_cast<bool>(utils::checkIntInRange(0, 1)))
+			{
+				std::cout << '\n';
+				Car car(4);
+				this->database_.fullUpCarsVector(car);
+				std::cout << "\nАвтомобиль успешно добавлен в каталог!\n\n";
+				system("pause");
+			}
+			return;
+		}
 		this->database_.showCarsInfo();
 		switch (utils::patternForMenus("", {
 			"Сортировка",
