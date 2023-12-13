@@ -347,7 +347,7 @@ void Manager::workingClientWithCatalog(const std::shared_ptr<User>& authorizedUs
 		switch (utils::patternForMenus("", {
 			"Сортировка",
 			"Поиск",
-			"Добавление в избранное",
+			/*"Добавление в избранное",*/
 			"Покупка"
 			}, false, false))
 		{
@@ -399,14 +399,12 @@ void Manager::workingEmployeeWithReceipts()
 		{
 		case 1:
 		{
+			this->database_.sortReceiptsVector();
 			break;
 		}
 		case 2:
 		{
-			break;
-		}
-		case 3:
-		{
+			this->database_.searchInReceiptsVector();
 			break;
 		}
 		default:
@@ -419,4 +417,9 @@ void Manager::workingEmployeeWithReceipts()
 		}
 		}
 	}
+}
+
+void Manager::generateReports() const
+{
+	this->database_.generateReports();
 }

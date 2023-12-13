@@ -28,6 +28,8 @@ public:
 
 	void workingEmployeeWithReceipts();
 
+	void generateReports() const;
+
 private:
 	Database database_;
 };

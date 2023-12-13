@@ -28,6 +28,8 @@ public:
 
 	void printInfoTableForm() const;
 
+	std::pair<Client, Car> getInfo() const;
+
 private:
 	static size_t dimensionality_;
 

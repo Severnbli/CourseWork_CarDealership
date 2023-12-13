@@ -76,3 +76,9 @@ void Receipt::printInfoTableForm() const
     std::cout << '+' << std::string(13, '-') << '+' << std::string(10, '-') << '+' << std::string(7, '-');
     std::cout << '+' << std::string(8, '-') << '+' << std::string(15, '-') << "+\n";
 }
+
+std::pair<Client, Car> Receipt::getInfo() const
+{
+    return { this->client_, this->car_ };
+}
+

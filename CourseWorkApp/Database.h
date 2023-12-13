@@ -85,6 +85,8 @@ public:
 
 	void showReceiptsInfo(const std::shared_ptr<Receipt>& = nullptr, const std::vector<std::shared_ptr<Receipt>>& = {}) const;
 
+	void generateReports() const;
+
 private:
 	std::vector<std::shared_ptr<User>> users_;
 

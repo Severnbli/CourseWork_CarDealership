@@ -92,6 +92,12 @@ int adminMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
                 manager.workingEmployeeWithReceipts();
                 break;
             }
+            case 4:
+	            {
+                std::cout << "\n";
+                manager.generateReports();
+                break;
+	            }
             default:
             {
                 break;
@@ -114,8 +120,12 @@ int userMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
 {
 	while (true)
 	{
-		switch (utils::patternForMenus("АСА - Меню пользователя " + authorizedUser->getUsername(), {"Настройка профиля", "Каталог", 
-			                               "Избранное", "История покупок"}))
+		switch (utils::patternForMenus("АСА - Меню пользователя " + authorizedUser->getUsername(), {
+			"Настройка профиля",
+			"Каталог"/*, 
+			"Избранное",
+			"История покупок"*/
+		}))
 		{
         case 1:
         {

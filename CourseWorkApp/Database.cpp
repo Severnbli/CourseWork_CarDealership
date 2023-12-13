@@ -196,7 +196,6 @@ void Database::fullUpReceiptsVector(const std::shared_ptr<User>& user, const std
 	}
 }
 
-
 std::vector<std::shared_ptr<User>> Database::getUsersList() const
 {
 	return this->users_;
@@ -1280,4 +1279,91 @@ void Database::showReceiptsInfo(const std::shared_ptr<Receipt>& receipt, const s
 			element->printInfoTableForm();
 		}
 	}
+}
+
+void Database::generateReports() const
+{
+	bool isUsers = false;
+	bool isCars = false;
+	bool isReceipts = false;
+	std::ofstream file("reports\\users_report.txt", std::ios::out);
+	if (file.is_open())
+	{
+		file << "ОТЧЁТ\nо зарегистрированных пользователях\n\n";
+		if (this->users_.empty())
+		{
+			file << "Ни одного аккаунта не зарегистрированно.\n\n";
+		}
+		else
+		{
+			file << "I Всего насчитывается " << this->users_.size() << " записи (ей).\n\n";
+			file << "II Список зарегистрированных пользователей:\n";
+			file << "(в формате имя пользователя - ФИО (если имеется))\n";
+			int counter = 1;
+			for (const auto& element : this->users_)
+			{
+				file << counter++ << ") " << element->getUsername() << " - " << element->getFio() << '\n';
+			}
+			file << '\n';
+		}
+		isUsers = true;
+		file << "Конец отчёта\n";
+		file.close();
+	}
+	file.open("reports\\cars_report.txt", std::ios::out);
+	if (file.is_open())
+	{
+		file << "ОТЧЁТ\nоб имеющихся автомобилях\n\n";
+		if (this->cars_.empty())
+		{
+			file << "Ни одного автомобиля нет в наличии.\n\n";
+		}
+		else
+		{
+			file << "I Всего насчитывается " << this->cars_.size() << " записи (ей).\n\n";
+			file << "II Список имеющихся автомобилях:\n";
+			file << "(в формате бренд - марка - год выпуска - количество - цена)\n";
+			int counter = 1;
+			for (const auto& element : this->cars_)
+			{
+				file << counter++ << ") " << element->getBrand() << " - " << element->getModel() << " - ";
+				file << element->getYearOfManufacture() << " - " << element->getPrice() << '\n';
+			}
+			file << '\n';
+		}
+		isCars = true;
+		file << "Конец отчёта\n";
+		file.close();
+	}
+	file.open("reports\\receipts_report.txt", std::ios::out);
+	if (file.is_open())
+	{
+		file << "ОТЧЁТ\nо продажах\n\n";
+		if (this->receipts_.empty())
+		{
+			file << "Ни одного автомобиля не продано.\n\n";
+		}
+		else
+		{
+			file << "I Всего насчитывается " << this->receipts_.size() << " записи (ей).\n\n";
+			file << "II Список продаж:\n";
+			file << "(в формате имя пользователя (клиента) - бренд - марка)\n";
+			int counter = 1;
+			for (const auto& element : this->receipts_)
+			{
+				file << counter++ << ") " << element->getInfo().first.getUsername() << " - ";
+				file << element->getInfo().second.getBrand() << " - " << element->getInfo().second.getModel() << '\n';
+			}
+			file << '\n';
+		}
+		isReceipts = true;
+		file << "Конец отчёта\n";
+		file.close();
+	}
+	std::cout << "Отчёт сформирован и находится в папке reports.\n\n";
+	std::cout << "В отчёте были задействованы структуры:\n";
+	std::cout << "Список пользователей: " << std::boolalpha << isUsers << '\n';
+	std::cout << "Список автомобилей: " << std::boolalpha << isCars << '\n';
+	std::cout << "Список продаж: " << std::boolalpha << isReceipts << "\n\n";
+	system("pause");
 }
