@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+//#include <filesystem>
 
 Database::Database()
 {
@@ -1283,6 +1284,20 @@ void Database::showReceiptsInfo(const std::shared_ptr<Receipt>& receipt, const s
 
 void Database::generateReports() const
 {
+	/*const std::string directoryPath = "reports";
+	try {
+		if (std::filesystem::create_directory(directoryPath)) {
+			std::cout << "Каталог " << directoryPath << " успешно создан" << std::endl;
+		}
+		else {
+			std::cerr << "Каталог " << directoryPath << " успешно найден." << std::endl;
+		}
+	}
+	catch (const std::filesystem::filesystem_error& ex) {
+		std::cerr << "Каталог создать не удалось: " << ex.what() << std::endl;
+		system("pause");
+		return;
+	}*/
 	bool isUsers = false;
 	bool isCars = false;
 	bool isReceipts = false;

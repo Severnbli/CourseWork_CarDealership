@@ -361,8 +361,8 @@ void Manager::workingClientWithCatalog(const std::shared_ptr<User>& authorizedUs
 		switch (utils::patternForMenus("", {
 			"Сортировка",
 			"Поиск",
-			/*"Добавление в избранное",*/
 			"Покупка"
+			/*"Добавление в избранное",*/
 			}, false, false))
 		{
 		case 1:
@@ -376,10 +376,6 @@ void Manager::workingClientWithCatalog(const std::shared_ptr<User>& authorizedUs
 			break;
 		}
 		case 3:
-		{
-			break;
-		}
-		case 4:
 			{
 			std::cout << "\nВыберите номер автомобиля: ";
 			this->database_.fullUpReceiptsVector(authorizedUser, this->database_.getCarByPositionInVector(utils::checkIntInRange(1, this->database_.getCarsVectorSize()) - 1));
@@ -387,6 +383,10 @@ void Manager::workingClientWithCatalog(const std::shared_ptr<User>& authorizedUs
 			system("pause");
 			break;
 			}
+		case 4:
+		{
+			break;
+		}
 		default:
 		{
 			break;
