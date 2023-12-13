@@ -39,6 +39,8 @@ public:
 	template <typename T>
 	void fullUpCarsVector(const T&);
 
+	void fullUpReceiptsVector(const std::shared_ptr<User>&, const std::shared_ptr<Car>&);
+
 	std::vector<std::shared_ptr<User>> getUsersList() const;
 
 	size_t getUsersVectorSize() const;

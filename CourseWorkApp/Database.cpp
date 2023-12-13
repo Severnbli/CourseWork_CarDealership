@@ -182,6 +182,21 @@ void Database::fullUpCarsVector(const T& object)
 	this->cars_.push_back(std::make_shared<T>(object));
 }
 
+void Database::fullUpReceiptsVector(const std::shared_ptr<User>& user, const std::shared_ptr<Car>& car)
+{
+	if (car->getAmount() < 1)
+	{
+		return;
+	}
+	this->receipts_.push_back(std::make_shared<Receipt>(std::pair<std::shared_ptr<Client>, std::shared_ptr<Car>>(std::dynamic_pointer_cast<Client>(user), car)));
+	car->setAmount(car->getAmount() - 1);
+	if (!static_cast<bool>(car->getAmount()))
+	{
+		this->cars_.erase(std::find(this->cars_.begin(), this->cars_.end(), car));
+	}
+}
+
+
 std::vector<std::shared_ptr<User>> Database::getUsersList() const
 {
 	return this->users_;

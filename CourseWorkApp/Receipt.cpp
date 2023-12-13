@@ -11,7 +11,6 @@ Receipt::Receipt(const std::vector<std::string>& donor)
     this->setInfoInVectorStringForm(donor);
 }
 
-
 Receipt::Receipt(std::pair<std::shared_ptr<Client>, std::shared_ptr<Car>> objects)
 {
     time_t rawTime;
@@ -23,6 +22,7 @@ Receipt::Receipt(std::pair<std::shared_ptr<Client>, std::shared_ptr<Car>> object
     date_.setYear(timeInfo.tm_year + 1900);
     this->client_ = *objects.first.get();
     this->car_ = *objects.second.get();
+    this->car_.setAmount(1);
 }
 
 Receipt::Receipt(const Receipt& other)
