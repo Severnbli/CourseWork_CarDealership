@@ -70,11 +70,7 @@ Database::Database(const Database& other)
 
 Database::~Database()
 {
-	this->unloadInfoToFile(this->parseUsersVector(true), EMPLOYEES_FILE);
-	this->unloadInfoToFile(this->users_, CLIENTS_FILE);
-	this->unloadInfoToFile(this->cars_, CARS_FILE);
-	this->unloadInfoToFile(this->receipts_, RECEIPTS_FILE);
-	this->unloadFavoritesToFile(FAVORITES_FILE);
+	this->unloadAll();
 }
 
 std::vector<std::string> Database::loadInfoFromFile(const std::string& fileName) { // получение вектора строк (информация из файла)
@@ -235,6 +231,15 @@ void Database::unloadFavoritesToFile(const std::string& fileName) const
 	file.close();
 }
 
+void Database::unloadAll()
+{
+	this->unloadInfoToFile(this->parseUsersVector(true), EMPLOYEES_FILE);
+	this->unloadInfoToFile(this->users_, CLIENTS_FILE);
+	this->unloadInfoToFile(this->cars_, CARS_FILE);
+	this->unloadInfoToFile(this->receipts_, RECEIPTS_FILE);
+	this->unloadFavoritesToFile(FAVORITES_FILE);
+}
+
 void Database::fullUpUsersVector(const Client& object)
 {
 	this->users_.push_back(std::make_shared<Client>(object));
@@ -382,6 +387,7 @@ std::vector<std::shared_ptr<Car>> Database::getCarsInFavoritesByUserUniqueId(con
 				if (car->getUniqueId() == foundCarUniqueId)
 				{
 					carsToOutput.push_back(car);
+					break;
 				}
 			}
 		}

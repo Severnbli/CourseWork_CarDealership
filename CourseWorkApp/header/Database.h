@@ -40,6 +40,8 @@ public:
 
 	void unloadFavoritesToFile(const std::string&) const;
 
+	void unloadAll();
+
 	void fullUpUsersVector(const Client&);
 
 	void fullUpUsersVector(const Employee&);
