@@ -61,6 +61,10 @@ public:
 
 	static size_t getDimensionality();
 
+	friend std::ostream& operator<<(std::ostream& os, const Date& date);
+
+	friend std::istream& operator>>(std::istream& is, Date& date);
+
 private:
 	static size_t dimensionality_;
 

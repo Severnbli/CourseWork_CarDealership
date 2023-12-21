@@ -18,7 +18,7 @@ public:
 
 	Receipt(const Receipt&);
 
-	bool operator<(const Receipt&) const;
+	friend bool operator<(const Receipt&, const Receipt&);
 
 	void setInfoInVectorStringForm(const std::vector<std::string>&);
 

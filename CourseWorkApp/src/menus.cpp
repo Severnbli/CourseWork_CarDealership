@@ -11,12 +11,13 @@ int userMenu(Manager&, std::shared_ptr<User>&);
 
 int mainMenu(Manager& manager)
 {
+    utils::loading();
     while (true)
     {
         try
         {
-            switch (utils::patternForMenus("Автоматизированная система автосалона",
-                { "Регистрация", "Вход в систему"}))
+            switch (utils::patternForMenus("Автоматизирования система \"Cars Company\"",
+                { "Зарегистрироваться", "Авторизоваться"}))
             {
             case 1:
             {
@@ -70,7 +71,7 @@ int adminMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
 	{
         try
         {
-            switch (utils::patternForMenus("АСА - Меню администратора " + authorizedUser->getUsername(), { 
+            switch (utils::patternForMenus("\"Cars Company\" - Меню сотрудника " + authorizedUser->getUsername(), { 
                 "Работа с профилями",
             	"Каталог",
                 "Просмотр продаж",
@@ -94,7 +95,6 @@ int adminMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
             }
             case 4:
 	            {
-                std::cout << "\n";
                 manager.generateReports();
                 break;
 	            }
@@ -120,7 +120,7 @@ int userMenu(Manager& manager, std::shared_ptr<User>& authorizedUser)
 {
 	while (true)
 	{
-		switch (utils::patternForMenus("АСА - Меню пользователя " + authorizedUser->getUsername(), {
+		switch (utils::patternForMenus("\"Cars Company\" - Меню пользователя " + authorizedUser->getUsername(), {
 			"Настройка профиля",
 			"Каталог", 
 			"Избранное"/*,

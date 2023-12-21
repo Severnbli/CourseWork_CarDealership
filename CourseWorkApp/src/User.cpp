@@ -2,6 +2,8 @@
 #include "../header/utils.h"
 #include <iostream>
 #include <functional>
+#include <conio.h>
+#include <set>
 
 
 User::User()
@@ -88,7 +90,67 @@ void User::setPassword(const std::string& password)
 void User::functionalSetPassword()
 {
 	std::cout << "Пароль (8 - 16 символов): ";
-	this->password_ = std::to_string(std::hash<std::string>()(utils::checkStringInRange(8, 16, false)));
+	std::string password;
+
+	const std::vector<std::string> colors = {
+			"\u001b[31m",
+			"\u001b[32m",
+			"\u001b[33m",
+			"\u001b[34m",
+			"\u001b[35m",
+			"\u001b[36m"
+	};
+
+	while (true)
+	{
+		const auto& charToCheck = _getch();
+
+		if (charToCheck == 8)
+		{
+			if (password.length() == 0)
+			{
+				continue;
+			}
+			std::cout << "\b \b";
+			password.resize(password.length() - 1);
+			password.shrink_to_fit();
+			continue;
+		}
+		if (charToCheck == 13)
+		{
+			if (password.length() == 0)
+			{
+				continue;
+			}
+			if (password.length() < 8 || password.length() > 16)
+			{
+				std::cout << std::string(password.length(), '\b') << "\u001b[31m";
+				std::cout << std::string(password.length(), '*');
+				utils::stopSystem(50);
+				std::cout << std::string(password.length(), '\b') << "\u001b[37m";
+				std::cout << std::string(password.length(), '*');
+				utils::stopSystem(50);
+				std::cout << std::string(password.length(), '\b') << "\u001b[31m";
+				std::cout << std::string(password.length(), '*');
+				utils::stopSystem(50);
+				std::cout << std::string(password.length(), '\b') << "\u001b[37m";
+				std::cout << std::string(password.length(), '*');
+				continue;
+			}
+			std::cout << std::string(password.length(), '\b') << "\u001b[32m";
+			std::cout << std::string(password.length(), '*');
+			utils::stopSystem(250);
+			std::cout << std::string(password.length(), '\b') << "\u001b[37m";
+			std::cout << std::string(password.length(), '*');
+			break;
+		}
+		if (charToCheck >= 'A' && charToCheck <= 'я' || charToCheck >= 33 && charToCheck <= 126)
+		{
+			std::cout << '*';
+			password += static_cast<char>(charToCheck);
+		}
+	}
+	this->password_ = std::to_string(std::hash<std::string>()(password));
 }
 
 std::string User::getPassword() const

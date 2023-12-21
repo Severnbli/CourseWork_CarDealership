@@ -1,4 +1,4 @@
-#include "../header/utils.h"
+п»ї#include "../header/utils.h"
 #include <iostream>
 #include <fstream>
 #include <limits>
@@ -6,9 +6,11 @@
 #include <random>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
+#include <thread>
 
-#define UNCORRECTED_INPUT "Ввод неверный!"
-#define TRY_AGAIN " Попробуйте снова: "
+#define UNCORRECTED_INPUT "Р’РІРѕРґ РЅРµРІРµСЂРЅС‹Р№!"
+#define TRY_AGAIN " РџРѕРїСЂРѕР±СѓР№С‚Рµ СЃРЅРѕРІР°: "
 
 namespace utils {
 
@@ -61,16 +63,16 @@ namespace utils {
 
     void customTerminate(const char* info)
     {
-        std::cerr << "Ошибка с " << info << '!';
+        std::cerr << "РћС€РёР±РєР° СЃ " << info << '!';
         abort();
     }
 
-    void rebuildFile(const std::string& nameOfFile) // пересоздание / создание файла
+    void rebuildFile(const std::string& nameOfFile) // РїРµСЂРµСЃРѕР·РґР°РЅРёРµ / СЃРѕР·РґР°РЅРёРµ С„Р°Р№Р»Р°
     {
         std::ofstream file(nameOfFile, std::ios::out);
         if (!file.is_open())
         {
-            customTerminate("пересозданием файла");
+            customTerminate("РїРµСЂРµСЃРѕР·РґР°РЅРёРµРј С„Р°Р№Р»Р°");
         }
         file.close();
     }
@@ -94,7 +96,7 @@ namespace utils {
 					{
 						break;
 					}
-					if (charToCheck >= 'А' && charToCheck <= 'я')
+					if (charToCheck >= 'Рђ' && charToCheck <= 'СЏ')
 					{
 						throw std::runtime_error(UNCORRECTED_INPUT);
 
@@ -231,7 +233,7 @@ namespace utils {
 						counter += 2;
 						continue;
 					}
-					if (bufferInput[counter] >= 'А' && bufferInput[counter] <= 'я')
+					if (bufferInput[counter] >= 'Рђ' && bufferInput[counter] <= 'СЏ')
 					{
 						throw std::runtime_error(UNCORRECTED_INPUT);
 					}
@@ -344,9 +346,9 @@ namespace utils {
 		int counter = 1;
 		for (std::string& field : fields)
 		{
-			std::cout << counter++ << " - " << field << ".\n";
+			std::cout << "\u001b[33m" << counter++ << "\u001b[37m" << " - " << field << ".\n";
 		}
-		std::cout << "0 - Выход.\n\nВыберите: ";
+		std::cout << "\u001b[33m0\u001b[37m - Р’С‹С…РѕРґ.\n\nР’С‹Р±РµСЂРёС‚Рµ: ";
 		int choice = checkIntInRange(0, fields.size());
 		if (isClearAfter)
 		{
@@ -362,7 +364,7 @@ namespace utils {
 		{
 			std::cout << '+' << std::string(pair.second, '-');
 		}
-		std::cout << "+\n|" << std::setw(4) << "№";
+		std::cout << "+\n|" << std::setw(4) << "в„–";
 		for (const auto& pair : header)
 		{
 			std::cout << '|' << std::setw(pair.second) << pair.first;
@@ -377,7 +379,8 @@ namespace utils {
 
 	bool areYouConfident()
     {
-		std::cout << "Вы уверены в своих действиях?\n1 - Да.\n0 - Нет.\n\nВыберите: ";
+		std::cout << "Р’С‹ СѓРІРµСЂРµРЅС‹ РІ СЃРІРѕРёС… РґРµР№СЃС‚РІРёСЏС…?\n\u001b[33m1\u001b[37m - Р”Р°.\n"
+			   "\u001b[33m0\u001b[37m- РќРµС‚.\n\nР’С‹Р±РµСЂРёС‚Рµ: ";
 		return static_cast<bool>(checkIntInRange(0, 1));
     }
 
@@ -388,5 +391,72 @@ namespace utils {
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<> distribution(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
     	return std::to_string(std::hash<int>()(distribution(gen) + rand()));
+    }
+
+	void showLoadingAnimation(int iterations, int delay, std::string name) {
+		const char symbols[] = { '-', '/', '|', '\\' };
+
+    	const std::vector<std::string> colors = {
+			"\u001b[31m",
+			"\u001b[32m",
+			"\u001b[33m",
+			"\u001b[34m",
+			"\u001b[35m",
+			"\u001b[36m"
+		};
+
+		const std::vector<std::string> points = {
+			".",
+			"..",
+			"..."
+		};
+
+    	for (int i = 0; i < iterations; ++i) {
+			std::cout << colors[i % colors.size()] << symbols[i % sizeof(symbols)] << " \u001b[37m" << name << points[i % points.size()] << std::flush;
+			stopSystem(delay);
+			std::cout << "\r" << std::string(name.length() + 2 + 3, ' ') << "\r";
+		}
+	}
+
+	void loading() {
+		system("cls");
+
+		constexpr int consoleWidth = 100;
+		const std::string nameOfSystem = "РђРІС‚РѕРјР°С‚РёР·РёСЂРѕРІР°РЅРЅР°СЏ СЃРёСЃС‚РµРјР° \"Cars Company\" РїСЂРёРІРµС‚СЃС‚РІСѓРµС‚ РІР°СЃ!";
+
+		std::cout << std::setw((consoleWidth - 43) / 2) << std::setfill(' ') << '+' << std::string(nameOfSystem.length(), '=') << "+\n";
+    	std::cout << std::setw((consoleWidth - 43) / 2) << std::setfill(' ') << ' ' << nameOfSystem << "\n";
+		std::cout << std::setw((consoleWidth - 43) / 2) << std::setfill(' ') << '+' << std::string(nameOfSystem.length(), '=') << "+\n\n\n";
+
+		std::cout << std::string(30, ' ') << "                           " << std::string(23, '$') << '\n';
+		std::cout << std::string(30, ' ') << "                          $$$$$     $$     $$    $$\n";
+		std::cout << std::string(30, ' ') << "                        $$$$$       $$      $$    $$\n";
+		std::cout << std::string(30, ' ') << "                      $$$$$         $$       $$    $$\n";
+		std::cout << std::string(30, ' ') << "                   $$$$$            $$        $$    $$\n";
+		std::cout << std::string(30, ' ') << "             $$$$$$$$$$$$$$$$$$$$$$$$$         $$    $$\n";
+		std::cout << std::string(30, ' ') << "       $$$$$$        $$             $$          $$$$$$$$\n";
+		std::cout << std::string(30, ' ') << "  $$$$$$             $$             $$                 $$\n";
+		std::cout << std::string(30, ' ') << "$$                   $$             $$                 $$\n";
+		std::cout << std::string(30, ' ') << "$$        $$$$$      $$             $$        $$$$$    $$\n";
+		std::cout << std::string(30, ' ') << "$$      $$$$$$$$$    $$             $$      $$$$$$$$$   $$\n";
+		std::cout << std::string(30, ' ') << "$$$$$ $$$$     $$$ $$$$$$$$$$$$$$$$$$$$$$  $$$$    $$$  $$\n";
+		std::cout << std::string(30, ' ') << "      $$$$     $$$                         $$$$    $$$$ \n";
+		std::cout << std::string(30, ' ') << "       $$$$    $$$                         $$$$$   $$$$ \n";
+		std::cout << std::string(30, ' ') << "        $$$$$ $$$                           $$$$$ $$$$ \n";
+		std::cout << std::string(30, ' ') << "          $$$$$$                               $$$$$$ \n";
+
+		std::cout << "\n\n";
+		std::cout << std::setw((consoleWidth - 43) / 2 + 15) << std::setfill(' ') << ' ' << "Cars Company РєР°С‡РµСЃС‚РІРѕ - СЌС‚Рѕ РІСЃС‘!\n\n";
+
+		utils::showLoadingAnimation(25, 150, "Р—Р°РіСЂСѓР·РєР° РѕСЃРЅРѕРІРЅС‹С… РґР°РЅРЅС‹С…");
+		utils::showLoadingAnimation(25, 150, "Р—Р°РіСЂСѓР·РєР° РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РґР°РЅРЅС‹С…");
+		utils::showLoadingAnimation(25, 150, "Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚РёРЅРѕРє СЃ РєРѕС‚РёРєР°РјРё");
+
+		system("cls");
+    }
+
+	void stopSystem(int delay)
+    {
+		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     }
 }

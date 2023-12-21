@@ -1,6 +1,7 @@
 ﻿#include "../header/utils.h"
 #include "../header/Date.h"
 #include <iostream>
+#include <sstream>
 
 size_t Date::dimensionality_ = 3;
 
@@ -174,4 +175,20 @@ std::string Date::defineYear(int year)
 size_t Date::getDimensionality()
 {
     return dimensionality_;
+}
+
+std::istream& operator>>(std::istream& is, Date& date) {
+    std::string input;
+    is >> input;
+
+    std::istringstream iss(input);
+    char delimiter;
+    iss >> date.day_ >> delimiter >> date.month_ >> delimiter >> date.year_;
+
+    return is;
+}
+
+std::ostream& operator<<(std::ostream& os, const Date& date) {
+    os << date.day_ << '/' << date.month_ << '/' << date.year_;
+    return os;
 }

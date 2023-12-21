@@ -67,4 +67,10 @@ namespace utils {
 	bool areYouConfident();
 
 	std::string generationRandomHash();
+
+	void showLoadingAnimation(int, int, std::string);
+
+	void loading();
+
+	void stopSystem(int);
 }

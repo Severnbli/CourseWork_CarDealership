@@ -32,9 +32,9 @@ Receipt::Receipt(const Receipt& other)
     this->car_ = other.car_;
 }
 
-bool Receipt::operator<(const Receipt& other) const
+bool operator<(const Receipt& first, const Receipt& second)
 {
-    return this->date_ < other.date_;
+    return first.date_ < second.date_;
 }
 
 void Receipt::setInfoInVectorStringForm(const std::vector<std::string>& donor)

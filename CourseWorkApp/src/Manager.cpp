@@ -13,13 +13,36 @@ Manager::Manager(const Manager& other)
 
 void Manager::beginRegistration()
 {
-	std::cout << "АСА - Регистрация\n\n";
+	std::cout << "\"Cars Company\" - Регистрация\n\n";
 	std::shared_ptr<User> registeredPerson = std::make_shared<Client>();
 	database_.functionalCheckUsername(registeredPerson);
 	std::cout << std::endl;
-	registeredPerson->functionalSetPassword();
+	while (true)
+	{
+		try
+		{
+			registeredPerson->functionalSetPassword();
+			Client client;
+			std::cout << '\n';
+			client.functionalSetPassword();
+			if (registeredPerson->getPassword() != client.getPassword())
+			{
+				throw utils::CustomExcept();
+			}
+			break;
+		}
+		catch (const utils::CustomExcept&)
+		{
+			std::cout << "\n\nПароли не совпадают!\n\n";
+			system("pause");
+			std::cout << "\033[A" << std::string(40, '\b') << std::string(40, ' ') << std::string(40, '\b');
+			std::cout << "\033[A\033[A" << std::string(40, ' ') << std::string(40, '\b');
+			std::cout << "\033[A\033[A" << std::string(40, ' ') << std::string(40, '\b');
+			std::cout << "\033[A" << std::string(40, ' ') << std::string(40, '\b');
+		}
+	}
 	database_.fullUpUsersVector(*std::dynamic_pointer_cast<Client>(registeredPerson));
-	std::cout << "\nРегистрация успешна!\n\n";
+	std::cout << "\n\nРегистрация успешна!\n\n";
 	system("pause");	
 }
 
@@ -27,7 +50,7 @@ void Manager::beginAuthorization(bool& isAuthorize, std::shared_ptr<User>& autho
 {
 	while (true)
 	{
-		std::cout << "АСА - Авторизация\n\n";
+		std::cout << "\"Cars Company\" - Авторизация\n\n";
 		Client client;
 		client.functionalSetUsername();
 		std::cout << std::endl;
@@ -42,8 +65,8 @@ void Manager::beginAuthorization(bool& isAuthorize, std::shared_ptr<User>& autho
 				return;
 			}
 		}
-		std::cout << "\nНе удалось найти аккаунт по введёным данным.\n\nЖелаете попробовать снова?\n"
-			"1 - Да.\n0 - Нет.\n\nВыберите: ";
+		std::cout << "\n\nНе удалось найти аккаунт по введёным данным.\n\nЖелаете попробовать снова?\n"
+			"\u001b[33m1\u001b[37m - Да.\n\u001b[33m0\u001b[37m - Нет.\n\nВыберите: ";
 		if (!static_cast<bool>(utils::checkIntInRange(0, 1)))
 		{
 			isAuthorize = false;
@@ -58,7 +81,7 @@ void Manager::workingWithEmployeeProfile(std::shared_ptr<User>& authorizedUser)
 {
 	while (true)
 	{
-		switch (utils::patternForMenus("АСА - Меню работы с профилями", { "Настроить свой профиль",
+		switch (utils::patternForMenus("\"Cars Company\" - Меню работы с профилями", { "Настроить свой профиль",
 			                               "Обозреватель других существующих профилей" }))
 		{
 		case 1:
@@ -87,7 +110,7 @@ void Manager::customizeClientProfile(std::shared_ptr<User>& authorizedUser)
 {
 	while (true)
 	{
-		std::cout << "АСА - Меню настройки профиля клиента\n\n";
+		std::cout << "\"Cars Company\" - Меню настройки профиля клиента\n\n";
 		this->database_.showUsersInfo(authorizedUser);
 		std::cout << "\n\n";
 		switch (utils::patternForMenus("Желаете ли изменить какой-нибудь параметр?",
@@ -103,7 +126,17 @@ void Manager::customizeClientProfile(std::shared_ptr<User>& authorizedUser)
 		case 2:
 		{
 			std::cout << '\n';
+			std::string oldPassword = authorizedUser->getPassword();
 			authorizedUser->functionalSetPassword();
+			Client client;
+			std::cout << '\n';
+			client.functionalSetPassword();
+			if (authorizedUser->getPassword() != client.getPassword())
+			{
+				std::cout << "\nПароли не совпадают!\n\n";
+				system("pause");
+				authorizedUser->setUnmodifiedPassword(oldPassword);
+			}
 			break;
 		}
 		case 3:
@@ -147,7 +180,7 @@ void Manager::customizeEmloyeeProfile(std::shared_ptr<User>& authorizedUser)
 {
 	while (true)
 	{
-		std::cout << "АСА - Меню настройки профиля администратора\n\n";
+		std::cout << "\"Cars Company\" - Меню настройки профиля сотрудника\n\n";
 		this->database_.showUsersInfo(authorizedUser);
 		std::cout << "\n\n";
 		switch (utils::patternForMenus("Желаете ли изменить какой-нибудь параметр?", 
@@ -167,7 +200,17 @@ void Manager::customizeEmloyeeProfile(std::shared_ptr<User>& authorizedUser)
 		case 2:
 		{
 			std::cout << '\n';
+			std::string oldPassword = authorizedUser->getPassword();
 			authorizedUser->functionalSetPassword();
+			Client client;
+			std::cout << '\n';
+			client.functionalSetPassword();
+			if (authorizedUser->getPassword() != client.getPassword())
+			{
+				std::cout << "\nПароли не совпадают!\n\n";
+				system("pause");
+				authorizedUser->setUnmodifiedPassword(oldPassword);
+			}
 			break;
 		}
 		case 3:
@@ -206,7 +249,7 @@ void Manager::workingEmployeeWithProfiles(std::shared_ptr<User>& authorizedUser)
 	while (true)
 	{
 		system("cls");
-		std::cout << "АСА - Обозреватель профилей\n\n";
+		std::cout << "\"Cars Company\" - Обозреватель профилей\n\n";
 		this->database_.showUsersInfo();
 		switch (utils::patternForMenus("", {
 			"Сортировка", 
@@ -282,11 +325,11 @@ void Manager::workingEmployeeWithCatalog(const std::shared_ptr<User>& authorized
 	while (true)
 	{
 		system("cls");
-		std::cout << "АСА - Меню работы с каталогом\n\n";
+		std::cout << "\"Cars Company\" - Меню работы с каталогом\n\n";
 		if (this->database_.getCarsVectorSize() == 0)
 		{
 			std::cout << "Нет ни одного автомобиля. Желаете добавить?\n"
-				"1 - Да.\n0 - Нет.\n\nВыберите: ";
+				"\u001b[33m1\u001b[37m - Да.\n\u001b[33m0\u001b[37m - Нет.\n\nВыберите: ";
 			if (static_cast<bool>(utils::checkIntInRange(0, 1)))
 			{
 				std::cout << '\n';
@@ -319,7 +362,7 @@ void Manager::workingEmployeeWithCatalog(const std::shared_ptr<User>& authorized
 		case 3:
 			{
 			system("cls");
-			std::cout << "АСА - Добавление автомобиля в каталог\n\n";
+			std::cout << "\"Cars Company\" - Добавление автомобиля в каталог\n\n";
 			Car car(4);
 			this->database_.fullUpCarsVector(car);
 			std::cout << "\nАвтомобиль успешно добавлен в каталог!\n\n";
@@ -366,7 +409,7 @@ void Manager::workingClientWithCatalog(const std::shared_ptr<User>& authorizedUs
 	while (true)
 	{
 		system("cls");
-		std::cout << "АСА - Меню работы с каталогом\n\n";
+		std::cout << "\"Cars Company\" - Меню работы с каталогом\n\n";
 		try
 		{
 			this->database_.showCarsInfo();
@@ -434,7 +477,7 @@ void Manager::workingEmployeeWithReceipts()
 	while (true)
 	{
 		system("cls");
-		std::cout << "АСА - Меню работы с чеками\n\n";
+		std::cout << "\"Cars Company\" - Меню работы с чеками\n\n";
 		this->database_.showReceiptsInfo();
 		switch (utils::patternForMenus("", {
 			/*"Сортировка",
@@ -468,7 +511,7 @@ void Manager::workingClientWithFavorites(const std::shared_ptr<User>& authorized
 	while (true)
 	{
 		system("cls");
-		std::cout << "АСА - Меню избранного\n\n";
+		std::cout << "\"Cars Company\" - Меню избранного\n\n";
 		const auto& cars = this->database_.getCarsInFavoritesByUserUniqueId(authorizedUser->getUniqueId());
 		if (cars.empty())
 		{
@@ -496,7 +539,6 @@ void Manager::workingClientWithFavorites(const std::shared_ptr<User>& authorized
 			this->database_.deleteFavorite(authorizedUser->getUniqueId(), this->database_.getCarByPositionInVector(utils::checkIntInRange(1, this->database_.getCarsVectorSize()) - 1)->getUniqueId());
 			std::cout << "\nАвтомобиль успешно удалён из избранного.\n\n";
 			system("pause");
-			break;
 			break;
 			}
 		default:

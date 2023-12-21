@@ -103,7 +103,7 @@ void Database::loadUsersVector(const std::string& fileName)
 		if (fileName == EMPLOYEES_FILE)
 		{
 			const std::string usernameOfSuperAdmin = "admin";
-			const std::string passwordOfSuperAdmin = "adminadmin";
+			const std::string passwordOfSuperAdmin = "admin1234";
 			this->fullUpUsersVector(Employee(usernameOfSuperAdmin, passwordOfSuperAdmin));
 		}
 		return;
@@ -311,7 +311,7 @@ void Database::updateAccessRights(const std::shared_ptr<User>& user)
 		return;
 	}
 	std::cout << "\nВы уверены в своих действиях?\nВся информация об аккаунте, как о клиенте, будет удалена.\n"
-		"1 - Да.\n0 - Нет.\n\nВыберите: ";
+		"\u001b[33m1\u001b[37m - Да.\n\u001b[33m0\u001b[37m - Нет.\n\nВыберите: ";
 	if (!static_cast<bool>(utils::checkIntInRange(0, 1)))
 	{
 		return;
@@ -397,7 +397,7 @@ std::vector<std::shared_ptr<Car>> Database::getCarsInFavoritesByUserUniqueId(con
 
 void Database::sortUsersVector()
 {
-	switch (utils::patternForMenus("АСА - Меню сортировки	\n\nВыберите параметр сортировки\n"
+	switch (utils::patternForMenus("\"Cars Company\" - Меню сортировки	\n\nВыберите параметр сортировки\n"
 								"< - по убыванию, > - по возрастанию", {
 		"Имя пользователя >",
 		"Имя пользователя <",
@@ -546,7 +546,7 @@ void Database::searchInUsersVector()
 	{
 		std::vector<std::shared_ptr<User>> foundUsers;
 		std::vector<std::shared_ptr<User>> foundСoincidences;
-		switch(utils::patternForMenus("АСА - Меню поиска\n\nВыберите параметр поиска", {
+		switch(utils::patternForMenus("\"Cars Company\" - Меню поиска\n\nВыберите параметр поиска", {
 			"Имя пользователя",
 			"ФИО",
 			"Админ-права",
@@ -671,7 +671,7 @@ void Database::searchInUsersVector()
 			}
 		}
 		system("cls");
-		std::cout << "АСА - Меню поиска - найденные записи\n\n";
+		std::cout << "\"Cars Company\" - Меню поиска - найденные записи\n\n";
 		if (!foundUsers.empty())
 		{
 			this->showUsersInfo(nullptr, foundUsers);
@@ -692,7 +692,7 @@ void Database::searchInUsersVector()
 
 void Database::sortCarsVector()
 {
-	switch(utils::patternForMenus("АСА - Меню сортировки	\n\nВыберите параметр сортировки\n"
+	switch(utils::patternForMenus("\"Cars Company\" - Меню сортировки	\n\nВыберите параметр сортировки\n"
 								"< - по убыванию, > - по возрастанию", {
 		"Бренд >",
 		"Бренд <",
@@ -910,7 +910,7 @@ void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser) c
 				}
 		}
 		system("cls");
-		std::cout << "АСА - Меню поиска - найденные записи\n\n";
+		std::cout << "\"Cars Company\" - Меню поиска - найденные записи\n\n";
 		if (!foundCars.empty())
 		{
 			this->showCarsInfo(nullptr, foundCars);
@@ -947,7 +947,7 @@ void Database::searchInCarsVector(const std::shared_ptr<User>& authorizedUser) c
 
 void Database::sortReceiptsVector()
 {
-	switch (utils::patternForMenus("АСА - Меню сортировки\n\nВыберите параметр сортировки\n< - по убыванию, > - по возрастанию", {
+	switch (utils::patternForMenus("\"Cars Company\" - Меню сортировки\n\nВыберите параметр сортировки\n< - по убыванию, > - по возрастанию", {
 		"День >",
 		"День <",
 		"Месяц >",
@@ -1077,7 +1077,7 @@ void Database::searchInReceiptsVector() const
 	{
 		std::vector<std::shared_ptr<Receipt>> foundReceipt;
 		std::vector<std::shared_ptr<Receipt>> foundReceipts;
-		switch (utils::patternForMenus("АСА - Меню поиска\n\nВыберите параметр поиска", {
+		switch (utils::patternForMenus("\"Cars Company\" - Меню поиска\n\nВыберите параметр поиска", {
 			"День",
 			"Месяц",
 			"Год",
@@ -1262,7 +1262,7 @@ void Database::customizeCar(const std::shared_ptr<Car>& car)
 	while (true)
 	{
 		system("cls");
-		std::cout << "АСА - Меню редактирования автомобиля\n\n";
+		std::cout << "\"Cars Company\" - Меню редактирования автомобиля\n\n";
 		this->showCarsInfo(car);
 		std::cout << "\n\n";
 		switch (utils::patternForMenus("Желаете ли изменить какой-нибудь параметр?", {
@@ -1430,6 +1430,7 @@ void Database::showReceiptsInfo(const std::shared_ptr<Receipt>& receipt, const s
 
 void Database::generateReports() const
 {
+	std::cout << "\"Cars Company\" - Генерирование отчётов\n\n";
 	try {
 		if (std::filesystem::create_directory(REPORTS_DIR)) {
 			std::cout << "Каталог " << REPORTS_DIR << " успешно создан" << std::endl;
@@ -1520,12 +1521,14 @@ void Database::generateReports() const
 			file << "II Список продаж:\n";
 			file << "(в формате имя пользователя (клиента) - бренд - марка)\n";
 			int counter = 1;
+			double totalPrice = 0;
 			for (const auto& element : this->receipts_)
 			{
 				file << counter++ << ") " << element->getInfo().first.getUsername() << " - ";
 				file << element->getInfo().second.getBrand() << " - " << element->getInfo().second.getModel() << '\n';
+				totalPrice += element->getInfo().second.getPrice();
 			}
-			file << '\n';
+			file << "\nСумма продаж: " << totalPrice << "\n\n";
 		}
 		isReceipts = true;
 		file << "Конец отчёта\n";
